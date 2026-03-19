@@ -1,2 +1,22 @@
 .venv/
 data/
+# --- Python 基礎過濾 ---
+__pycache__/
+*.py[cod]
+venv/
+.env
+
+# --- 大型資料夾 (絕對不准傳到 GitHub) ---
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# --- AI 模型權重 (3050 Ti 的心血，不進 Git) ---
+models/*.pt
+models/*.onnx
+runs/
+
+# --- 其他雜物 ---
+.DS_Store
+*.log
