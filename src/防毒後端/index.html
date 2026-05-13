@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>毒品防制系統 - 系統管理員儀表板</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; padding: 20px; color: #333; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 15px; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .card { border: 1px solid #e1e8ed; padding: 20px; border-radius: 8px; background: #fafafa; }
+        .card h3 { margin-top: 0; color: #2980b9; }
+        input, select, button { padding: 10px; margin: 8px 0; width: 100%; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
+        button { border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-login { background-color: #e74c3c; color: white; } .btn-login:hover { background-color: #c0392b; }
+        .btn-get { background-color: #27ae60; color: white; } .btn-get:hover { background-color: #2ecc71; }
+        .btn-post { background-color: #3498db; color: white; } .btn-post:hover { background-color: #2980b9; }
+        .btn-delete { background-color: #34495e; color: white; } .btn-delete:hover { background-color: #2c3e50; }
+        .status-box { padding: 12px; margin-bottom: 20px; text-align: center; font-weight: bold; border-radius: 8px; font-size: 1.1em; }
+        .status-logged-out { background: #ffeaa7; color: #d35400; border: 1px solid #fdcb6e; }
+        .status-logged-in { background: #dff9fb; color: #22a6b3; border: 1px solid #c7ecee; }
+        pre { background: #2d3436; color: #00b894; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>毒品防制系統 - 登陸人員控制台</h1>
+
+    <div class="status-box status-logged-out" id="loginStatus">尚未登入，請先輸入管理員帳號密碼</div>
+    <input type="hidden" id="tokenInput"> 
+
+    <div class="grid-layout">
+        <div class="card">
+            <h3>🔑 1. 系統登入</h3>
+            <input type="text" id="login_account" placeholder="帳號">
+            <input type="password" id="login_password" placeholder="密碼">
+            <button class="btn-login" onclick="login()">登入取得授權</button>
+        </div>
+
+        <div class="card">
+            <h3>📋 2. 查詢系統名單 (GET)</h3>
+            <p style="font-size: 0.9em; color: #666;">需要管理員權限才可閱覽資料庫人員清單。</p>
+            <button class="btn-get" onclick="fetchUsers()">向後端索取名單</button>
+        </div>
+    </div>
+
+    <!-- 下方改成 4 個功能的矩陣版面 -->
+    <div class="grid-layout">
+        <div class="card">
+            <h3>➕ 3. 新增查緝人員 (POST)</h3>
+            <input type="text" id="new_user_id" placeholder="警員編號">
+            <input type="text" id="new_account" placeholder="登入帳號">
+            <input type="password" id="new_password" placeholder="登入密碼">
+            <select id="new_role">
+                <option value="一般警員">一般警員 (僅查詢)</option>
+                <option value="高階分析師">高階分析師 (可封鎖)</option>
+            </select>
+            <input type="text" id="new_dept" placeholder="所屬單位 (例: 刑事局)">
+            <button class="btn-post" onclick="createUser()">確認新增人員</button>
+        </div>
+
+        <div class="card">
+            <h3>❌ 4. 刪除查緝人員 (DELETE)</h3>
+            <input type="text" id="delete_account" placeholder="請輸入要刪除的【登入帳號】">
+            <p style="font-size: 0.8em; color: #e74c3c;">警告：刪除後無法復原。</p>
+            <button class="btn-delete" onclick="deleteUser()"> 確認刪除人員</button>
+        </div>
+
+        <!-- 檔案上傳卡片 -->
+        <div class="card" style="border: 1px solid #8e44ad; background: #f9f0ff;">
+            <h3 style="color: #8e44ad;">📂 7. 批次匯入情資檔案 (JSON)</h3>
+            <p style="font-size: 0.8em; color: #666;">請選擇爬蟲產生的 .json 或 .jsonl 檔案進行批次上傳。</p>
+            <input type="file" id="crawler_file" accept=".json, .jsonl" style="margin-bottom: 10px;">
+            <button style="background-color: #8e44ad; color: white; width: 100%;" onclick="uploadFile()">🚀 確認上傳 JSON 檔案</button>
+        </div>
+
+        <!-- 即時掃描卡片 -->
+        <div class="card" style="border: 1px solid #e67e22; background: #fdf3e9;">
+            <h3 style="color: #e67e22;">🕵️ 8. AI 即時網址掃描</h3>
+            <p style="font-size: 0.8em; color: #666;">輸入單一網址，系統將發送請求至 AI 爬蟲引擎進行多模態檢測。</p>
+            <input type="text" id="target_url" placeholder="請輸入疑似涉毒網址 (例如 https://...)" style="width: 100%; margin-bottom: 10px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            <button style="background-color: #e67e22; color: white; width: 100%;" onclick="sendScanRequest()">🔍 啟動深度掃描</button>
+        </div>
+    </div>
+
+    <h3 style="margin-top: 30px;">伺服器回應結果：</h3>
+    <pre id="responseScreen">等待操作中...</pre>
+</div>
+
+<script>
+    const API_BASE_URL = 'http://127.0.0.1:8000/api';
+
+    // 輔助函數：取得目前的 Token 並檢查是否已登入
+    function getToken() {
+        const token = document.getElementById('tokenInput').value;
+        if (!token) {
+            document.getElementById('responseScreen').innerText = " 動作被拒絕：請先在左上方完成登入！";
+            return null;
+        }
+        return token;
+    }
+
+    // 【功能 1】登入系統
+    async function login() {
+        const screen = document.getElementById('responseScreen');
+        const statusBox = document.getElementById('loginStatus');
+        
+        const loginData = {
+            account: document.getElementById('login_account').value,
+            password: document.getElementById('login_password').value
+        };
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/login/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(loginData)
+            });
+            const data = await response.json();
+            
+            if(data.status === "success") {
+                document.getElementById('tokenInput').value = data.access_token;
+                statusBox.className = "status-box status-logged-in";
+                statusBox.innerHTML = `登入成功！目前身分：${data.access_token}`;
+            } else {
+                statusBox.className = "status-box status-logged-out";
+                statusBox.innerHTML = `登入失敗！帳號或密碼錯誤`;
+            }
+            screen.innerText = JSON.stringify(data, null, 4);
+        } catch (error) { screen.innerText = "伺服器連線失敗！"; }
+    }
+
+    // 【功能 2】查詢名單
+    async function fetchUsers() {
+        const token = getToken(); if(!token) return;
+        try {
+            const response = await fetch(`${API_BASE_URL}/users/`, {
+                method: 'GET',
+                headers: { 'X-Token': token }
+            });
+            document.getElementById('responseScreen').innerText = JSON.stringify(await response.json(), null, 4);
+        } catch (error) { document.getElementById('responseScreen').innerText = "連線失敗！"; }
+    }
+
+    // 【功能 3】新增人員
+    async function createUser() {
+        const token = getToken(); if(!token) return;
+        
+        const requestBody = {
+            user_id: document.getElementById('new_user_id').value,
+            account: document.getElementById('new_account').value,
+            password: document.getElementById('new_password').value,
+            role: document.getElementById('new_role').value,
+            department: document.getElementById('new_dept').value
+        };
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/users/`, {
+                method: 'POST',
+                headers: { 'X-Token': token, 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+            document.getElementById('responseScreen').innerText = JSON.stringify(await response.json(), null, 4);
+        } catch (error) { document.getElementById('responseScreen').innerText = "連線失敗！"; }
+    }
+
+    // 【功能 4】刪除人員
+    async function deleteUser() {
+        const token = getToken(); if(!token) return;
+        const targetAccount = document.getElementById('delete_account').value;
+        
+        if(!targetAccount) {
+            document.getElementById('responseScreen').innerText = "請輸入要刪除的帳號！";
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/users/${targetAccount}`, {
+                method: 'DELETE',
+                headers: { 'X-Token': token }
+            });
+            document.getElementById('responseScreen').innerText = JSON.stringify(await response.json(), null, 4);
+        } catch (error) { document.getElementById('responseScreen').innerText = "連線失敗！"; }
+    }
+
+    // 【功能 7】上傳檔案並呼叫後端 API (免登入版)
+    async function uploadFile() {
+        // ❌ 已經將 getToken() 阻擋機制刪除
+        
+        const fileInput = document.getElementById('crawler_file');
+        const file = fileInput.files[0];
+        
+        if(!file) {
+            document.getElementById('responseScreen').innerText = "⚠️ 請先選擇一個 .json 或 .jsonl 檔案！";
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file); 
+
+        document.getElementById('responseScreen').innerText = "⏳ 檔案上傳與解析中，請稍候...";
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/upload_file/`, {
+                method: 'POST',
+                // ❌ 移除了 headers 裡的 'X-Token'，現在可以直接發送
+                body: formData
+            });
+            
+            document.getElementById('responseScreen').innerText = JSON.stringify(await response.json(), null, 4);
+            fileInput.value = ""; 
+
+        } catch (error) { 
+            document.getElementById('responseScreen').innerText = "❌ 連線失敗或上傳發生錯誤！"; 
+        }
+    }
+
+    // 【功能 8】發送單一網址掃描請求給後端 (免登入版)
+    async function sendScanRequest() {
+        // ❌ 已經將 getToken() 阻擋機制刪除
+        
+        const urlInput = document.getElementById('target_url').value.trim();
+        
+        if(!urlInput) {
+            document.getElementById('responseScreen').innerText = "⚠️ 請先輸入要掃描的網址！";
+            return;
+        }
+
+        document.getElementById('responseScreen').innerText = "⏳ 正在啟動爬蟲與 AI 多模態引擎，請稍候 (約需 10~30 秒)...";
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/scan_target/`, {
+                method: 'POST',
+                headers: { 
+                    // ❌ 移除了 'X-Token'，只保留 Content-Type
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify({ url: urlInput }) 
+            });
+            
+            const result = await response.json();
+            document.getElementById('responseScreen').innerText = JSON.stringify(result, null, 4);
+            
+            if(response.ok) {
+                document.getElementById('target_url').value = "";
+            }
+
+        } catch (error) { 
+            document.getElementById('responseScreen').innerText = "❌ 掃描失敗！可能是爬蟲引擎未開機，或是連線逾時。"; 
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,369 @@
+from fastapi import FastAPI, Depends, HTTPException, Header, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware  
+from sqlalchemy.orm import Session
+from pydantic import BaseModel
+from typing import List, Dict, Any  # 👉 新增這一行，確保 List 和 Dict 可以正常使用
+
+import database 
+import requests
+import json
+
+app = FastAPI(title="多模態毒品交易防制系統 API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 允許所有網域連線 (因為我們現在在本地測試)
+    allow_credentials=True,
+    allow_methods=["*"],  # 允許 GET, POST 等所有方法
+    allow_headers=["*"],  # 允許前端夾帶我們自訂的 X-Token
+)
+
+# --- 1. 資料庫連線 ---
+def get_db():
+    db = database.engine.connect()
+    session = Session(bind=database.engine)
+    try:
+        yield session
+    finally:
+        session.close()
+
+# --- 2. 身分驗證警衛 (依賴注入) ---
+def verify_admin(x_token: str = Header(...), db: Session = Depends(get_db)):
+    user = db.query(database.User).filter(database.User.account == x_token).first()
+    
+    if not user:
+        raise HTTPException(status_code=401, detail="身分驗證失敗：無效的憑證！")
+    
+    if user.role != "系統管理員":
+        raise HTTPException(status_code=403, detail="權限不足：只有系統管理員可以執行此動作！")
+    
+    return user
+
+# --- 3. Pydantic 模型 ---
+class WebsiteReport(BaseModel):
+    url: str
+    title: str
+    risk_level: str
+    keywords_found: str
+
+class UserCreate(BaseModel):
+    user_id: str
+    account: str
+    password: str
+    role: str
+    department: str
+
+class UserLogin(BaseModel):
+    account: str
+    password: str
+
+class FrontendScanRequest(BaseModel):
+    url: str
+
+# ==========================================
+# 🔐 登入系統 API
+# ==========================================
+@app.post("/api/login/")
+def login_for_access_token(login_data: UserLogin, db: Session = Depends(get_db)):
+    user = db.query(database.User).filter(database.User.account == login_data.account).first()
+    
+    if not user:
+        raise HTTPException(status_code=401, detail="登入失敗：帳號或密碼錯誤！")
+
+    is_password_correct = False
+    
+    if user.account == 'super_admin' and login_data.password == 'super_secret_hash':
+        is_password_correct = True
+    elif user.password_hash == login_data.password + "_hashed":
+        is_password_correct = True
+
+    if not is_password_correct:
+        raise HTTPException(status_code=401, detail="登入失敗：帳號或密碼錯誤！")
+
+    return {
+        "status": "success",
+        "message": f"登入成功！歡迎回來，{user.role} {user.account}",
+        "access_token": user.account, 
+        "token_type": "bearer"
+    }
+
+# ==========================================
+# 👨‍✈️ 管理員專用 API (受 verify_admin 保護)
+# ==========================================
+
+@app.post("/api/users/")
+def create_user(user_data: UserCreate, current_admin: database.User = Depends(verify_admin), db: Session = Depends(get_db)):
+    existing_user = db.query(database.User).filter(database.User.account == user_data.account).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="這個帳號已經被註冊過囉！")
+
+    new_user = database.User(
+        user_id=user_data.user_id,
+        account=user_data.account,
+        password_hash=user_data.password + "_hashed",
+        role=user_data.role,
+        department=user_data.department
+    )
+    db.add(new_user)
+    db.commit()
+    
+    return {
+        "status": "success", 
+        "message": f"成功新增人員：{new_user.account}",
+        "operated_by": current_admin.account 
+    }
+
+@app.get("/api/users/")
+def get_all_users(current_admin: database.User = Depends(verify_admin), db: Session = Depends(get_db)):
+    users = db.query(database.User).all()
+    return {
+        "status": "success",
+        "message": "成功抓取資料庫名單",
+        "total_count": len(users),
+        "data": users
+    }
+
+@app.delete("/api/users/{target_account}")
+def delete_user(target_account: str, current_admin: database.User = Depends(verify_admin), db: Session = Depends(get_db)):
+    if target_account == current_admin.account:
+        raise HTTPException(status_code=400, detail="錯誤：你不能刪除你自己的帳號！")
+
+    user_to_delete = db.query(database.User).filter(database.User.account == target_account).first()
+    
+    if not user_to_delete:
+        raise HTTPException(status_code=404, detail="找不到這個帳號，無法刪除！")
+    
+    db.delete(user_to_delete)
+    db.commit()
+    
+    return {
+        "status": "success", 
+        "message": f"已成功刪除人員：{target_account}",
+        "operated_by": current_admin.account
+    }
+
+@app.get("/api/crawler/report/")
+def get_suspect_websites(current_user: database.User = Depends(verify_admin), db: Session = Depends(get_db)):
+    websites = db.query(database.SuspectWebsite).all()
+    return {
+        "status": "success",
+        "message": "成功抓取可疑網站黑名單",
+        "total_count": len(websites),
+        "data": websites
+    }
+
+
+# ==========================================
+# 🤖 自動化/爬蟲對接 API (免登入版)
+# ==========================================
+
+# 【舊版單筆回報】
+@app.post("/api/crawler/report/")
+def receive_crawler_data(report: WebsiteReport, db: Session = Depends(get_db)):
+    existing_site = db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == report.url).first()
+    if existing_site:
+         return {"status": "ignored", "message": "這個網址已經在黑名單中了，無需重複通報。"}
+
+    new_website = database.SuspectWebsite(
+        url=report.url,
+        title=report.title,
+        risk_level=report.risk_level,
+        keywords_found=report.keywords_found,
+        reported_by="舊版爬蟲 API" 
+    )
+    db.add(new_website)
+    db.commit()
+    return {
+        "status": "success", 
+        "message": f"成功接收情資！已將 {report.url} 列入黑名單。",
+        "risk": report.risk_level
+    }
+
+# 【檔案上傳 (JSON)】
+@app.post("/api/upload_file/")
+async def upload_crawler_json_file(file: UploadFile = File(...), db: Session = Depends(get_db)): 
+    try:
+        content = await file.read()
+        try:
+            crawler_data_list = json.loads(content)
+        except json.JSONDecodeError:
+            raise HTTPException(status_code=400, detail="檔案解析失敗，請確認上傳的是有效的 JSON 格式檔案！")
+
+        if not isinstance(crawler_data_list, list):
+            raise HTTPException(status_code=400, detail="JSON 格式錯誤：最外層必須是陣列格式 [...]")
+
+        success_count = 0
+        skip_count = 0
+        processed_urls_in_this_batch = set() 
+        
+        for item in crawler_data_list:
+            found_url = item.get("url")
+            if not found_url: continue
+                
+            if found_url in processed_urls_in_this_batch:
+                skip_count += 1
+                continue
+            
+            existing_record = db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == found_url).first()
+            if existing_record:
+                skip_count += 1
+                continue
+                
+            processed_urls_in_this_batch.add(found_url)
+            
+            score_num = item.get("risk_score", 0)
+            log_time = item.get("created_at", "未知時間")
+            
+            details = item.get("details", {})
+            yolo_words = details.get("yolo_objects", [])
+            nlp_words = details.get("nlp_keywords", [])
+            all_keywords = ", ".join(yolo_words + nlp_words)
+            if not all_keywords:
+                all_keywords = "無檢出關鍵字"
+            
+            if score_num >= 800:
+                level = "極高風險"
+            elif score_num >= 600:
+                level = "高風險"
+            else:
+                level = "中低風險"
+
+            new_record = database.SuspectWebsite(
+                url=found_url,
+                title="批次 JSON 匯入", 
+                risk_level=level,
+                risk_score=score_num,
+                keywords_found=all_keywords,
+                created_at=log_time,      
+                reported_by="批次上傳 (免登入)" 
+            )
+            db.add(new_record)
+            success_count += 1
+            
+        db.commit()
+        return {"status": "success", "message": f"JSON 分析完畢！成功匯入 {success_count} 筆新資料，並攔截了 {skip_count} 筆重複網址！"}
+
+    except HTTPException:
+        raise 
+    except Exception as e:
+        db.rollback() 
+        raise HTTPException(status_code=500, detail=f"系統處理 JSON 檔案時發生錯誤：{str(e)}")
+
+# 【爬蟲直接同步 (JSON)】
+@app.post("/api/sync_data/")
+async def sync_crawler_data(data_list: List[Dict[str, Any]], db: Session = Depends(get_db)): 
+    try:
+        success_count = 0
+        skip_count = 0
+        processed_urls_in_this_batch = set() 
+        
+        for item in data_list:
+            found_url = item.get("url")
+            if not found_url: continue
+                
+            if found_url in processed_urls_in_this_batch:
+                skip_count += 1
+                continue
+            
+            existing_record = db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == found_url).first()
+            if existing_record:
+                skip_count += 1
+                continue
+                
+            processed_urls_in_this_batch.add(found_url)
+            
+            score_num = item.get("risk_score", 0)
+            log_time = item.get("created_at", "未知時間")
+            
+            details = item.get("details", {})
+            yolo_words = details.get("yolo_objects", [])
+            nlp_words = details.get("nlp_keywords", [])
+            all_keywords = ", ".join(yolo_words + nlp_words)
+            if not all_keywords:
+                all_keywords = "無檢出關鍵字"
+            
+            if score_num >= 800:
+                level = "極高風險"
+            elif score_num >= 600:
+                level = "高風險"
+            else:
+                level = "中低風險"
+
+            new_record = database.SuspectWebsite(
+                url=found_url,
+                title="爬蟲 API 自動同步",
+                risk_level=level,
+                risk_score=score_num,
+                keywords_found=all_keywords,
+                created_at=log_time,      
+                reported_by="Auto_Crawler" 
+            )
+            db.add(new_record)
+            success_count += 1
+            
+        db.commit()
+        return {"status": "success", "message": f"伺服器同步完畢！成功新增 {success_count} 筆資料，並攔截 {skip_count} 筆重複網址！"}
+
+    except Exception as e:
+        db.rollback() 
+        raise HTTPException(status_code=500, detail=f"系統處理同步資料時發生錯誤：{str(e)}")
+
+# 【單一網址即時掃描】
+@app.post("/api/scan_target/")
+def scan_target_url(request_data: FrontendScanRequest, db: Session = Depends(get_db)): 
+    
+    target_url = request_data.url
+    CRAWLER_API_URL = "http://127.0.0.1:8001/analyze" 
+    
+    print(f"🚀 準備呼叫爬蟲引擎掃描：{target_url}")
+
+    try:
+        payload = {"url": target_url}
+        response = requests.post(CRAWLER_API_URL, json=payload, timeout=60)
+        response.raise_for_status() 
+        
+        crawler_result = response.json()
+        print("📥 收到爬蟲分析結果：", crawler_result)
+
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"呼叫爬蟲引擎失敗或超時：{e}")
+
+    try:
+        score_num = crawler_result.get("risk_score", 0)
+        
+        if score_num >= 800:
+            level = "極高風險"
+        elif score_num >= 600:
+            level = "高風險"
+        else:
+            level = "中低風險"
+            
+        yolo_words = crawler_result.get("details", {}).get("yolo_objects", [])
+        nlp_words = crawler_result.get("details", {}).get("nlp_keywords", [])
+        all_keywords = ", ".join(yolo_words + nlp_words)
+
+        new_record = database.SuspectWebsite(
+            url=target_url,
+            title="AI即時掃描建檔", 
+            risk_level=level,
+            risk_score=score_num,
+            keywords_found=all_keywords,
+            reported_by="系統觸發 (免登入)" 
+        )
+        db.add(new_record)
+        db.commit()
+
+        return {
+            "status": "success",
+            "message": "分析完成並已寫入資料庫",
+            "saved_data": {
+                "url": target_url,
+                "risk_level": level,
+                "risk_score": score_num,
+                "keywords": all_keywords
+            },
+            "raw_crawler_response": crawler_result 
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"解析爬蟲資料或存入資料庫時發生錯誤：{e}")

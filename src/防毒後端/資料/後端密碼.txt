@@ -1,0 +1,16 @@
+MySQLdrug2026\
+
+super_admin
+super_secret_hash
+
+
+啟動:python -m uvicorn main:app --reload 
+
+啟動連線 python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+
+sql內查詢使用者: SELECT * FROM drug_prevention_db.users;
+
+查存的網站 SELECT * FROM suspect_websites;
+
+刪全部:SELECT * FROM drug_prevention_db.suspect_websites;
