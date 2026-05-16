@@ -1,0 +1,150 @@
+🔑 模組一：身分驗證與查詢
+這部分是前端與管理員最常用的功能，記得先測登入。
+
+1. POST /api/login/ (系統登入)
+
+測試目的： 測試總管理員權限是否能成功拿到 Token。
+
+Request Body：
+
+JSON
+{
+  "account": "super_admin",
+  "password": "super_secret_hash"
+}
+預期結果： 回傳 status: success，並拿到 access_token (通常就是 "super_admin")。接下來遇到右上角有鎖頭 🔒 或需要填 x-token 的地方，就填入 super_admin。
+
+2. GET /api/crawler/report/ (獲取前端專用 AI 分析報表)
+
+測試目的： 前端撈取畫面上四宮格要用的乾淨資料。
+
+Header： 若有跳出 x-token，請輸入 super_admin。
+
+預期結果： 回傳一個陣列 []（如果資料庫目前是空的），或者列出目前 ai_analysis_results 表內的所有整合資料。
+
+🛡️ 模組二：白名單防禦機制
+測試總管理員的專屬權限，先把它建好，等一下才能測網址攔截。
+
+3. POST /api/whitelist/ (新增白名單)
+
+Header (x-token)： super_admin
+
+Request Body：
+
+JSON
+{
+  "url": "https://www.google.com",
+  "title": "Google 搜尋引擎",
+  "reason": "知名安全網站，不需耗費 AI 資源"
+}
+預期結果： 回傳成功新增白名單。
+
+4. GET /api/whitelist/ (查看白名單清單)
+
+點擊 Execute 即可。
+
+預期結果： 看到剛剛新增的 Google 網址出現在陣列中，請記住這筆資料的 id (通常是 1)。
+
+5. DELETE /api/whitelist/{id} (刪除白名單)
+
+Header (x-token)： super_admin
+
+Parameters (id)： 輸入剛剛記住的數字 (例如 1)。
+
+預期結果： 回傳成功移除白名單。
+
+🚀 模組三：系統核心管線 (即時掃描與 AI 統整)
+這是整套系統最有價值的地方，請按照 6 -> 7 -> 8 -> 9 的順序打，體驗資料的完美流動！
+
+6. POST /api/scan_target/ (即時掃描單一網址)
+
+測試目的： 模擬使用者輸入網址。
+
+Request Body：
+
+JSON
+{
+  "url": "https://danger-drugs-test.com"
+}
+預期結果： 如果白名單跟歷史紀錄都沒有，它會回傳 500 或是 Timeout（因為你目前還沒接上爬蟲電腦真正的 Ngrok 網址）。這完全正常！ 重點是你會看到 VS Code 終端機印出「正在呼叫爬蟲引擎...」。
+
+7. POST /api/crawler/report/ (爬蟲端專用寫入)
+
+測試目的： 模擬爬蟲抓完大檔案，丟給後端並觸發背景任務。
+
+Request Body：
+
+JSON
+{
+  "url": "https://danger-drugs-test.com",
+  "title": "可疑的交易論壇",
+  "risk_level": "待分析",
+  "keywords_found": "分析中",
+  "html_content": "<html><body>網頁原始碼</body></html>",
+  "images": ["base64_image_1"]
+}
+預期結果： 瞬間回傳 status: success。而且你的終端機應該會印出「背景派發任務已順利啟動！」去叫 YOLO 跟 NLP 起床。
+
+8. POST /api/ai_result/report/ (YOLO 引擎專用統整)
+
+測試目的： 模擬 YOLO 算完影像，把圖片分數存進展示庫。
+
+Request Body：
+
+JSON
+{
+  "url": "https://danger-drugs-test.com",
+  "risk_score": 880,
+  "yolo_objects": ["白色粉末", "夾鏈袋"],
+  "processed_images": ["yolo_boxed_image_base64"]
+}
+預期結果： 回傳成功建檔！(因為 YOLO 先到，它會先蓋好展示庫的紀錄)。
+
+9. POST /api/nlp/report/ (NLP 引擎專用統整)
+
+測試目的： 模擬 NLP 算完文字，把文字分數「補充」進剛剛 YOLO 蓋好的紀錄中，觸發最高分統整。
+
+Request Body：
+
+JSON
+{
+  "url": "https://danger-drugs-test.com",
+  "risk_score": 500,
+  "nlp_keywords": ["飛行草", "埋包"]
+}
+預期結果： 回傳成功統整！(此時你可以回頭去打第 2 支 API GET /api/crawler/report/，你就會看到資料庫裡出現完美的綜合報表了！)
+
+📦 模組四：大數據批次處理 (爬蟲排程與手動上傳)
+測試系統對於陣列資料的處理能力。
+
+10. POST /api/sync_data/ (批次同步原始數據至內部表)
+
+測試目的： 爬蟲半夜自動掃街，一次塞好幾筆進來。
+
+Request Body： (注意最外層是中括號 [] 的陣列)
+
+JSON
+[
+  {
+    "url": "https://mass-scan-1.com",
+    "html_content": "網頁1",
+    "images": []
+  },
+  {
+    "url": "https://mass-scan-2.com",
+    "html_content": "網頁2",
+    "images": []
+  }
+]
+預期結果： 回傳成功寫入 suspect_websites 共 2 筆！
+
+11. POST /api/upload_file/ (前端手動匯入報表)
+
+測試目的： 測試警員手動上傳 JSON 檔案的功能。
+
+操作方式： 1. 在你電腦桌面隨便開一個記事本，貼上以下內容並存成 test.json：
+[{"url": "https://manual-upload.com", "risk_score": 950, "details": {"yolo_objects": ["槍枝"], "nlp_keywords": ["黑市"]}}]
+2. 在 Swagger UI 點擊 "Choose File"。
+3. 選取剛剛存檔的 test.json，按下 Execute。
+
+預期結果： 回傳「手動合併報表完畢！」

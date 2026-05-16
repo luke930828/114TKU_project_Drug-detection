@@ -1,16 +1,14 @@
-from fastapi import FastAPI, Depends, HTTPException, Header, UploadFile, File
+from fastapi import FastAPI, Depends, HTTPException, Header, UploadFile, File, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from typing import List, Dict, Any
-import json
+from typing import List, Dict, Any, Optional 
 import requests
+import json     
+import database  
+from sqlalchemy.exc import IntegrityError # 
+app = FastAPI(title="多模態毒品防制系統 API", description="符合原始表與 AI 展示表分離架構")
 
-import database  # 引入你的資料庫設定
-
-app = FastAPI(title="毒品防制系統核心 API", description="前端四宮格介面 + 爬蟲對接通道")
-
-# 允許前端跨域連線
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,23 +17,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- 資料庫連線產生器 ---
 def get_db():
-    db = database.engine.connect()
     session = Session(bind=database.engine)
     try:
         yield session
     finally:
         session.close()
 
-# --- 身分驗證警衛 ---
-def verify_admin(x_token: str = Header(..., description="請輸入管理員帳號作為 Token"), db: Session = Depends(get_db)):
+def verify_admin(x_token: str = Header(...), db: Session = Depends(get_db)):
     user = db.query(database.User).filter(database.User.account == x_token).first()
     if not user:
         raise HTTPException(status_code=401, detail="身分驗證失敗：無效的憑證！")
+    if user.role != "系統管理員":
+        raise HTTPException(status_code=403, detail="權限不足：只有系統管理員可以執行此動作！")
     return user
 
-# --- Pydantic 接收格式定義 ---
+def verify_super_admin(current_user: database.User = Depends(verify_admin)):
+    if current_user.account != "super_admin":
+        raise HTTPException(status_code=403, detail="權限不足：此操作僅限「總管理員」執行！")
+    return current_user
+
 class UserLogin(BaseModel):
     account: str
     password: str
@@ -43,26 +44,57 @@ class UserLogin(BaseModel):
 class FrontendScanRequest(BaseModel):
     url: str
 
-class WebsiteReport(BaseModel):
-    url: str
-    title: str
-    risk_level: str
-    keywords_found: str
-# 白名單新增時所需的格式
 class WhitelistCreate(BaseModel):
     url: str
     title: str
     reason: str
 
-# ==========================================
-# 💻 前端 UI 專用 API (對應四宮格卡片)
-# ==========================================
+class WebsiteReport(BaseModel):
+    url: str
+    title: str
+    risk_level: str
+    keywords_found: str
+    html_content: Optional[str] = None
+    images: Optional[List[str]] = None  
 
-# 🔑 卡片 1：登入系統
+class YOLOAnalysisReport(BaseModel):
+    url: str
+    risk_score: int
+    yolo_objects: List[str] = []
+    processed_images: Optional[List[str]] = []
+
+class NLPAnalysisReport(BaseModel):
+    url: str
+    risk_score: int
+    nlp_keywords: List[str] = []
+#  系統派報生：精準分發資料給 AI 引擎（各取所需版）
+def dispatch_to_ai_engines(url: str, html_content: str, images: list):
+    YOLO_API_URL = "https://你的YOLO同學網址.ngrok-free.app/analyze"
+    NLP_API_URL = "https://你的NLP同學網址.ngrok-free.app/analyze"
+    
+    try:
+        yolo_payload = {
+            "url": url,
+            "images": images if images else []
+        }
+        print(f"📸 [背景任務] 正在將圖片派發給 YOLO 視覺引擎...")
+        requests.post(YOLO_API_URL, json=yolo_payload, timeout=5) 
+    except Exception as e:
+        print(f" YOLO 視覺引擎連線失敗或無回應：{e}")
+
+    try:
+        nlp_payload = {
+            "url": url,
+            "html_content": html_content if html_content else ""
+        }
+        print(f" [背景任務] 正在將網頁 HTML 派發給 NLP 語意引擎...")
+        requests.post(NLP_API_URL, json=nlp_payload, timeout=5)
+    except Exception as e:
+        print(f" NLP 語意引擎連線失敗或無回應：{e}")
+#  模組一：管理員登入 (左上角卡片)
 @app.post("/api/login/", summary="系統登入")
 def login_for_access_token(login_data: UserLogin, db: Session = Depends(get_db)):
     user = db.query(database.User).filter(database.User.account == login_data.account).first()
-    
     if not user:
         raise HTTPException(status_code=401, detail="登入失敗：帳號或密碼錯誤！")
 
@@ -81,208 +113,315 @@ def login_for_access_token(login_data: UserLogin, db: Session = Depends(get_db))
         "access_token": user.account
     }
 
-# 🕵️ 卡片 2：輸入網址識別
-@app.post("/api/scan_target/", summary="即時掃描單一網址")
+
+#  模組二：輸入網址識別 (右上角卡片) -> 僅操作 AIAnalysisResult 表
+@app.post("/api/scan_target/", summary="即時掃描單一網址（優先對照歷史展示表，無紀錄才派發爬蟲）")
 def scan_target_url(request_data: FrontendScanRequest, db: Session = Depends(get_db)):
     target_url = request_data.url
-    CRAWLER_API_URL = "http://127.0.0.1:8001/analyze"  # 爬蟲引擎的 API 位置
     
+    is_whitelisted = db.query(database.WhitelistWebsite).filter(database.WhitelistWebsite.url == target_url).first()
+    if is_whitelisted:
+        return {"status": "safe", "source": "whitelist", "message": "此網址已列入白名單，安全放行。", "reason": is_whitelisted.reason}
+
+    existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == target_url).first()
+    if existing_record:
+        return {
+            "status": "success",
+            "source": "history",
+            "message": "偵測到歷史展示紀錄，直接回傳 AI 分析結果。",
+            "data": existing_record
+        }
+
+    CRAWLER_API_URL = "http://127.0.0.1:8001/analyze" 
     try:
         response = requests.post(CRAWLER_API_URL, json={"url": target_url}, timeout=60)
         response.raise_for_status() 
         crawler_result = response.json()
-
+        
         score_num = crawler_result.get("risk_score", 0)
-        if score_num >= 800: level = "極高風險"
-        elif score_num >= 600: level = "高風險"
-        else: level = "中低風險"
-            
+        level = "極高風險" if score_num >= 800 else "高風險" if score_num >= 600 else "中低風險"
+        
         yolo_words = crawler_result.get("details", {}).get("yolo_objects", [])
         nlp_words = crawler_result.get("details", {}).get("nlp_keywords", [])
-        all_keywords = ", ".join(yolo_words + nlp_words) if (yolo_words or nlp_words) else "無檢出關鍵字"
-
-        new_record = database.SuspectWebsite(
+        
+        yolo_str = ", ".join(yolo_words) if yolo_words else "無檢出影像特徵"
+        nlp_str = ", ".join(nlp_words) if nlp_words else "無檢出文字特徵"
+        
+        frontend_record = database.AIAnalysisResult(
             url=target_url,
-            title="即時 AI 掃描", 
-            risk_level=level,
+            yolo_details=yolo_str,
+            nlp_details=nlp_str,
             risk_score=score_num,
-            keywords_found=all_keywords,
-            reported_by="網頁即時觸發" 
+            risk_level=level
         )
-        db.add(new_record)
+        db.add(frontend_record)
         db.commit()
-        return {"status": "success", "message": "分析完成並已寫入資料庫", "risk_level": level}
+        
+        return {
+            "status": "success",
+            "source": "crawler",
+            "message": "AI 分析完畢，已將格式化情資同步至前端展示表。",
+            "data": frontend_record
+        }
 
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"系統處理掃描時發生錯誤：{str(e)}")
+        raise HTTPException(status_code=500, detail=f"即時識別處理失敗：{str(e)}")
 
-# 📂 卡片 3：合併報表 / 批次匯入 JSON
-@app.post("/api/upload_file/", summary="批次匯入 JSON 報表")
-async def upload_crawler_json_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    try:
-        content = await file.read()
-        try:
-            crawler_data_list = json.loads(content)
-        except json.JSONDecodeError:
-            raise HTTPException(status_code=400, detail="檔案解析失敗，請上傳有效的 JSON 檔案！")
 
-        success_count = 0
-        skip_count = 0
-        processed_urls = set() 
-        
-        for item in crawler_data_list:
-            found_url = item.get("url")
-            if not found_url or found_url in processed_urls: 
-                skip_count += 1; continue
-            
-            if db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == found_url).first():
-                skip_count += 1; continue
-                
-            processed_urls.add(found_url)
-            score_num = item.get("risk_score", 0)
-            
-            if score_num >= 800: level = "極高風險"
-            elif score_num >= 600: level = "高風險"
-            else: level = "中低風險"
-
-            yolo_words = item.get("details", {}).get("yolo_objects", [])
-            nlp_words = item.get("details", {}).get("nlp_keywords", [])
-            all_keywords = ", ".join(yolo_words + nlp_words) if (yolo_words or nlp_words) else "無檢出關鍵字"
-
-            new_record = database.SuspectWebsite(
-                url=found_url, title="批次合併報表", risk_level=level, risk_score=score_num,
-                keywords_found=all_keywords, created_at=item.get("created_at", "未知時間"), reported_by="批次上傳匯入" 
-            )
-            db.add(new_record)
-            success_count += 1
-            
-        db.commit()
-        return {"status": "success", "message": f"成功匯入 {success_count} 筆新資料，攔截 {skip_count} 筆重複網址！"}
-
-    except HTTPException: raise 
-    except Exception as e:
-        db.rollback(); raise HTTPException(status_code=500, detail=f"系統處理檔案時發生錯誤：{str(e)}")
-
-# 📋 卡片 4：查詢已識別網站 (⚠️ 受權限保護，使用 GET)
-@app.get("/api/crawler/report/", summary="獲取黑名單資料庫")
-def get_suspect_websites(current_user: database.User = Depends(verify_admin), db: Session = Depends(get_db)):
-    websites = db.query(database.SuspectWebsite).all()
+#  模組三：查詢已識別網站 (右下角卡片) ->  鎖定只從 AIAnalysisResult 撈取
+@app.get("/api/crawler/report/", summary="獲取前端專用 AI 分析黑名單報表")
+def get_frontend_report(current_user: database.User = Depends(verify_admin), db: Session = Depends(get_db)):
+    results = db.query(database.AIAnalysisResult).all()
     return {
-        "status": "success", "message": "成功抓取可疑網站黑名單",
-        "total_count": len(websites), "data": websites
+        "status": "success",
+        "message": "成功抓取最新 AI 多模態識別資料庫",
+        "total_count": len(results),
+        "data": results
     }
-# 👑 總管理員專屬警衛 (只有帳號是 super_admin 的人能通過)
-def verify_super_admin(current_user: database.User = Depends(verify_admin)):
-    # 這裡鎖定只有 'super_admin' 帳號具備最高權限
-    if current_user.account != "super_admin":
-        raise HTTPException(
-            status_code=403, 
-            detail="權限不足：此操作僅限「總管理員」執行！"
+
+# 模組四：爬蟲專用通道 (免登入) -> 專門讓爬蟲「透過後端存進 suspect_websites」
+
+@app.post("/api/crawler/report/", summary="爬蟲端專用：將原始結果(含 HTML/圖片)寫入 suspect_websites 表")
+def receive_crawler_raw_data(report: WebsiteReport, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    try:
+        print(f"收到爬蟲通報網址：{report.url}")
+        
+        existing_site = db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == report.url).first()
+        if existing_site:
+             print(f"網址 {report.url} 已存在於 suspect_websites，跳過寫入。")
+             return {"status": "ignored", "message": "此原始網址已記錄於內部 suspect_websites 中。"}
+
+        images_json_string = json.dumps(report.images, ensure_ascii=False) if report.images else "[]"
+
+        new_website = database.SuspectWebsite(
+            url=report.url,
+            title=report.title,
+            risk_level=report.risk_level,
+            keywords_found=report.keywords_found,
+            reported_by="爬蟲端自動上傳",
+            html_content=report.html_content if report.html_content else "",    
+            images_data=images_json_string       
         )
-    return current_user
+        db.add(new_website)
+        db.commit()
+        print(" 原始網頁快照已成功寫入資料庫！")
+        
+        try:
+            background_tasks.add_task(dispatch_to_ai_engines, report.url, report.html_content if report.html_content else "", report.images if report.images else [])
+            print("背景派發任務已順利啟動！")
+        except Exception as ai_err:
+            print(f"背景任務加入失敗（不影響存檔）：{str(ai_err)}")
 
-# ==========================================
-# 🕷️ 隱藏版：爬蟲自動對接專用 API (免登入)
-# ==========================================
+        return {"status": "success", "message": "原始情資與網頁快照已成功寫入內部資料庫，並已於背景自動派發。"}
 
-# 🤖 爬蟲通道 1：舊版單筆回報 (使用 POST)
-@app.post("/api/crawler/report/", summary="爬蟲專用：單筆情資回報")
-def receive_crawler_data(report: WebsiteReport, db: Session = Depends(get_db)):
-    existing_site = db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == report.url).first()
-    if existing_site:
-         return {"status": "ignored", "message": "這個網址已經在黑名單中了，無需重複通報。"}
-
-    new_website = database.SuspectWebsite(
-        url=report.url, title=report.title, risk_level=report.risk_level,
-        keywords_found=report.keywords_found, reported_by="舊版爬蟲 API" 
-    )
-    db.add(new_website)
-    db.commit()
-    return {"status": "success", "message": f"成功接收情資！已將 {report.url} 列入黑名單。", "risk": report.risk_level}
-
-# 🤖 爬蟲通道 2：巨量陣列 JSON 直接同步 (免存檔版)
-@app.post("/api/sync_data/", summary="爬蟲專用：巨量陣列同步")
+    except Exception as e:
+        db.rollback()
+        print(f"嚴重錯誤：API 崩潰了，原因：{str(e)}")
+        raise HTTPException(status_code=500, detail=f"伺服器內部錯誤：{str(e)}")
+@app.post("/api/sync_data/", summary="爬蟲端專用：批次同步原始數據(含 HTML/圖片)至 suspect_websites")
 async def sync_crawler_data(data_list: List[Dict[str, Any]], db: Session = Depends(get_db)): 
     try:
         success_count = 0
-        skip_count = 0
-        processed_urls = set() 
-        
         for item in data_list:
             found_url = item.get("url")
-            if not found_url or found_url in processed_urls: 
-                skip_count += 1; continue
+            if not found_url: continue
                 
             if db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == found_url).first():
-                skip_count += 1; continue
+                continue
                 
-            processed_urls.add(found_url)
             score_num = item.get("risk_score", 0)
+            level = "極高風險" if score_num >= 800 else "高風險" if score_num >= 600 else "中低風險"
             
-            if score_num >= 800: level = "極高風險"
-            elif score_num >= 600: level = "高風險"
-            else: level = "中低風險"
+            all_keywords = ", ".join(item.get("details", {}).get("yolo_objects", []) + item.get("details", {}).get("nlp_keywords", []))
             
-            yolo_words = item.get("details", {}).get("yolo_objects", [])
-            nlp_words = item.get("details", {}).get("nlp_keywords", [])
-            all_keywords = ", ".join(yolo_words + nlp_words) if (yolo_words or nlp_words) else "無檢出關鍵字"
+            html_val = item.get("html_content", "")
+            images_list = item.get("images", [])
+            images_json_string = json.dumps(images_list, ensure_ascii=False)
             
             new_record = database.SuspectWebsite(
-                url=found_url, title="爬蟲 API 自動同步", risk_level=level, risk_score=score_num,
-                keywords_found=all_keywords, created_at=item.get("created_at", "未知時間"), reported_by="Auto_Crawler" 
+                url=found_url, title="爬蟲大批同步建檔", risk_level=level, risk_score=score_num,
+                keywords_found=all_keywords if all_keywords else "無檢出關鍵字",
+                reported_by="Auto_Crawler_Sync",
+                html_content=html_val,              
+                images_data=images_json_string      
             )
             db.add(new_record)
             success_count += 1
             
         db.commit()
-        return {"status": "success", "message": f"伺服器同步完畢！成功新增 {success_count} 筆，攔截 {skip_count} 筆重複！"}
-
+        return {"status": "success", "message": f"原始資料同步完畢，成功寫入 suspect_websites 共 {success_count} 筆！"}
     except Exception as e:
-        db.rollback() 
-        raise HTTPException(status_code=500, detail=f"系統處理同步資料時發生錯誤：{str(e)}")
-    # ==========================================
-# ⚪ 白名單管理 API (總管理員專屬)
-# ==========================================
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"爬蟲批次同步至內部表時發生錯誤：{str(e)}")
+#  模組五：合併報表 / 批次匯入 (左下角卡片) -> 前端手動上傳報表用
+@app.post("/api/upload_file/", summary="前端手動批次匯入展示報表")
+async def upload_crawler_json_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    try:
+        content = await file.read()
+        data_list = json.loads(content)
+        success_count = 0
+        
+        for item in data_list:
+            url_check = item.get("url")
+            if not url_check: continue
+            
+            if db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == url_check).first():
+                continue
+                
+            score_num = item.get("risk_score", 0)
+            level = "極高風險" if score_num >= 800 else "高風險" if score_num >= 600 else "中低風險"
+            
+            yolo_str = ", ".join(item.get("details", {}).get("yolo_objects", []))
+            nlp_str = ", ".join(item.get("details", {}).get("nlp_keywords", []))
 
-# 【功能 1】查看白名單：只要是登入的管理員/警員都能看
+            frontend_record = database.AIAnalysisResult(
+                url=url_check,
+                yolo_details=yolo_str if yolo_str else "無檢出影像特徵",
+                nlp_details=nlp_str if nlp_str else "無檢出文字特徵",
+                risk_score=score_num,
+                risk_level=level
+            )
+            db.add(frontend_record)
+            success_count += 1
+            
+        db.commit()
+        return {"status": "success", "message": f"手動合併報表完畢！成功將 {success_count} 筆分析情資匯入展示庫。"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"解析並上傳合併報表失敗：{str(e)}")
+
+
+
+#  模組六：白名單維護管理
 @app.get("/api/whitelist/", summary="查看白名單清單")
-def get_whitelist(current_user: database.User = Depends(verify_admin), db: Session = Depends(get_db)):
+def list_whitelist(db: Session = Depends(get_db)):
     return db.query(database.WhitelistWebsite).all()
 
-# 【功能 2】新增白名單：🔒 嚴格鎖定由總管理員操作
-@app.post("/api/whitelist/", summary="由總管理員新增白名單")
-def add_to_whitelist(data: WhitelistCreate, admin: database.User = Depends(verify_super_admin), db: Session = Depends(get_db)):
-    # 檢查網址是否已經存在於白名單
+@app.post("/api/whitelist/", summary="最高權限：新增白名單")
+def add_whitelist(data: WhitelistCreate, admin: database.User = Depends(verify_super_admin), db: Session = Depends(get_db)):
     existing = db.query(database.WhitelistWebsite).filter(database.WhitelistWebsite.url == data.url).first()
     if existing:
-        raise HTTPException(status_code=400, detail="此網址已在白名單中，不需重複新增。")
-        
-    new_white = database.WhitelistWebsite(
-        url=data.url,
-        title=data.title,
-        reason=data.reason,
-        added_by=admin.account # 自動記錄是哪個總管理員加的
-    )
-    db.add(new_white)
-    db.commit()
-    return {
-        "status": "success", 
-        "message": f"成功將 {data.url} 加入白名單",
-        "operator": admin.account
-    }
+        raise HTTPException(status_code=400, detail="該網址已存在於白名單中。")
+    new_white = database.WhitelistWebsite(url=data.url, title=data.title, reason=data.reason, added_by=admin.account)
+    db.add(new_white); db.commit()
+    return {"status": "success", "message": f"成功由總管理員 {admin.account} 新增白名單。"}
 
-# 【功能 3】刪除白名單項目：🔒 嚴格鎖定由總管理員操作
-@app.delete("/api/whitelist/{white_id}", summary="由總管理員刪除白名單項目")
-def delete_whitelist(white_id: int, admin: database.User = Depends(verify_super_admin), db: Session = Depends(get_db)):
-    target = db.query(database.WhitelistWebsite).filter(database.WhitelistWebsite.id == white_id).first()
+@app.delete("/api/whitelist/{id}", summary="最高權限：刪除白名單")
+def delete_whitelist(id: int, admin: database.User = Depends(verify_super_admin), db: Session = Depends(get_db)):
+    target = db.query(database.WhitelistWebsite).filter(database.WhitelistWebsite.id == id).first()
     if not target:
-        raise HTTPException(status_code=404, detail="找不到該白名單編號，無法刪除。")
+        raise HTTPException(status_code=404, detail="找不到該白名單項目。")
+    db.delete(target); db.commit()
+    return {"status": "success", "message": "已成功移除白名單項目。"}
+
+#  模組七：YOLO 獨立分析結果接收通道 
+@app.post("/api/ai_result/report/", summary="YOLO 引擎專用：接收影像與分數並自動統整")
+def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends(get_db)):
+    yolo_str = ", ".join(report.yolo_objects) if report.yolo_objects else "無檢出影像特徵"
+    
+    existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
+    
+    if existing_record:
+        existing_record.yolo_details = yolo_str
         
-    db.delete(target)
-    db.commit()
-    return {
-        "status": "success", 
-        "message": "已成功移除白名單項目",
-        "operator": admin.account
-    }
+        final_score = max(existing_record.risk_score, report.risk_score)
+        existing_record.risk_score = final_score
+        existing_record.risk_level = "極高風險" if final_score >= 800 else "高風險" if final_score >= 600 else "中低風險"
+        
+        
+        db.commit()
+        return {"status": "success", "message": f"成功統整！已將 YOLO 影像與分數補充至 {report.url}"}
+    else:
+        try:
+            level = "極高風險" if report.risk_score >= 800 else "高風險" if report.risk_score >= 600 else "中低風險"
+            new_record = database.AIAnalysisResult(
+                url=report.url,
+                yolo_details=yolo_str,
+                nlp_details="文字分析中...", 
+                risk_score=report.risk_score,
+                risk_level=level
+            )
+            db.add(new_record)
+            db.commit() 
+            return {"status": "success", "message": f"成功建檔！已為 {report.url} 建立全新 AI 影像展示紀錄。"}
+        
+        except IntegrityError:
+            db.rollback() 
+            
+            real_existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
+            if real_existing_record:
+                real_existing_record.yolo_details = yolo_str
+                final_score = max(real_existing_record.risk_score, report.risk_score)
+                real_existing_record.risk_score = final_score
+                real_existing_record.risk_level = "極高風險" if final_score >= 800 else "高風險" if final_score >= 600 else "中低風險"
+                db.commit()
+            return {"status": "success", "message": "遭遇併發衝突，已自動轉為更新模式並將 YOLO 結果安全寫入！"}
+#  模組八：NLP 獨立分析結果接收通道 
+@app.post("/api/nlp/report/", summary="NLP 引擎專用：接收可疑文字與分數並自動統整")
+def receive_nlp_analysis_result(report: NLPAnalysisReport, db: Session = Depends(get_db)):
+    nlp_str = ", ".join(report.nlp_keywords) if report.nlp_keywords else "無檢出文字特徵"
+    
+    existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
+    
+    if existing_record:
+        existing_record.nlp_details = nlp_str
+        
+        final_score = max(existing_record.risk_score, report.risk_score)
+        existing_record.risk_score = final_score
+        existing_record.risk_level = "極高風險" if final_score >= 800 else "高風險" if final_score >= 600 else "中低風險"
+        
+        db.commit()
+        return {"status": "success", "message": f"成功統整！已將 NLP 文字與分數補充至 {report.url}"}
+    else:
+        try:
+            level = "極高風險" if report.risk_score >= 800 else "高風險" if report.risk_score >= 600 else "中低風險"
+            new_record = database.AIAnalysisResult(
+                url=report.url,
+                yolo_details="影像分析中...", 
+                nlp_details=nlp_str,
+                risk_score=report.risk_score,
+                risk_level=level
+            )
+            db.add(new_record)
+            db.commit()
+            return {"status": "success", "message": f"成功建檔！已為 {report.url} 建立全新 AI 文字展示紀錄。"}
+        
+        except IntegrityError:
+            db.rollback() 
+            
+            real_existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
+            if real_existing_record:
+                real_existing_record.nlp_details = nlp_str
+                final_score = max(real_existing_record.risk_score, report.risk_score)
+                real_existing_record.risk_score = final_score
+                real_existing_record.risk_level = "極高風險" if final_score >= 800 else "高風險" if final_score >= 600 else "中低風險"
+                db.commit()
+            return {"status": "success", "message": "遭遇併發衝突，已自動轉為更新模式並將 NLP 結果安全寫入！"}
+#  開發工具：一鍵清空測試資料 (測試完畢清理用)
+@app.post("/api/test/cleanup/", summary="【開發專用】一鍵清空所有測試的網站與 AI 紀錄")
+def cleanup_all_test_data(db: Session = Depends(get_db)):
+    try:
+        print("🧹 正在啟動資料庫清理程序...")
+        
+        deleted_frontend = db.query(database.AIAnalysisResult).delete()
+        
+        deleted_raw = db.query(database.SuspectWebsite).delete()
+        
+        # 如果你連測試建立的白名單也想一起清空，可以取消註解下面這行：
+        # db.query(database.WhitelistWebsite).delete()
+        
+        db.commit()
+        print(" 資料庫已完全清空！")
+        
+        return {
+            "status": "success",
+            "message": "系統已成功重置！所有測試資料已完全清空。",
+            "details": {
+                "cleared_ai_analysis_results": deleted_frontend,
+                "cleared_suspect_websites": deleted_raw
+            }
+        }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"重置資料庫失敗：{str(e)}")

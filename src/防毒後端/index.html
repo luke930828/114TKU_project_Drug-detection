@@ -32,7 +32,7 @@
 
     <div class="grid-layout">
         <div class="card">
-            <h3>🔑 1. 系統登入</h3>
+            <h3>1. 系統登入</h3>
             <input type="text" id="login_account" placeholder="帳號">
             <input type="password" id="login_password" placeholder="密碼">
             <button class="btn-login" onclick="login()">登入取得授權</button>
@@ -69,18 +69,18 @@
 
         <!-- 檔案上傳卡片 -->
         <div class="card" style="border: 1px solid #8e44ad; background: #f9f0ff;">
-            <h3 style="color: #8e44ad;">📂 7. 批次匯入情資檔案 (JSON)</h3>
+            <h3 style="color: #8e44ad;"> 7. 批次匯入情資檔案 (JSON)</h3>
             <p style="font-size: 0.8em; color: #666;">請選擇爬蟲產生的 .json 或 .jsonl 檔案進行批次上傳。</p>
             <input type="file" id="crawler_file" accept=".json, .jsonl" style="margin-bottom: 10px;">
-            <button style="background-color: #8e44ad; color: white; width: 100%;" onclick="uploadFile()">🚀 確認上傳 JSON 檔案</button>
+            <button style="background-color: #8e44ad; color: white; width: 100%;" onclick="uploadFile()"> 確認上傳 JSON 檔案</button>
         </div>
 
         <!-- 即時掃描卡片 -->
         <div class="card" style="border: 1px solid #e67e22; background: #fdf3e9;">
-            <h3 style="color: #e67e22;">🕵️ 8. AI 即時網址掃描</h3>
+            <h3 style="color: #e67e22;"> 8. AI 即時網址掃描</h3>
             <p style="font-size: 0.8em; color: #666;">輸入單一網址，系統將發送請求至 AI 爬蟲引擎進行多模態檢測。</p>
             <input type="text" id="target_url" placeholder="請輸入疑似涉毒網址 (例如 https://...)" style="width: 100%; margin-bottom: 10px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-            <button style="background-color: #e67e22; color: white; width: 100%;" onclick="sendScanRequest()">🔍 啟動深度掃描</button>
+            <button style="background-color: #e67e22; color: white; width: 100%;" onclick="sendScanRequest()"> 啟動深度掃描</button>
         </div>
     </div>
 
@@ -185,14 +185,12 @@
     }
 
     // 【功能 7】上傳檔案並呼叫後端 API (免登入版)
-    async function uploadFile() {
-        // ❌ 已經將 getToken() 阻擋機制刪除
-        
+    async function uploadFile() {        
         const fileInput = document.getElementById('crawler_file');
         const file = fileInput.files[0];
         
         if(!file) {
-            document.getElementById('responseScreen').innerText = "⚠️ 請先選擇一個 .json 或 .jsonl 檔案！";
+            document.getElementById('responseScreen').innerText = " 請先選擇一個 .json 或 .jsonl 檔案！";
             return;
         }
 
@@ -204,7 +202,6 @@
         try {
             const response = await fetch(`${API_BASE_URL}/upload_file/`, {
                 method: 'POST',
-                // ❌ 移除了 headers 裡的 'X-Token'，現在可以直接發送
                 body: formData
             });
             
@@ -212,28 +209,26 @@
             fileInput.value = ""; 
 
         } catch (error) { 
-            document.getElementById('responseScreen').innerText = "❌ 連線失敗或上傳發生錯誤！"; 
+            document.getElementById('responseScreen').innerText = "連線失敗或上傳發生錯誤！"; 
         }
     }
 
-    // 【功能 8】發送單一網址掃描請求給後端 (免登入版)
+    // 【功能 8】發送單一網址掃描請求給後端 
     async function sendScanRequest() {
-        // ❌ 已經將 getToken() 阻擋機制刪除
         
         const urlInput = document.getElementById('target_url').value.trim();
         
         if(!urlInput) {
-            document.getElementById('responseScreen').innerText = "⚠️ 請先輸入要掃描的網址！";
+            document.getElementById('responseScreen').innerText = " 請先輸入要掃描的網址！";
             return;
         }
 
-        document.getElementById('responseScreen').innerText = "⏳ 正在啟動爬蟲與 AI 多模態引擎，請稍候 (約需 10~30 秒)...";
+        document.getElementById('responseScreen').innerText = " 正在啟動爬蟲與 AI 多模態引擎，請稍候 (約需 10~30 秒)...";
 
         try {
             const response = await fetch(`${API_BASE_URL}/scan_target/`, {
                 method: 'POST',
                 headers: { 
-                    // ❌ 移除了 'X-Token'，只保留 Content-Type
                     'Content-Type': 'application/json' 
                 },
                 body: JSON.stringify({ url: urlInput }) 
@@ -247,7 +242,7 @@
             }
 
         } catch (error) { 
-            document.getElementById('responseScreen').innerText = "❌ 掃描失敗！可能是爬蟲引擎未開機，或是連線逾時。"; 
+            document.getElementById('responseScreen').innerText = " 掃描失敗！可能是爬蟲引擎未開機，或是連線逾時。"; 
         }
     }
 </script>
