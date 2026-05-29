@@ -151,8 +151,7 @@ def dispatch_to_ai_engines(url: str, html_content: str, images: list):
                 yolo_payload = {
                     "task_id": f"{generated_task_id}_{index}", # 幫每張圖加上編號 (例如: a1b2_0, a1b2_1)
                     "url": url,
-                    "image_base64": single_image_str,
-                    "total_images": len(images),  # 👈 每次只傳送單張字串，完美符合 YOLO 的規格
+                    "image_base64": single_image_str,  # 👈 每次只傳送單張字串，完美符合 YOLO 的規格
                     "priority": 0
                 }
                 
@@ -191,49 +190,41 @@ def login_for_access_token(login_data: UserLogin, db: Session = Depends(get_db))
 import time # 記得檔案最上面要有 import time
 
 
-@app.post("/api/scan_target/", summary="即時掃描單一網址（具備未完成任務自動修復機制）")
+@app.post("/api/scan_target/", summary="即時掃描單一網址（優先對照歷史展示表，無紀錄才派發爬蟲）")
 def scan_target_url(request_data: FrontendScanRequest, db: Session = Depends(get_db)):
     target_url = request_data.url
     
-    # 1. 白名單檢查
     is_whitelisted = db.query(database.WhitelistWebsite).filter(database.WhitelistWebsite.url == target_url).first()
     if is_whitelisted:
         return {"status": "safe", "source": "whitelist", "message": "此網址已列入白名單，安全放行。", "reason": is_whitelisted.reason}
 
-    # 2. 歷史紀錄檢查
     existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == target_url).first()
-    
     if existing_record:
-        # 🌟 升級邏輯：檢查是不是上次有 AI 引擎沒回應，導致紀錄卡在「分析中」
-        is_incomplete = (existing_record.yolo_details == "影像分析中...") or (existing_record.nlp_details == "文字分析中...")
-        
-        if not is_incomplete:
-            # 如果資料很完整，直接回傳歷史紀錄，提早下班！
-            return {
-                "status": "success",
-                "source": "history",
-                "message": "偵測到完整的歷史展示紀錄，直接回傳 AI 分析結果。",
-                "data": existing_record
-            }
-        else:
-            # 🚨 發現半殘紀錄！不 return，印出警告，並讓程式繼續往下走去呼叫爬蟲
-            print(f"⚠️ 發現未完成的歷史紀錄 ({target_url})，可能上次有 AI 引擎離線，系統自動重新派發任務...")
+        return {
+            "status": "success",
+            "source": "history",
+            "message": "偵測到歷史展示紀錄，直接回傳 AI 分析結果。",
+            "data": existing_record
+        }
 
-    # 3. 呼叫爬蟲 (不管是全新網址，還是要修復半殘紀錄，都會走到這裡)
+    # 🌟 核心修改 1：換成爬蟲工程師指定的最新 IP 與 API 路徑
     CRAWLER_API_URL = "http://100.122.162.47:8000/api/v1/crawl" 
     try:
+        # 🌟 核心修改 2：依照爬蟲工程師要求的格式打包 JSON
         payload = {
             "url": target_url,
             "save_local": False
         }
         
+        # 發送 POST 請求觸發爬蟲
         response = requests.post(CRAWLER_API_URL, json=payload, timeout=15)
         response.raise_for_status() 
         
+        # 🌟 核心修改 3：移除舊的同步等待邏輯。直接回傳 processing 給前端，爬蟲抓完會自己去敲大門
         return {
             "status": "processing",
             "source": "crawler",
-            "message": "系統正在進行背景分析與自動修復，請稍候刷新頁面。"
+            "message": "資料庫查無紀錄，已成功發送 POST 請求觸發爬蟲，背景分析中。"
         }
 
     except requests.exceptions.RequestException as req_err:
@@ -242,6 +233,19 @@ def scan_target_url(request_data: FrontendScanRequest, db: Session = Depends(get
             "status": "error",
             "message": f"無法連線至爬蟲引擎，請確認對方伺服器是否開啟。詳細錯誤：{str(req_err)}"
         }
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"即時識別處理失敗：{str(e)}")
+
+    # 💡 優化 2：針對「爬蟲連線失敗」做專屬處理，回傳 JSON 讓前端顯示，而不是報 500 系統錯誤
+    except requests.exceptions.RequestException as req_err:
+        db.rollback()
+        return {
+            "status": "error",
+            "message": f"無法連線至爬蟲引擎，請確認對方伺服器是否開啟。詳細錯誤：{str(req_err)}"
+        }
+
+    # 其他未知的嚴重錯誤，才丟 500
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"即時識別處理失敗：{str(e)}")
