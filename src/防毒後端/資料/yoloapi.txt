@@ -1,0 +1,56 @@
+步驟 1：負責 YOLO 的同學要「開任意門 (Ngrok)」
+負責 YOLO 的同學，他的電腦（預設跑在 8001 port）必須對外開門，你才連得進去。請他照著做：
+
+在他的電腦上啟動 YOLO 的 API 伺服器（例如：uvicorn yolo_api:app --host 0.0.0.0 --port 8001）。
+
+在他的電腦上打開 Ngrok，輸入指令：
+
+Bash
+ngrok http 8001
+請他把 Ngrok 產生出來的那串網址（例如 https://xyz-123.ngrok-free.app）用 Line 傳給你！
+
+步驟 2：後端架構師（你）修改連線網址
+現在你拿到 YOLO 電腦的公開網址了，請打開你的 main.py，找到 「模組二：輸入網址識別 (scan_target_url)」 這個函數。
+
+你需要把原本寫死的本地端網址 http://127.0.0.1:8001/analyze，換成他給你的 Ngrok 網址。
+
+Python
+# ==========================================
+# 🕵️ 模組二：輸入網址識別 (右上角卡片) 
+# ==========================================
+@app.post("/api/scan_target/", summary="即時掃描單一網址")
+def scan_target_url(request_data: FrontendScanRequest, db: Session = Depends(get_db)):
+    target_url = request_data.url
+    
+    # ... (前面的白名單與歷史紀錄對照邏輯保持不變) ...
+
+    # 🕷️ 如果前端展示表完全沒紀錄，才叫 YOLO 電腦去分析
+    # 👇【修改這裡】：把 YOLO 同學給你的 Ngrok 網址貼過來，並補上 /analyze
+    CRAWLER_API_URL = "https://xyz-123.ngrok-free.app/analyze" 
+    
+    try:
+        # 你的後端大腦，透過網際網路呼叫另一台電腦的 YOLO 引擎
+        response = requests.post(CRAWLER_API_URL, json={"url": target_url}, timeout=60)
+        response.raise_for_status() 
+        crawler_result = response.json()
+        
+        # ... (後面的寫入資料庫邏輯完全不用動！) ...
+步驟 3：爬蟲同學主動丟資料給你 (反向連線)
+除了你主動叫他掃描之外，別忘了 YOLO 同學也會主動把「大批原始資料」丟進你的 suspect_websites 庫存裡！
+
+所以，你也要把你自己的 Ngrok 網址給他！
+
+請 YOLO 同學在他的爬蟲 Python 程式碼裡，把目標網址設定為你的後端隧道：
+
+單筆回報：requests.post("https://你的ngrok網址/api/crawler/report/", json=...)
+
+批次同步：requests.post("https://你的ngrok網址/api/sync_data/", json=...)
+
+💡 實戰開發小叮嚀
+因為免費版的 Ngrok 每次重開網址都會變，所以你們每天開始開發或測試前，一定要進行「交換名片」的動作：
+
+你： 開 Ngrok (Port 8000) ➡️ 把網址給「前端同學」和「YOLO 同學」。
+
+YOLO 同學： 開 Ngrok (Port 8001) ➡️ 把網址給你，讓你更新 main.py 裡的 CRAWLER_API_URL。
+
+只要這兩條線接通，你們的系統就正式跨越了實體網路的限制，變成一個超強大的雲端分散式系統了！趕快互相交換網址測試看看吧！🚀
