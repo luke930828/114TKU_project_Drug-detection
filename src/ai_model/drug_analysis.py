@@ -2,7 +2,7 @@ import os
 from ultralytics import YOLO
 import torch
 
-# 1. 初始化：喚醒 3050 Ti 與 AI 大腦
+# 1. 初始化：喚醒 3050 Ti 與 AI (最新的v11(v8也可用))
 model = YOLO("yolo11n.pt") 
 device = "0" if torch.cuda.is_available() else "cpu"
 input_path = "./test_images"  # 告訴 AI 去哪裡找那 10 張圖
