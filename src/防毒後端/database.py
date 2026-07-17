@@ -69,11 +69,9 @@ class AIAnalysisResult(Base):
     url = Column(String(768), index=True, nullable=False)
     
     yolo_details = Column(String(500))  
-    # 🌟 新增 YOLO 原始分數欄位
     yolo_score = Column(Integer, default=0)
     
     nlp_details = Column(String(500))  
-    # 🌟 新增 NLP 原始分數欄位
     nlp_score = Column(Integer, default=0)
     
     risk_score = Column(Integer)

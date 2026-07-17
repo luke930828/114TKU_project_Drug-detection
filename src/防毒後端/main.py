@@ -19,7 +19,7 @@ def calculate_multimodal_risk_100_scale(nlp_raw_score: int, yolo_raw_score: int)
     s_final = (w_text * nlp_raw_score) + (w_image * yolo_raw_score)
     
     if s_final > 74:
-        risk_level = "極高風險" # 配合你原本的命名習慣
+        risk_level = "極高風險"
     elif 35 <= s_final <= 74:
         risk_level = "中風險 (建議人工覆核)"
     else:
@@ -66,16 +66,16 @@ class WhitelistCreate(BaseModel):
     title: str
     reason: str
 
+
 class WebsiteReport(BaseModel):
-    task_type: str
-    timestamp: str
-    keywords: List[str] = []
-    url: str
+    task_type: Optional[str] = "unknown"  # 加上 Optional，就算他沒傳也不會報錯 500
+    timestamp: Optional[str] = "unknown"  # 加上 Optional
+    keywords: Optional[List[str]] = []    # 加上 Optional
+    url: str                              # 💡 因為你跟爬蟲說好一定會傳網址，所以這個保留原樣！
     screenshot_b64: Optional[str] = None
     full_screenshot_base64: Optional[str] = None
-    # 這裡改成 List[dict]，允許接收包含 filename 和 base64_data 的字典
-    product_images_b64: Optional[List[dict]] = None
-    product_images_base64: Optional[List[dict]] = None
+    product_images_b64: Optional[List[Any]] = None    # 這裡改用 Any，防禦格式錯誤
+    product_images_base64: Optional[List[Any]] = None # 這裡改用 Any，防禦格式錯誤
     text_content: Optional[str] = None
 
 class YOLOAnalysisReport(BaseModel):
@@ -88,83 +88,69 @@ class NLPAnalysisReport(BaseModel):
     url: str
     risk_score: int
     nlp_keywords: List[str] = []
-#  系統派報生：精準分發資料給 AI 引擎（各取所需版）
 def dispatch_to_ai_engines(url: str, html_content: str, images: list):
-    # 1. 這裡放你們組員的 Tailscale IP
     NLP_API_URL = "http://100.69.185.94:8000/api/nlp/report/"
     YOLO_API_URL = "http://100.101.167.105:5000/api/v1/predict/trigger"
     crawler_API_URL = "http://100.122.162.47:8001/api/crawler/report/"
     FRONTEND_API_URL ="http://100.123.184.43:8002/api/scan_target/"
-    # 產生一個給 YOLO 用的隨機任務代號
     generated_task_id = str(uuid.uuid4())[:8]
 
-    # ------------------------------------------
-    # 🗣️ 第一階段：派發給 NLP 的任務 (文字)
-    # ------------------------------------------
    # ------------------------------------------
     # 🗣️ 第一階段：派發給 NLP 的任務 (文字)
     # ------------------------------------------
     try:
-        # ⚠️ 修正 1：依照 test.py 成功的格式，欄位名稱改成 "text"
         nlp_payload = {
             "url": url,
             "text": html_content  
         }
-        print(f"📦 準備將文字派發給 NLP...")
+        print(f"準備將文字派發給 NLP...")
         
-        # ⚠️ 修正 2：因為要等他算完回傳，timeout 設長一點 (10秒)，並且加上 .json() 接住結果
         response = requests.post("http://100.69.185.94:8000/predict", json=nlp_payload, timeout=10)
         
         if response.status_code == 200:
             nlp_result = response.json()
-            print(f"✅ NLP 分析完成！收到結果：{nlp_result}")
+            print(f"NLP 分析完成！收到結果：{nlp_result}")
             
-            # ⚠️ 修正 3：把 0.9997 的分數換算成你資料庫的千分制 (999分)
             score_float = nlp_result.get("score", 0)
             risk_score_int = int(score_float * 100)
             
-            # ⚠️ 修正 4：把收到的結果，轉發給自己的「模組八」存進資料庫
             internal_payload = {
                 "url": url,
                 "risk_score": risk_score_int,
                 "nlp_keywords": nlp_result.get("keywords", [])
             }
-            # 自己打給本機的 API 來統整資料
             requests.post("http://127.0.0.1:8000/api/nlp/report/", json=internal_payload)
-            print("💾 NLP 結果已成功同步至資料庫！")
+            print("NLP 結果已成功同步至資料庫！")
             
     except requests.exceptions.Timeout:
-        print("⚠️ 呼叫 NLP 逾時！對方算太久了。")
+        print("呼叫 NLP 逾時！")
     except Exception as e:
-        print(f"⚠️ 派發至 NLP 引擎失敗: {e}")
- # ... 前面是 第一階段：派發給 NLP 的任務 (文字) ...
+        print(f"派發至 NLP 引擎失敗: {e}")
 
     # ------------------------------------------
-    # 📸 第二階段：派發給 YOLO 的任務 (影像)
+    # 📸 第二階段：派發給 YOLO 的任務
     # ------------------------------------------
     if images and len(images) > 0:
-        print(f"📦 準備將 {len(images)} 張圖片逐一派發給 YOLO...")
+        print(f"準備將 {len(images)} 張圖片逐一派發給 YOLO...")
         
-        # 寫一個迴圈，把 images 陣列裡的圖片一張張拿出來傳
         for index, single_image_str in enumerate(images):
             try:
                 yolo_payload = {
-                    "task_id": f"{generated_task_id}_{index}", # 幫每張圖加上編號 (例如: a1b2_0, a1b2_1)
+                    "task_id": f"{generated_task_id}_{index}", 
                     "url": url,
                     "image_base64": single_image_str,
-                    "total_images": len(images),  # 👈 每次只傳送單張字串，完美符合 YOLO 的規格
+                    "total_images": len(images),  
                     "priority": 0
                 }
                 
                 print(f"   發送第 {index+1}/{len(images)} 張圖片給 YOLO...")
                 
-                # 逐一發射 POST 請求給 YOLO (timeout 設 5 秒，防止單張圖卡死)
                 response = requests.post(YOLO_API_URL, json=yolo_payload, timeout=5)
-                print(f"   ✅ 第 {index+1} 張派發成功！對方回應: {response.text}")
+                print(f"    第 {index+1} 張派發成功！對方回應: {response.text}")
 
             except Exception as e:
-                print(f"   ⚠️ 第 {index+1} 張圖片派發至 YOLO 失敗: {e}")
-#  模組一：管理員登入 (左上角卡片)
+                print(f"    第 {index+1} 張圖片派發至 YOLO 失敗: {e}")
+#  模組一：管理員登入
 @app.post("/api/login/", summary="系統登入")
 def login_for_access_token(login_data: UserLogin, db: Session = Depends(get_db)):
     user = db.query(database.User).filter(database.User.account == login_data.account).first()
@@ -188,7 +174,7 @@ def login_for_access_token(login_data: UserLogin, db: Session = Depends(get_db))
 
 
 #  模組二：輸入網址識別 (右上角卡片) -> 僅操作 AIAnalysisResult 表
-import time # 記得檔案最上面要有 import time
+import time 
 
 
 @app.post("/api/scan_target/", summary="即時掃描單一網址（具備未完成任務自動修復機制）")
@@ -204,11 +190,9 @@ def scan_target_url(request_data: FrontendScanRequest, db: Session = Depends(get
     existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == target_url).first()
     
     if existing_record:
-        # 🌟 升級邏輯：檢查是不是上次有 AI 引擎沒回應，導致紀錄卡在「分析中」
         is_incomplete = (existing_record.yolo_details == "影像分析中...") or (existing_record.nlp_details == "文字分析中...")
         
         if not is_incomplete:
-            # 如果資料很完整，直接回傳歷史紀錄，提早下班！
             return {
                 "status": "success",
                 "source": "history",
@@ -216,8 +200,7 @@ def scan_target_url(request_data: FrontendScanRequest, db: Session = Depends(get
                 "data": existing_record
             }
         else:
-            # 🚨 發現半殘紀錄！不 return，印出警告，並讓程式繼續往下走去呼叫爬蟲
-            print(f"⚠️ 發現未完成的歷史紀錄 ({target_url})，可能上次有 AI 引擎離線，系統自動重新派發任務...")
+            print(f"發現未完成的歷史紀錄 ({target_url})，可能上次有 AI 引擎離線，系統自動重新派發任務...")
 
     # 3. 呼叫爬蟲 (不管是全新網址，還是要修復半殘紀錄，都會走到這裡)
     CRAWLER_API_URL = "http://100.122.162.47:8000/api/v1/crawl" 
@@ -258,105 +241,97 @@ def get_frontend_report(current_user: database.User = Depends(verify_admin), db:
         "data": results
     }
 
-# 模組四：爬蟲專用通道 (支援字典解開封裝 + 抓猴雷達)
+# 模組四：爬蟲專用通道 (支援字典解開封裝 + 抓猴雷達 + 🌟 融合無效網站攔截器)
 @app.post("/api/crawler/report/", summary="爬蟲端專用：將原始結果寫入 suspect_websites 表")
 def receive_crawler_raw_data(report: WebsiteReport, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     try:
         print(f"收到爬蟲通報網址：{report.url}")
         
-        # 🧽 【進化版】自動解開封裝：印出真相，並支援字典與字串
+        # =========================================================
+        # 🛡️ 【新增防線：無效網站攔截器】(插在你原本的邏輯最前面)
+        # =========================================================
+        html_text = report.text_content if report.text_content else ""
+        if "非毒品" in html_text or "無法正常登入" in html_text or "無法登入" in html_text:
+            print(f"🛑 [攔截機制啟動] 爬蟲遇到需登入或非目標網站 ({report.url})，直接歸檔為 0 分！")
+            
+            # 1. 寫入 suspect_websites (當作紀錄)
+            new_website = database.SuspectWebsite(
+                url=report.url,
+                title="[系統攔截] 網站需登入或無效",
+                keywords_found="",
+                reported_by="爬蟲端自動上傳",
+                html_content=html_text,    
+                images_data="[]" 
+            )
+            db.add(new_website)
+            
+            # 2. 建立「已結案」的 0 分展示紀錄給前端撈取
+            existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
+            if not existing_record:
+                final_score, level = calculate_multimodal_risk_100_scale(0, 0)
+                new_ai_record = database.AIAnalysisResult(
+                    url=report.url,
+                    yolo_details="無影像 (需登入或防爬蟲阻擋)",
+                    yolo_score=0,
+                    nlp_details=html_text[:50], # 直接把「無法登入」這句話印在前端畫面上
+                    nlp_score=0,
+                    risk_score=final_score,
+                    risk_level=level
+                )
+                db.add(new_ai_record)
+            
+            db.commit()
+            return {"status": "success", "message": "已成功攔截無效網站，跳過 AI 派發並直接歸檔為 0 分。"}
+            # ⛔ 只要進了這個 if，程式就會在這裡 return 結束，不會往下跑！
+        # =========================================================
+
+        # 👇 以下完全保留你原本寫好的完美邏輯，沒有做任何更改：
         extracted_images = []
         
-        # 爬蟲傳了兩種欄位，我們優先抓 product_images_b64，沒有的話再抓 base64
         incoming_images = report.product_images_b64 or report.product_images_base64 or []
         
-        # 🕵️ 【修改重點 1】雷達啟動！直接把爬蟲傳來的陣列印出來看
-        print(f"🔍 [抓猴雷達] 爬蟲傳來的圖片陣列內容：{incoming_images[:2]} ... (只印前兩筆防洗頻)")
+        print(f"爬蟲傳來的圖片陣列內容：{incoming_images[:2]} ")
         
-        # 🕵️ 【修改重點 2】更聰明的迴圈：無論是字典還是純字串，通通接起來！
         for img_obj in incoming_images:
             if isinstance(img_obj, dict):
-                # 爬蟲傳字典：聰明地嘗試各種可能的鑰匙名稱
                 base64_str = img_obj.get("base64_data") or img_obj.get("base64") or img_obj.get("data") or img_obj.get("image")
                 if base64_str:
                     extracted_images.append(base64_str)
             elif isinstance(img_obj, str):
-                # 爬蟲傳純字串：如果他退回純字串，我們也直接收！
                 extracted_images.append(img_obj)
 
-        # 將萃取出來的「純 Base64 陣列」轉成 JSON 字串，存入資料庫
         images_json_string = json.dumps(extracted_images, ensure_ascii=False) if extracted_images else "[]"
         keywords_str = ", ".join(report.keywords) if report.keywords else ""
 
-        # 準備寫入資料庫
         new_website = database.SuspectWebsite(
             url=report.url,
             title=f"[{report.task_type}] 爬蟲自動通報",
             keywords_found=keywords_str,
             reported_by="爬蟲端自動上傳",
             html_content=report.text_content if report.text_content else "",    
-            images_data=images_json_string  # 這裡只存純圖片陣列
+            images_data=images_json_string 
         )
         db.add(new_website)
         db.commit()
-        print(f"💾 原始網頁快照寫入成功！成功從包裹中萃取出 {len(extracted_images)} 張圖片。")
+        print(f"原始網頁快照寫入成功！成功從包裹中萃取出 {len(extracted_images)} 張圖片。")
         
-        # 把萃取出來的純圖片陣列 (extracted_images) 派發給 YOLO！
         try:
             background_tasks.add_task(
                 dispatch_to_ai_engines, 
                 report.url, 
                 report.text_content if report.text_content else "", 
-                extracted_images  # 👈 這裡派發的是純陣列，YOLO 絕對看得懂
+                extracted_images  
             )
-            print("🚀 背景派發任務已順利啟動！")
+            print("背景派發任務已順利啟動！")
         except Exception as ai_err:
-            print(f"⚠️ 背景任務加入失敗：{str(ai_err)}")
+            print(f"背景任務加入失敗：{str(ai_err)}")
 
         return {"status": "success", "message": "資料已接收並解開封裝，自動派發中。"}
 
     except Exception as e:
         db.rollback()
-        print(f"🚨 嚴重錯誤：API 崩潰了，原因：{str(e)}")
+        print(f"嚴重錯誤：API 崩潰了，原因：{str(e)}")
         raise HTTPException(status_code=500, detail=f"伺服器內部錯誤：{str(e)}")
-#  模組五：合併報表 / 批次匯入 (左下角卡片) -> 前端手動上傳報表用
-@app.post("/api/upload_file/", summary="前端手動批次匯入展示報表")
-async def upload_crawler_json_file(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    try:
-        content = await file.read()
-        data_list = json.loads(content)
-        success_count = 0
-        
-        for item in data_list:
-            url_check = item.get("url")
-            if not url_check: continue
-            
-            if db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == url_check).first():
-                continue
-                
-            score_num = item.get("risk_score", 0)
-            level = "極高風險" if score_num >= 800 else "高風險" if score_num >= 600 else "中低風險"
-            
-            yolo_str = ", ".join(item.get("details", {}).get("yolo_objects", []))
-            nlp_str = ", ".join(item.get("details", {}).get("nlp_keywords", []))
-
-            frontend_record = database.AIAnalysisResult(
-                url=url_check,
-                yolo_details=yolo_str if yolo_str else "無檢出影像特徵",
-                nlp_details=nlp_str if nlp_str else "無檢出文字特徵",
-                risk_score=score_num,
-                risk_level=level
-            )
-            db.add(frontend_record)
-            success_count += 1
-            
-        db.commit()
-        return {"status": "success", "message": f"手動合併報表完畢！成功將 {success_count} 筆分析情資匯入展示庫。"}
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=f"解析並上傳合併報表失敗：{str(e)}")
-
-
 
 #  模組六：白名單維護管理
 @app.get("/api/whitelist/", summary="查看白名單清單")
@@ -389,7 +364,6 @@ def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends
         existing_record.yolo_details = yolo_str
         existing_record.yolo_score = report.risk_score
         
-        # 🌟 呼叫公式結算總分 (現有NLP, 新YOLO)
         current_nlp_score = existing_record.nlp_score or 0
         final_score, level = calculate_multimodal_risk_100_scale(current_nlp_score, existing_record.yolo_score)
         
@@ -399,7 +373,6 @@ def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends
         return {"status": "success", "message": f"成功統整！已將 YOLO 影像與分數補算至 {report.url}"}
     else:
         try:
-            # 🌟 呼叫公式結算總分 (NLP先當作0, 新YOLO)
             final_score, level = calculate_multimodal_risk_100_scale(0, report.risk_score)
             
             new_record = database.AIAnalysisResult(
@@ -408,8 +381,8 @@ def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends
                 yolo_score=report.risk_score,
                 nlp_details="文字分析中...", 
                 nlp_score=0,
-                risk_score=final_score,   # 存入公式計算後的總分
-                risk_level=level          # 存入公式判定的等級
+                risk_score=final_score,  
+                risk_level=level          
             )
             db.add(new_record)
             db.commit() 
@@ -429,7 +402,7 @@ def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends
             return {"status": "success", "message": "遭遇併發衝突，已轉為更新模式寫入！"}
 
 
-# 模組八：NLP 獨立分析結果接收通道 (已對接雙引擎加權公式)
+# 模組八：NLP 獨立分析結果接收通道
 @app.post("/api/nlp/report/", summary="NLP 引擎專用：接收可疑文字與分數並自動統整")
 def receive_nlp_analysis_result(report: NLPAnalysisReport, db: Session = Depends(get_db)):
     nlp_str = ", ".join(report.nlp_keywords) if report.nlp_keywords else "無檢出文字特徵"
@@ -439,7 +412,6 @@ def receive_nlp_analysis_result(report: NLPAnalysisReport, db: Session = Depends
         existing_record.nlp_details = nlp_str
         existing_record.nlp_score = report.risk_score
         
-        # 🌟 呼叫公式結算總分 (新NLP, 現有YOLO)
         current_yolo_score = existing_record.yolo_score or 0
         final_score, level = calculate_multimodal_risk_100_scale(existing_record.nlp_score, current_yolo_score)
         
@@ -449,7 +421,6 @@ def receive_nlp_analysis_result(report: NLPAnalysisReport, db: Session = Depends
         return {"status": "success", "message": f"成功統整！已將 NLP 文字與分數補充至 {report.url}"}
     else:
         try:
-            # 🌟 呼叫公式結算總分 (新NLP, YOLO先當作0)
             final_score, level = calculate_multimodal_risk_100_scale(report.risk_score, 0)
         
             new_record = database.AIAnalysisResult(
@@ -458,8 +429,8 @@ def receive_nlp_analysis_result(report: NLPAnalysisReport, db: Session = Depends
                 yolo_score=0, 
                 nlp_details=nlp_str,
                 nlp_score=report.risk_score,
-                risk_score=final_score,   # 存入公式計算後的總分
-                risk_level=level          # 存入公式判定的等級
+                risk_score=final_score,  
+                risk_level=level         
             )
             db.add(new_record)
             db.commit()
