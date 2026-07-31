@@ -8,6 +8,13 @@ from pydantic import BaseModel
 from typing import Any
 from ultralytics import YOLO
 
+from src.ai_model.scoring import (
+    compute_visual_risk,
+    merge_class_metadata,
+    new_class_metadata,
+    record_detection,
+)
+
 app = FastAPI(title="防毒軟體 - YOLO 影像分析部門 API")
 
 # 1. 載入妳的專屬權重檔 (維持正確的 models/best.pt 相對路徑)
@@ -18,12 +25,8 @@ try:
 except Exception as e:
     print(f"🚨 [錯誤] 模型載入失敗，請確認 best.pt 是否在 models/ 目錄下！錯誤: {e}")
 
-# 2. 妳們專案對齊的 3 種目標毒品標籤 (Key 維持數字 ID，用來做核心對齊)
-CLASS_NAMES = {
-    0: "大麻",
-    1: "海洛因",
-    2: "可卡因"
-}
+# 2. 用「類別名稱」而非數字 ID 對齊 16 個 YOLO 類別，權重與組合加成定義於 src/ai_model/scoring.py
+# 用名稱比對可以在模型重新訓練、ID 洗牌時依然正確對齊，達成計分邏輯與模型 ID 的解耦。
 
 # 後端同學的接收網址
 BACKEND_REPORT_URL = "http://100.123.184.43:8000/api/ai_result/report/"
@@ -63,42 +66,37 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
     try:
         # 解碼圖片
         img = decode_base64_to_cv2(image_base64, task_id)
-        
-        current_objects = []
+
+        current_class_metadata = new_class_metadata()
         current_score = 0
         is_valid = False
-        
+
         if img is not None:
             # 執行推論，信心度門檻開 0.1 逼低分訊號現形
             results = model(img, conf=0.1)
-            
-            max_conf = 0.0
+
             for r in results:
                 for box in r.boxes:
                     conf = float(box.conf)
-                    cls_id = int(box.cls)  # 👈 這是模型吐出來的原始數字 ID (0, 1, 2)
-                    
+                    cls_id = int(box.cls)  # 模型吐出的原始數字 ID，僅用來查回類別名稱
+
                     actual_name = r.names.get(cls_id, "未知")
                     print(f"🔍 YOLO 原始偵測 -> ID: {cls_id}, 信心度: {conf:.2f}, 原始標籤: {actual_name}")
-                    
-                    # 🌟 【關鍵修正】：直接用數字 ID (cls_id) 去查字典！
-                    # 不管模型吐出 'cannabis' 還是什麼，只要 cls_id 是 0、1、2，就 100% 抓得到！
-                    if cls_id in CLASS_NAMES:
-                        target_zh_name = CLASS_NAMES[cls_id]  # 自動轉成漂亮的中文標籤
-                        if target_zh_name not in current_objects:
-                            current_objects.append(target_zh_name)
-                        if conf > max_conf:
-                            max_conf = conf
-            
-            # 只有當這張圖成功認出目標毒品（current_objects 有東西）時，才算有效分數
-            current_score = int(max_conf * 100) if current_objects else 0
-            is_valid = True if current_score > 0 else False
+
+                    # 🌟 用「類別名稱」比對 16 類權重表，而非數字 ID，避免模型重訓後 ID 洗牌導致誤判
+                    record_detection(current_class_metadata, actual_name, conf)
+
+            # 存在即採計：Score_i = Weight_i * Max_Confidence_i，取最高者並套用組合加成、封頂 100
+            visual_result = compute_visual_risk(current_class_metadata)
+            current_score = visual_result["visual_score"]
+            is_valid = bool(current_class_metadata)
 
         # 控制是否發送最終報告的變數
         should_report = False
         final_risk_score = 0
         detected_objects = []
         is_valid_drug_payload = False
+        batch_class_metadata = {}
 
         # -----------------------------------------------------------------
         # 🌟 核心記憶體統整算式：使用 Lock 確保多執行緒累加安全
@@ -108,37 +106,38 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
                 BATCH_MEMORY[batch_id] = {
                     "total_valid_score": 0,
                     "valid_count": 0,
-                    "all_detected_drugs": set(),
+                    "class_metadata": new_class_metadata(),
                     "history_max_score": 0,
-                    "processed_count": 0  
+                    "processed_count": 0
                 }
-            
+
             # 圖片處理計數器 +1
             BATCH_MEMORY[batch_id]["processed_count"] += 1
-            
-            # 🌟 只有算出那三種毒品且有分數的，才拿來累加進分子與分母
+
+            # 🌟 只有這張圖有算出已知類別、有分數的，才拿來累加進分子與分母
             if is_valid:
                 BATCH_MEMORY[batch_id]["total_valid_score"] += current_score
                 BATCH_MEMORY[batch_id]["valid_count"] += 1
-                for obj in current_objects:
-                    BATCH_MEMORY[batch_id]["all_detected_drugs"].add(obj)
-            
+                # 解耦設計：count / max_confidence 獨立於分數之外，逐圖合併成整批的 metadata
+                merge_class_metadata(BATCH_MEMORY[batch_id]["class_metadata"], current_class_metadata)
+
             # 更新歷史最高單張分數（作為 0 分時的保底防線）
             if current_score > BATCH_MEMORY[batch_id]["history_max_score"]:
                 BATCH_MEMORY[batch_id]["history_max_score"] = current_score
-            
+
             current_progress = BATCH_MEMORY[batch_id]["processed_count"]
             print(f"📊 批次進度追蹤 [{batch_id}]: {current_progress} / {total_images} (當前任務: {task_id})")
-            
+
             # 🌟 檢查：是否所有圖片都到齊了？
             if current_progress >= total_images:
-                should_report = True  
-                
+                should_report = True
+
                 v_count = BATCH_MEMORY[batch_id]["valid_count"]
+                batch_class_metadata = BATCH_MEMORY[batch_id]["class_metadata"]
                 if v_count > 0:
                     # 🌟 精準平均分 = 總有效分 / 有效圖筆數
                     final_risk_score = int(BATCH_MEMORY[batch_id]["total_valid_score"] / v_count)
-                    detected_objects = list(BATCH_MEMORY[batch_id]["all_detected_drugs"])
+                    detected_objects = list(batch_class_metadata.keys())
                     is_valid_drug_payload = True
                 else:
                     # 如果整批 11 張圖都沒有半張抓到毒品，給予歷史最高分（0分）安全開局
@@ -151,17 +150,18 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
         # -----------------------------------------------------------------
         if should_report:
             payload = {
-                "url": url,                                  
-                "risk_score": final_risk_score,               
-                "yolo_objects": detected_objects, # 這裡保證絕對只會是中文毒品名稱
-                "processed_images": [],                        
-                "is_valid_drug": is_valid_drug_payload          
+                "url": url,
+                "risk_score": final_risk_score,
+                "yolo_objects": detected_objects, # 命中的 16 類別英文標籤清單
+                "class_metadata": batch_class_metadata, # 每個類別獨立的 count / max_confidence，供後端與 NLP 模組過濾使用
+                "processed_images": [],
+                "is_valid_drug": is_valid_drug_payload
             }
-            
+
             print(f"\n[🚀 批次全數到齊！] 正在發送最終結算報告給後端。批次: {batch_id}")
-            print(f"   -> 最終有效圖筆數: {v_count}, 總毒品種類: {detected_objects}")
+            print(f"   -> 最終有效圖筆數: {v_count}, 總類別: {detected_objects}")
             print(f"   -> 最終精準平均分數: {final_risk_score} 分")
-            
+
             response = requests.post(BACKEND_REPORT_URL, json=payload, timeout=5)
             print(f"[✨ 後端回應] 狀態碼: {response.status_code}, 內容: {response.text}")
             

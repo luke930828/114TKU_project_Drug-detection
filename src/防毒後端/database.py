@@ -37,10 +37,8 @@ class SuspectWebsite(Base):
     __tablename__ = "suspect_websites"
 
     id = Column(Integer, primary_key=True, index=True)
-    url = Column(String(255), unique=True, index=True, nullable=False)
+    url = Column(String(768), unique=True, index=True, nullable=False)
     title = Column(String(100))
-    risk_level = Column(String(50))
-    risk_score = Column(Integer)
     keywords_found = Column(String(500))
     reported_by = Column(String(50))
     created_at = Column(DateTime, default=func.now())
@@ -58,7 +56,7 @@ class WhitelistWebsite(Base):
     __tablename__ = "whitelist_websites"
 
     id = Column(Integer, primary_key=True, index=True)
-    url = Column(String(255), unique=True, index=True, nullable=False)
+    url = Column(String(768), unique=True, index=True, nullable=False)
     title = Column(String(100))
     reason = Column(String(255))
     added_by = Column(String(50)) 
@@ -68,10 +66,13 @@ class AIAnalysisResult(Base):
     __tablename__ = "ai_analysis_results"
 
     id = Column(Integer, primary_key=True, index=True)
-    url = Column(String(255), index=True, nullable=False)
+    url = Column(String(768), index=True, nullable=False)
     
     yolo_details = Column(String(500))  
+    yolo_score = Column(Integer, default=0)
+    
     nlp_details = Column(String(500))  
+    nlp_score = Column(Integer, default=0)
     
     risk_score = Column(Integer)
     risk_level = Column(String(50))
