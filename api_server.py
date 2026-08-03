@@ -31,31 +31,66 @@ except Exception as e:
 # 後端同學的接收網址
 BACKEND_REPORT_URL = "http://100.123.184.43:8000/api/ai_result/report/"
 
+# 3. 前端展示用的信心度門檻，跟算分用的 conf=0.1 刻意分開：
+# 算分要低門檻才能逼出弱訊號，但畫框給人看只想看有把握的框，避免「代表圖是靠一個 0.11 的雜訊框選出來的，
+# 結果框被濾掉後畫面上什麼都沒有」這種有分數卻沒有標籤可看的情況。
+DISPLAY_CONFIDENCE_THRESHOLD = 0.5
+
+
+def select_visible_detections(detections, visual_result):
+    """
+    挑出要畫給人看的框：分數的「解釋依據」(最終採計的 top_class、觸發組合加成的搭檔類別) 各自信心度最高的那一個框，
+    不管信心度多低都保留——因為它就是這張圖分數變高的原因，藏起來反而誤導。
+    範例：ziplock_bag(0.9) + substance_powder(0.3) 觸發分裝組合加成，兩個都會被保留，
+    不會因為 substance_powder 只有 0.3 就被濾掉、變成畫面上只看到一個夾鏈袋、看不出風險從何而來。
+
+    其餘框（包含同一個解釋依據類別裡，非最高分的其他框）一律只看自己的信心度夠不夠格，
+    避免同一類別因為偵測到好幾個區域，把一堆低信心度的重複框都洗到畫面上。
+    """
+    explaining_classes = set()
+    if visual_result.get("top_class"):
+        explaining_classes.add(visual_result["top_class"])
+    if visual_result.get("triggered_combo"):
+        explaining_classes.update(visual_result["triggered_combo"])
+
+    best_per_class = {}
+    for d in detections:
+        name = d["class_name"]
+        if name not in best_per_class or d["confidence"] > best_per_class[name]["confidence"]:
+            best_per_class[name] = d
+
+    return [
+        d for d in detections
+        if (d["class_name"] in explaining_classes and d is best_per_class[d["class_name"]])
+        or d["confidence"] >= DISPLAY_CONFIDENCE_THRESHOLD
+    ]
+
 # 🌟 全域計分板：用來統整同一個批次網址的多張圖片結果
 BATCH_MEMORY = {}
 memory_lock = threading.Lock()
 
 # 4. 影像解碼小工具 (記憶體直接流轉，完全不寫入硬碟，速度最快)
 def decode_base64_to_cv2(b64_data, task_id: str):
-    if not b64_data: return None
+    """回傳 (cv2 圖片, 清乾淨後的 base64 字串)；清乾淨後的字串可以原封不動轉發給後端存檔，不用重新編碼。"""
+    if not b64_data: return None, None
     if isinstance(b64_data, list):
         if len(b64_data) > 0: b64_data = b64_data[0]
-        else: return None
+        else: return None, None
 
     b64_data = str(b64_data).strip('[]"\' ')
-    if not b64_data or b64_data.lower() == 'none': return None
+    if not b64_data or b64_data.lower() == 'none': return None, None
     if "," in b64_data: b64_data = b64_data.split(",")[1]
-    
+
     missing_padding = len(b64_data) % 4
     if missing_padding: b64_data += "=" * (4 - missing_padding)
-        
+
     try:
         img_data = base64.b64decode(b64_data)
         nparr = np.frombuffer(img_data, np.uint8)
-        return cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        return cv2.imdecode(nparr, cv2.IMREAD_COLOR), b64_data
     except Exception as decode_err:
         print(f"[⚠️ 解碼炸裂] Base64 解析失敗 (Task: {task_id}): {decode_err}")
-        return None
+        return None, None
 
 # 5. 核心非同步工廠：偷偷在背景算 YOLO，全部圖片到齊後才打電話給後端
 def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_images: int):
@@ -65,11 +100,13 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
     
     try:
         # 解碼圖片
-        img = decode_base64_to_cv2(image_base64, task_id)
+        img, cleaned_b64 = decode_base64_to_cv2(image_base64, task_id)
 
         current_class_metadata = new_class_metadata()
+        current_detections = []  # 給前端畫框用的原始偵測清單，跟 class_metadata 分開、不受權重表過濾
         current_score = 0
         is_valid = False
+        visual_result = {"top_class": None, "triggered_combo": None}
 
         if img is not None:
             # 執行推論，信心度門檻開 0.1 逼低分訊號現形
@@ -86,10 +123,23 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
                     # 🌟 用「類別名稱」比對 16 類權重表，而非數字 ID，避免模型重訓後 ID 洗牌導致誤判
                     record_detection(current_class_metadata, actual_name, conf)
 
+                    # 正規化座標 (0~1)，不管前端把圖片縮放到多大都能直接換算畫框位置
+                    x1, y1, x2, y2 = box.xyxyn[0].tolist()
+                    current_detections.append({
+                        "class_name": actual_name,
+                        "confidence": round(conf, 4),
+                        "box": [round(x1, 4), round(y1, 4), round(x2, 4), round(y2, 4)],
+                    })
+
             # 存在即採計：Score_i = Weight_i * Max_Confidence_i，取最高者並套用組合加成、封頂 100
             visual_result = compute_visual_risk(current_class_metadata)
             current_score = visual_result["visual_score"]
             is_valid = bool(current_class_metadata)
+
+        # 這張圖要「有資格」被選為代表圖，本身至少要有一個框信心度夠高（避免整張圖全靠雜訊撐分數）；
+        # 一旦有資格，實際畫出來的框則是「信心度夠高」加上「分數的解釋依據」（見 select_visible_detections）
+        has_strong_detection = any(d["confidence"] >= DISPLAY_CONFIDENCE_THRESHOLD for d in current_detections)
+        visible_detections = select_visible_detections(current_detections, visual_result) if has_strong_detection else []
 
         # 控制是否發送最終報告的變數
         should_report = False
@@ -97,6 +147,8 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
         detected_objects = []
         is_valid_drug_payload = False
         batch_class_metadata = {}
+        representative_image_base64 = None
+        representative_image_detections = []
 
         # -----------------------------------------------------------------
         # 🌟 核心記憶體統整算式：使用 Lock 確保多執行緒累加安全
@@ -104,26 +156,28 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
         with memory_lock:
             if batch_id not in BATCH_MEMORY:
                 BATCH_MEMORY[batch_id] = {
-                    "total_valid_score": 0,
-                    "valid_count": 0,
                     "class_metadata": new_class_metadata(),
-                    "history_max_score": 0,
-                    "processed_count": 0
+                    "valid_image_count": 0,           # 純紀錄用途，不影響分數計算
+                    "processed_count": 0,
+                    "best_display_score": 0,          # 只從「有畫得出框」的圖片裡比分數，跟批次總分是兩件事
+                    "best_display_image_base64": None, # 只留分數最高那張代表圖，給前端畫框用，不是每張圖都存
+                    "best_display_image_detections": [],
                 }
 
             # 圖片處理計數器 +1
             BATCH_MEMORY[batch_id]["processed_count"] += 1
 
-            # 🌟 只有這張圖有算出已知類別、有分數的，才拿來累加進分子與分母
+            # 🌟 解耦設計：count / max_confidence 獨立於單張分數之外，逐圖合併成整批的 metadata
             if is_valid:
-                BATCH_MEMORY[batch_id]["total_valid_score"] += current_score
-                BATCH_MEMORY[batch_id]["valid_count"] += 1
-                # 解耦設計：count / max_confidence 獨立於分數之外，逐圖合併成整批的 metadata
+                BATCH_MEMORY[batch_id]["valid_image_count"] += 1
                 merge_class_metadata(BATCH_MEMORY[batch_id]["class_metadata"], current_class_metadata)
 
-            # 更新歷史最高單張分數（作為 0 分時的保底防線）
-            if current_score > BATCH_MEMORY[batch_id]["history_max_score"]:
-                BATCH_MEMORY[batch_id]["history_max_score"] = current_score
+            # 代表圖只從「至少有一個框信心度夠高、畫得出來」的圖片裡挑分數最高的，
+            # 避免選到一張分數是靠低信心度雜訊框撐起來、濾掉框之後畫面空空如也的圖
+            if visible_detections and current_score > BATCH_MEMORY[batch_id]["best_display_score"]:
+                BATCH_MEMORY[batch_id]["best_display_score"] = current_score
+                BATCH_MEMORY[batch_id]["best_display_image_base64"] = cleaned_b64
+                BATCH_MEMORY[batch_id]["best_display_image_detections"] = visible_detections
 
             current_progress = BATCH_MEMORY[batch_id]["processed_count"]
             print(f"📊 批次進度追蹤 [{batch_id}]: {current_progress} / {total_images} (當前任務: {task_id})")
@@ -132,16 +186,23 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
             if current_progress >= total_images:
                 should_report = True
 
-                v_count = BATCH_MEMORY[batch_id]["valid_count"]
+                valid_image_count = BATCH_MEMORY[batch_id]["valid_image_count"]
                 batch_class_metadata = BATCH_MEMORY[batch_id]["class_metadata"]
-                if v_count > 0:
-                    # 🌟 精準平均分 = 總有效分 / 有效圖筆數
-                    final_risk_score = int(BATCH_MEMORY[batch_id]["total_valid_score"] / v_count)
+                representative_image_base64 = BATCH_MEMORY[batch_id]["best_display_image_base64"]
+                representative_image_detections = BATCH_MEMORY[batch_id]["best_display_image_detections"]
+
+                # 🌟 批次分數：把整批圖片合併成「一份」類別證據（每個類別取全批最高信心度），
+                # 直接套用跟單張圖一樣的存在即採計＋組合加成公式，不再對每張圖的分數取平均。
+                # 平均會讓真正的強證據（例如 15 張圖裡有幾張很清楚的大麻符號）被其餘普通照片稀釋掉，
+                # 導致整批評分被拉低、跟實際風險不成比例；改成這樣之後只要批次裡出現過一次高信心度證據，
+                # 不管其他照片多平凡，批次分數都會反映那個最高信心度。
+                batch_visual_result = compute_visual_risk(batch_class_metadata)
+                final_risk_score = batch_visual_result["visual_score"]
+
+                if batch_class_metadata:
                     detected_objects = list(batch_class_metadata.keys())
                     is_valid_drug_payload = True
                 else:
-                    # 如果整批 11 張圖都沒有半張抓到毒品，給予歷史最高分（0分）安全開局
-                    final_risk_score = BATCH_MEMORY[batch_id]["history_max_score"]
                     detected_objects = ["未偵測到管制毒品"]
                     is_valid_drug_payload = False
 
@@ -155,12 +216,14 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
                 "yolo_objects": detected_objects, # 命中的 16 類別英文標籤清單
                 "class_metadata": batch_class_metadata, # 每個類別獨立的 count / max_confidence，供後端與 NLP 模組過濾使用
                 "processed_images": [],
-                "is_valid_drug": is_valid_drug_payload
+                "is_valid_drug": is_valid_drug_payload,
+                "representative_image_base64": representative_image_base64, # 這批圖片裡分數最高的代表圖，供前端畫框展示
+                "representative_image_detections": representative_image_detections, # 代表圖對應的偵測框（0~1 正規化座標）
             }
 
             print(f"\n[🚀 批次全數到齊！] 正在發送最終結算報告給後端。批次: {batch_id}")
-            print(f"   -> 最終有效圖筆數: {v_count}, 總類別: {detected_objects}")
-            print(f"   -> 最終精準平均分數: {final_risk_score} 分")
+            print(f"   -> 有效圖筆數: {valid_image_count} / {total_images}, 總類別: {detected_objects}")
+            print(f"   -> 批次整體分數 (全批合併證據計算): {final_risk_score} 分 (最高風險類別: {batch_visual_result['top_class']}, 組合加成: {batch_visual_result['combo_multiplier']}x)")
 
             response = requests.post(BACKEND_REPORT_URL, json=payload, timeout=5)
             print(f"[✨ 後端回應] 狀態碼: {response.status_code}, 內容: {response.text}")

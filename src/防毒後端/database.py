@@ -1,8 +1,9 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text, JSON
+from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
-import json 
+import json
 # 1. 設定資料庫連線網址
 SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:MySQLdrug2026@localhost:3306/drug_prevention_db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -68,12 +69,17 @@ class AIAnalysisResult(Base):
     id = Column(Integer, primary_key=True, index=True)
     url = Column(String(768), index=True, nullable=False)
     
-    yolo_details = Column(String(500))  
+    yolo_details = Column(String(500))
     yolo_score = Column(Integer, default=0)
-    
-    nlp_details = Column(String(500))  
+    class_metadata = Column(JSON, nullable=True)  # 16 類別各自的 count / max_confidence，來自 api_server.py 的視覺計分模組
+
+    nlp_details = Column(String(500))
     nlp_score = Column(Integer, default=0)
-    
+
     risk_score = Column(Integer)
     risk_level = Column(String(50))
     created_at = Column(DateTime, default=func.now())
+
+    # 前端畫框用：只保留這批圖片裡分數最高的那張代表圖（不是每張圖都存），LONGTEXT 是因為 base64 圖片常超過 TEXT 的 64KB 上限
+    representative_image_base64 = Column(LONGTEXT, nullable=True)
+    representative_image_detections = Column(JSON, nullable=True)  # [{"class_name","confidence","box":[x1,y1,x2,y2] 皆為 0~1 正規化座標}]

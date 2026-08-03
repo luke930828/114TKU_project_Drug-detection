@@ -9,23 +9,65 @@ import database
 import uuid
 from sqlalchemy.exc import IntegrityError # 
 app = FastAPI(title="多模態毒品防制系統 API", description="符合原始表與 AI 展示表分離架構")
-def calculate_multimodal_risk_100_scale(nlp_raw_score: int, yolo_raw_score: int):
+
+# NLP 控分覆寫規則的關鍵字表 —— 唯一標準來源，跟 src/ai_model/scoring.py 的 16 類權重表是同一層級的設定
+NLP_WHITELIST_TERMS = ["無尼古丁", "普洱茶葉", "漢方草本", "薄荷涼糖", "合法軟糖"]  # 規則 A：命中即一票否決，強制降到低風險
+NLP_BLACKLIST_TERMS = ["thc", "cbd", "依託咪酯", "喪屍煙油", "飛行", "埋車"]      # 規則 B：命中且視覺側只有中性載具時，補刀升級成高風險
+VISUAL_CARRIER_ONLY_CLASSES = {"medical_bottle", "ziplock_bag"}                  # 規則 B 判定「只有載具」的白名單類別
+
+
+def parse_stored_list(details: Optional[str]) -> List[str]:
+    """把用 ', ' join 存進 DB 的字串（yolo_details/nlp_details）還原成 list，尚未有資料的佔位字串一律當成空清單。"""
+    placeholders = {None, "", "文字分析中...", "影像分析中...", "無檢出影像特徵", "無檢出文字特徵"}
+    if details in placeholders:
+        return []
+    return details.split(", ")
+
+
+def apply_nlp_override(score: int, nlp_keywords: Optional[List[str]], yolo_objects: Optional[List[str]]):
     """
-    根據 NLP 與 YOLO 的原始分數 (0~100)，計算雙引擎加權總分與風險等級。
+    給 NLP 團隊的控分覆寫權：
+    規則 A（白名單一票否決）：文字側讀到合法商業標籤，不管視覺分數多高都強制壓到低風險。
+    規則 B（黑名單補刀升級）：文字側讀到違禁關鍵字，且視覺側「只」偵測到中性載具（沒有強特徵），強制拉到高風險告警。
+    """
+    keywords_text = " ".join(nlp_keywords or []).lower()
+
+    if any(term.lower() in keywords_text for term in NLP_WHITELIST_TERMS):
+        return min(score, 15), "NLP_WHITELIST_OVERRIDE"
+
+    objects_set = set(yolo_objects or [])
+    if objects_set and objects_set.issubset(VISUAL_CARRIER_ONLY_CLASSES):
+        if any(term.lower() in keywords_text for term in NLP_BLACKLIST_TERMS):
+            return max(score, 85), "NLP_BLACKLIST_OVERRIDE"
+
+    return score, None
+
+
+def calculate_multimodal_risk_100_scale(
+    nlp_raw_score: int,
+    yolo_raw_score: int,
+    nlp_keywords: Optional[List[str]] = None,
+    yolo_objects: Optional[List[str]] = None,
+):
+    """
+    根據 NLP 與 YOLO 的原始分數 (0~100)，計算雙引擎加權總分，並套用 NLP 控分覆寫規則後得出風險等級。
     """
     w_text = 0.6
     w_image = 0.4
-    
-    s_final = (w_text * nlp_raw_score) + (w_image * yolo_raw_score)
-    
+
+    s_final = int((w_text * nlp_raw_score) + (w_image * yolo_raw_score))
+    s_final, override_reason = apply_nlp_override(s_final, nlp_keywords, yolo_objects)
+    if override_reason:
+        print(f"⚖️ [NLP 控分覆寫] 觸發 {override_reason}，最終分數強制調整為 {s_final}")
+
     if s_final > 74:
         risk_level = "極高風險"
     elif 35 <= s_final <= 74:
         risk_level = "中風險 (建議人工覆核)"
     else:
         risk_level = "低風險"
-        
-    return int(s_final), risk_level
+
+    return s_final, risk_level
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -84,6 +126,8 @@ class YOLOAnalysisReport(BaseModel):
     yolo_objects: List[str] = []
     processed_images: Optional[List[str]] = []
     class_metadata: Optional[Dict[str, Any]] = None  # 每個類別獨立的 count / max_confidence，來自 api_server.py 的視覺計分模組
+    representative_image_base64: Optional[str] = None  # 這批圖片裡分數最高的那張代表圖，供前端畫框展示
+    representative_image_detections: Optional[List[Dict[str, Any]]] = None  # 代表圖對應的偵測框：[{class_name, confidence, box:[x1,y1,x2,y2]（0~1 正規化座標）}]
 
 class NLPAnalysisReport(BaseModel):
     url: str
@@ -364,39 +408,50 @@ def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends
     if existing_record:
         existing_record.yolo_details = yolo_str
         existing_record.yolo_score = report.risk_score
-        
+        existing_record.class_metadata = report.class_metadata
+        existing_record.representative_image_base64 = report.representative_image_base64
+        existing_record.representative_image_detections = report.representative_image_detections
+
         current_nlp_score = existing_record.nlp_score or 0
-        final_score, level = calculate_multimodal_risk_100_scale(current_nlp_score, existing_record.yolo_score)
-        
+        nlp_keywords = parse_stored_list(existing_record.nlp_details)
+        final_score, level = calculate_multimodal_risk_100_scale(current_nlp_score, existing_record.yolo_score, nlp_keywords, report.yolo_objects)
+
         existing_record.risk_score = final_score
         existing_record.risk_level = level
         db.commit()
         return {"status": "success", "message": f"成功統整！已將 YOLO 影像與分數補算至 {report.url}"}
     else:
         try:
-            final_score, level = calculate_multimodal_risk_100_scale(0, report.risk_score)
-            
+            final_score, level = calculate_multimodal_risk_100_scale(0, report.risk_score, None, report.yolo_objects)
+
             new_record = database.AIAnalysisResult(
                 url=report.url,
                 yolo_details=yolo_str,
                 yolo_score=report.risk_score,
-                nlp_details="文字分析中...", 
+                class_metadata=report.class_metadata,
+                representative_image_base64=report.representative_image_base64,
+                representative_image_detections=report.representative_image_detections,
+                nlp_details="文字分析中...",
                 nlp_score=0,
-                risk_score=final_score,  
-                risk_level=level          
+                risk_score=final_score,
+                risk_level=level
             )
             db.add(new_record)
-            db.commit() 
+            db.commit()
             return {"status": "success", "message": f"成功建檔！已為 {report.url} 建立全新 AI 影像紀錄。"}
-        
+
         except IntegrityError:
-            db.rollback() 
+            db.rollback()
             real_existing = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
             if real_existing:
                 real_existing.yolo_details = yolo_str
                 real_existing.yolo_score = report.risk_score
+                real_existing.class_metadata = report.class_metadata
+                real_existing.representative_image_base64 = report.representative_image_base64
+                real_existing.representative_image_detections = report.representative_image_detections
                 current_nlp_score = real_existing.nlp_score or 0
-                final_score, level = calculate_multimodal_risk_100_scale(current_nlp_score, real_existing.yolo_score)
+                nlp_keywords = parse_stored_list(real_existing.nlp_details)
+                final_score, level = calculate_multimodal_risk_100_scale(current_nlp_score, real_existing.yolo_score, nlp_keywords, report.yolo_objects)
                 real_existing.risk_score = final_score
                 real_existing.risk_level = level
                 db.commit()
@@ -412,17 +467,18 @@ def receive_nlp_analysis_result(report: NLPAnalysisReport, db: Session = Depends
     if existing_record:
         existing_record.nlp_details = nlp_str
         existing_record.nlp_score = report.risk_score
-        
+
         current_yolo_score = existing_record.yolo_score or 0
-        final_score, level = calculate_multimodal_risk_100_scale(existing_record.nlp_score, current_yolo_score)
-        
+        yolo_objects = parse_stored_list(existing_record.yolo_details)
+        final_score, level = calculate_multimodal_risk_100_scale(existing_record.nlp_score, current_yolo_score, report.nlp_keywords, yolo_objects)
+
         existing_record.risk_score = final_score
         existing_record.risk_level = level
         db.commit()
         return {"status": "success", "message": f"成功統整！已將 NLP 文字與分數補充至 {report.url}"}
     else:
         try:
-            final_score, level = calculate_multimodal_risk_100_scale(report.risk_score, 0)
+            final_score, level = calculate_multimodal_risk_100_scale(report.risk_score, 0, report.nlp_keywords, None)
         
             new_record = database.AIAnalysisResult(
                 url=report.url,
@@ -444,7 +500,8 @@ def receive_nlp_analysis_result(report: NLPAnalysisReport, db: Session = Depends
                 real_existing.nlp_details = nlp_str
                 real_existing.nlp_score = report.risk_score
                 current_yolo_score = real_existing.yolo_score or 0
-                final_score, level = calculate_multimodal_risk_100_scale(real_existing.nlp_score, current_yolo_score)
+                yolo_objects = parse_stored_list(real_existing.yolo_details)
+                final_score, level = calculate_multimodal_risk_100_scale(real_existing.nlp_score, current_yolo_score, report.nlp_keywords, yolo_objects)
                 real_existing.risk_score = final_score
                 real_existing.risk_level = level
                 db.commit()
