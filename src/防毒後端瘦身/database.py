@@ -79,7 +79,7 @@ class AIAnalysisResult(Base):
     class_metadata = Column(JSON, nullable=True) 
     representative_image_base64 = Column(LONGTEXT, nullable=True)
     representative_image_detections = Column(JSON, nullable=True)
-    
+    task_source = Column(String(100), default="未知來源")
     created_at = Column(DateTime, default=func.now())
 
 

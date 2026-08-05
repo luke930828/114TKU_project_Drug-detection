@@ -59,7 +59,8 @@ def receive_crawler_raw_data(report: WebsiteReport, background_tasks: Background
                     nlp_details=html_text[:50], # 直接把「無法登入」這句話印在前端畫面上
                     nlp_score=0,
                     risk_score=final_score,
-                    risk_level=level
+                    risk_level=level,
+                    task_source=f"[{report.task_type}] 爬蟲自動通報"
                 )
                 db.add(new_ai_record)
             
@@ -116,33 +117,23 @@ def receive_crawler_raw_data(report: WebsiteReport, background_tasks: Background
         print(f"嚴重錯誤：API 崩潰了，原因：{str(e)}")
         raise HTTPException(status_code=500, detail=f"伺服器內部錯誤：{str(e)}")
     
-@router.get("/api/crawler/automated_24h_list/", summary="獲取 24 小時自動爬蟲的 AI 分析結果 (對應前端網站列表)")
+@router.get("/api/crawler/automated_24h_list/", summary="獲取 24 小時自動爬蟲的 AI 分析結果")
 def get_automated_24h_results(db: Session = Depends(get_db)):
-    # 1. 執行 SQLAlchemy 的 JOIN 查詢與過濾
-    results = db.query(
-        database.AIAnalysisResult,
-        database.SuspectWebsite
-    ).join(
-        database.SuspectWebsite,
-        database.AIAnalysisResult.url == database.SuspectWebsite.url
-    ).filter(
-        # 尋找 title 包含該關鍵字的紀錄
-        database.SuspectWebsite.title.like("%[automated_24h] 爬蟲自動通報%")
+    
+    # 🚀 直接單表查詢！不需要 JOIN 了，效能超級快！
+    results = db.query(database.AIAnalysisResult).filter(
+        database.AIAnalysisResult.task_source.like("%[automated_24h]%")
     ).all()
 
-    # 2. 將撈出來的資料，打包成前端表格 (edited-image.png) 畫面上需要的確切欄位
     frontend_data = []
     
-    # enumerate 用來產生畫面上第一行的 ID (1, 2, 3...)
-    for index, (ai_record, suspect_record) in enumerate(results, start=1):
-        
-        # 處理日期格式 (假設你的 model 有 created_at，轉成 YYYY-MM-DD)
-        # 如果你資料表存的名稱不同，請替換 created_at
+    for index, ai_record in enumerate(results, start=1):
+        # 處理日期格式
         date_str = "2024-12-01" 
         if hasattr(ai_record, 'created_at') and ai_record.created_at:
             date_str = ai_record.created_at.strftime("%Y-%m-%d")
 
-        # 動態決定處置狀態 (對應圖片中的 Active, Blocked, Monitored 等標籤)
+        # 動態決定處置狀態
         status = "Active"
         if ai_record.risk_score >= 85:
             status = "Blocked"
@@ -151,22 +142,19 @@ def get_automated_24h_results(db: Session = Depends(get_db)):
         elif ai_record.risk_score < 75:
             status = "Monitored"
 
-        # 整理成字典，直接對應前端表格
         frontend_data.append({
-            "id": index,                                 # 對應圖片: ID (#1, #2...)
-            "domain_name": ai_record.url,                # 對應圖片: 網域名稱
-            "server_location": "Unknown",                # 對應圖片: 伺服器位置 (目前DB無此欄位，先帶預設值)
-            "risk_score": ai_record.risk_score,          # 對應圖片: 風險評分 (95, 88...)
-            "discovered_date": date_str,                 # 對應圖片: 發現日期 (2024-12-15)
-            "status": status,                            # 對應圖片: 處置狀態 (標籤)
-            
-            # 隱藏欄位：點擊「操作」按鈕彈出視窗時可以顯示的細節
+            "id": index,                                 
+            "domain_name": ai_record.url,                
+            "server_location": "Unknown",                
+            "risk_score": ai_record.risk_score,          
+            "discovered_date": date_str,                 
+            "status": status,                            
+            "task_source": ai_record.task_source, # 把來源標籤也傳給前端
             "risk_level": ai_record.risk_level,
             "yolo_details": ai_record.yolo_details,
             "nlp_details": ai_record.nlp_details
         })
 
-    # 3. 回傳給前端
     return {
         "status": "success",
         "message": "成功獲取 24 小時自動爬蟲清單",

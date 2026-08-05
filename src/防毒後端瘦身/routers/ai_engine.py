@@ -16,10 +16,15 @@ router = APIRouter(tags=["AI 引擎分析結果接收"])
 def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends(get_db)):
     yolo_str = ", ".join(report.yolo_objects) if report.yolo_objects else "無檢出影像特徵"
     existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
+    # 👇 1. 先去隔壁表查這個網址的來源標籤
+    suspect = db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == report.url).first()
+    source_title = suspect.title if suspect else "未知來源"
     
     if existing_record:
         existing_record.yolo_details = yolo_str
         existing_record.yolo_score = report.risk_score
+
+        existing_record.task_source = source_title
         
         # 👇 1. 歷史紀錄更新模式：接收並寫入三個新欄位
         existing_record.class_metadata = report.class_metadata
@@ -43,7 +48,8 @@ def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends
                 nlp_details="文字分析中...", nlp_score=0, risk_score=final_score, risk_level=level,
                 class_metadata=report.class_metadata,
                 representative_image_base64=report.representative_image_base64,
-                representative_image_detections=report.representative_image_detections
+                representative_image_detections=report.representative_image_detections,
+                task_source=source_title
             )
             db.add(new_record)
             db.commit() 
@@ -61,7 +67,7 @@ def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends
                 real_existing.class_metadata = report.class_metadata
                 real_existing.representative_image_base64 = report.representative_image_base64
                 real_existing.representative_image_detections = report.representative_image_detections
-                
+                real_existing.task_source = source_title
                 current_nlp_score = real_existing.nlp_score or 0
                 final_score, level = calculate_multimodal_risk_100_scale(current_nlp_score, real_existing.yolo_score)
                 real_existing.risk_score = final_score
@@ -73,10 +79,13 @@ def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends
 def receive_nlp_analysis_result(report: NLPAnalysisReport, db: Session = Depends(get_db)):
     nlp_str = ", ".join(report.nlp_keywords) if report.nlp_keywords else "無檢出文字特徵"
     existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
+    suspect = db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == report.url).first()
+    source_title = suspect.title if suspect else "未知來源"
     
     if existing_record:
         existing_record.nlp_details = nlp_str
         existing_record.nlp_score = report.risk_score
+        existing_record.task_source = source_title
         
         current_yolo_score = existing_record.yolo_score or 0
         final_score, level = calculate_multimodal_risk_100_scale(report.risk_score, current_yolo_score)
@@ -90,11 +99,24 @@ def receive_nlp_analysis_result(report: NLPAnalysisReport, db: Session = Depends
             final_score, level = calculate_multimodal_risk_100_scale(report.risk_score, 0)
             new_record = database.AIAnalysisResult(
                 url=report.url, yolo_details="影像分析中...", yolo_score=0, 
-                nlp_details=nlp_str, nlp_score=report.risk_score, risk_score=final_score, risk_level=level         
+                nlp_details=nlp_str, nlp_score=report.risk_score, risk_score=final_score, risk_level=level,         
+                task_source=source_title
             )
             db.add(new_record)
             db.commit()
             return {"status": "success", "message": f"成功建檔！已為 {report.url} 建立全新 AI 文字紀錄。"}
         except IntegrityError:
             db.rollback() 
-            return {"status": "success", "message": "遭遇併發衝突，已轉為更新模式寫入！"}
+            real_existing = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
+            if real_existing:
+                real_existing.nlp_details = nlp_str
+                real_existing.nlp_score = report.risk_score
+                real_existing.task_source = source_title
+                
+                current_yolo_score = real_existing.yolo_score or 0
+                final_score, level = calculate_multimodal_risk_100_scale(report.risk_score, current_yolo_score)
+                
+                real_existing.risk_score = final_score
+                real_existing.risk_level = level
+                db.commit()
+            return {"status": "success", "message": "遭遇併發衝突，已成功將 NLP 轉為更新模式寫入！"}
