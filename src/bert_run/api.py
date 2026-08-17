@@ -16,6 +16,7 @@ CHECKPOINT_PATH = os.path.join(PROJECT_ROOT, "results", "final_model")
 
 # 後端主系統的 NLP 回報 endpoint
 BACKEND_NLP_URL = "http://100.123.184.43:8000/api/nlp/report/"
+# BACKEND_NLP_URL = "http://100.122.59.16:8000/api/nlp/report/"
 
 # ── 啟動時只載入一次模型 ─────────────────────────────────────────────────────
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
