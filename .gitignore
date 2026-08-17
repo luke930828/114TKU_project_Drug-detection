@@ -29,3 +29,4 @@ src/bert_train/
 results/
 checkpoint-*/
 .cache/
+logs/
