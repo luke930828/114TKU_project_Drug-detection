@@ -1,8 +1,10 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text, JSON
 from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
+from sqlalchemy.dialects.mysql import LONGTEXT
 import json 
+
 # 1. 設定資料庫連線網址
 SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:MySQLdrug2026@localhost:3306/drug_prevention_db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -32,7 +34,7 @@ class AuditLog(Base):
 
     user = relationship("User", back_populates="audit_logs")
 
-# 4. 新增：「可疑網站黑名單」資料表
+# 4. 定義：「可疑網站黑名單」資料表
 class SuspectWebsite(Base):
     __tablename__ = "suspect_websites"
 
@@ -46,12 +48,7 @@ class SuspectWebsite(Base):
     html_content = Column(Text, nullable=True)  
     images_data = Column(Text, nullable=True)   
 
-# 5. 執行建立資料表的指令 
-if __name__ == "__main__":
-    print("正在連線資料庫並建立資料表...")
-    Base.metadata.create_all(bind=engine)
-    print(" 資料表建立完成！")
-
+# 5. 定義：「白名單」資料表
 class WhitelistWebsite(Base):
     __tablename__ = "whitelist_websites"
 
@@ -61,7 +58,8 @@ class WhitelistWebsite(Base):
     reason = Column(String(255))
     added_by = Column(String(50)) 
     created_at = Column(DateTime, default=func.now())
-#  新增：專門展示給前端看的 AI 分析結果表
+
+# 6. 定義：專門展示給前端看的 AI 分析結果表
 class AIAnalysisResult(Base):
     __tablename__ = "ai_analysis_results"
 
@@ -76,4 +74,17 @@ class AIAnalysisResult(Base):
     
     risk_score = Column(Integer)
     risk_level = Column(String(50))
+    
+    # 👇 已經將這三個新欄位補上
+    class_metadata = Column(JSON, nullable=True) 
+    representative_image_base64 = Column(LONGTEXT, nullable=True)
+    representative_image_detections = Column(JSON, nullable=True)
+    task_source = Column(String(100), default="未知來源")
     created_at = Column(DateTime, default=func.now())
+
+
+# 👇 7. 執行建立資料表的指令 (必須放在所有 class 的最下方！)
+if __name__ == "__main__":
+    print("正在連線資料庫並建立資料表...")
+    Base.metadata.create_all(bind=engine)
+    print(" 資料表建立完成！")
