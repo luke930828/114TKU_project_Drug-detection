@@ -60,5 +60,5 @@ checkpoint-*/
 /offline-bundle-*/
 /offline-bundle-*.tar.gz*
 
-# 內部用，含未修復的密碼外洩細節，先不進 git
+# 內部用
 README-docker.md
