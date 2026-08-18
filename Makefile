@@ -44,7 +44,7 @@ demo: ## 展示日：前一天先跑這個預熱，現場才不用等下載
 	$(COMPOSE) --env-file .env.local --profile full pull
 	$(COMPOSE) --env-file .env.local --profile full build
 	@echo ""
-	@echo "  ✅ image 都在本機了。展示現場執行 make full 即可，"
+	@echo "  image 都在本機了。展示現場執行 make full 即可，"
 	@echo "     就算沒網路也能起來。"
 
 # ---------- 日常 ----------
