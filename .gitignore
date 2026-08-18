@@ -62,3 +62,6 @@ checkpoint-*/
 
 # 內部用
 README-docker.md
+Makefile
+CONTRIBUTING.md
+
