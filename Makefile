@@ -77,8 +77,8 @@ check: ## 部署前檢查：確認沒有把秘密或大檔加進 git
 		|| (echo "  ⚠️  上面這些檔案超過 5MB，考慮改用 Release assets" )
 	@echo "→ 檢查有沒有寫死的 IP..."
 	@! grep -rn '100\.[0-9]\+\.[0-9]\+\.[0-9]\+' modules/ --include='*.py' --include='*.ts' --include='*.tsx' \
-		|| (echo "  ❌ 還有寫死的 tailnet IP，應該改用 config.py" && exit 1)
-	@echo "  ✅ 沒有"
+		|| (echo "   還有寫死的 tailnet IP，應該改用 config.py" && exit 1)
+	@echo "  沒有"
 
 smoke: ## 整合冒煙測試：驗證模組間的介面契約
 	python3 scripts/smoke_test.py --base-url http://localhost:8000
