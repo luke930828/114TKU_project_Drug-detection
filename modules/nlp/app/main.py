@@ -9,19 +9,19 @@ from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from typing import List, Optional
 
-# ── 路徑設定 ──────────────────────────────────────────────────────────────────
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.dirname(os.path.dirname(CURRENT_DIR))
-CHECKPOINT_PATH = os.path.join(PROJECT_ROOT, "results", "final_model")
+# ── 模型設定 ──────────────────────────────────────────────────────────────────
+# 微調過的模型放在 Hugging Face Hub，容器啟動時直接下載，不用把 1GB+ 權重包進 image
+MODEL_ID = os.getenv("MODEL_ID", "matt0513/drug-detection-xlm-roberta")
 
-# 後端主系統的 NLP 回報 endpoint
-BACKEND_NLP_URL = "http://100.123.184.43:8000/api/nlp/report/"
+# 後端主系統位址（docker-compose 網路裡用 service name，本機測試可覆寫）
+BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://backend:8000")
+BACKEND_NLP_URL = f"{BACKEND_BASE_URL}/api/nlp/report/"
 
 # ── 啟動時只載入一次模型 ─────────────────────────────────────────────────────
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-tokenizer = AutoTokenizer.from_pretrained(CHECKPOINT_PATH)
+tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 model = AutoModelForSequenceClassification.from_pretrained(
-    CHECKPOINT_PATH,
+    MODEL_ID,
     attn_implementation="eager",  # sdpa 不支援 output_attentions，改用 eager
 )
 model.config.output_attentions = True

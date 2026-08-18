@@ -1,0 +1,19 @@
+# 模型權重清單
+#
+# 格式：檔名|下載網址|SHA256|說明
+#
+# 權重檔本身不進 git，只有這份清單進。
+# 換模型時改這裡的網址和 SHA256，程式碼不用動。
+#
+# 上傳流程：
+#   1. 到 GitHub Releases 頁面，Draft a new release
+#   2. 把 best.pt 拖進 Attach binaries
+#   3. sha256sum best.pt 拿到雜湊值，貼到下面
+#   4. 發布後複製檔案網址貼到下面
+
+best.pt|https://github.com/luke930828/114TKU_project_Drug-detection/releases/download/v1.0.0/best.pt|請填入SHA256|YOLO 主模型（GPU 版）
+best.onnx|https://github.com/luke930828/114TKU_project_Drug-detection/releases/download/v1.0.0/best.onnx|請填入SHA256|YOLO ONNX 版（CPU 也能跑，公開下載版用這個）
+
+# NLP 微調模型已經放在 Hugging Face Hub，不用透過這份清單下載，程式裡直接：
+#   AutoModelForSequenceClassification.from_pretrained("matt0513/drug-detection-xlm-roberta")
+# 比自己打包 tar 好管理，也有版本控制。

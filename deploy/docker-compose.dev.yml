@@ -1,0 +1,50 @@
+# ============================================================
+# 開發用 override —— 疊在 docker-compose.yml 上面
+#
+# 用法：
+#   docker compose -f deploy/docker-compose.yml \
+#                  -f deploy/docker-compose.dev.yml \
+#                  --env-file .env.local up -d
+#
+# 核心概念：你正在改的模組用 bind mount 掛進去 + 開 reload，
+# 存檔就生效，不用 rebuild image。
+# 沒在改的模組（別人的、MySQL）就讓它照常跑 image。
+# ============================================================
+
+services:
+  backend:
+    volumes:
+      # 程式碼直接掛進容器，改了馬上生效
+      - ../modules/backend/app:/app
+    environment:
+      # entrypoint.sh 最後一行改成：
+      #   exec uvicorn main:app --host 0.0.0.0 --port 8000 ${UVICORN_EXTRA_ARGS}
+      # 之後就能用這個變數控制要不要 reload。
+      # 注意 --reload 只在開發用，正式跑不要開：
+      # 它會多開一個 reloader process，容器收到停止訊號時可能不會乾淨結束。
+      UVICORN_EXTRA_ARGS: "--reload"
+      PYTHONDONTWRITEBYTECODE: "1"   # 不要在掛載目錄裡產生 __pycache__
+    ports:
+      - "127.0.0.1:8000:8000"
+
+  # MySQL 開發時把 port 打開，方便用 Workbench / DBeaver 直接看資料。
+  # 正式版不要開。
+  mysql:
+    ports:
+      - "127.0.0.1:3306:3306"
+
+  # 前端開發模式：不用 nginx，直接跑 Vite dev server（有 HMR）
+  frontend:
+    build:
+      target: build          # 停在 build 階段，不進 nginx
+    command: npm run dev -- --host 0.0.0.0 --port 5173
+    volumes:
+      - ../modules/frontend/src:/app/src
+      - ../modules/frontend/public:/app/public
+      # 這行很重要：讓容器用自己的 node_modules，
+      # 不要被宿主機（可能是 Windows 裝的）覆蓋掉
+      - /app/node_modules
+    ports:
+      - "5173:80"
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
