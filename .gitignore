@@ -1,0 +1,22 @@
+# Python 快取
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 作業系統暫存
+.DS_Store
+Thumbs.db
+
+# 系統日誌與執行紀錄 (建議不隨數據上傳)
+monitor.log
+visited_urls.txt
+
+# VS Code 設定
+.vscode/
+
+# 其他不需上傳的環境檔
+
+setup.bat
+clean_data.py
+User_Profile/ 
+testjpg/ 

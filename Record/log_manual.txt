@@ -1,0 +1,391 @@
+# 2026-08-11 14:24:42 created
+2026-08-11 17:36:27 | MANUAL     | START      | +    15ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | 開始爬取 | task_type=manual | mode=FAST | save_local=True
+2026-08-11 17:36:27 | MANUAL     | BROWSER    | +    15ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | 使用常駐 Chromium | task_type=manual
+2026-08-11 17:36:29 | MANUAL     | ROUTE      | +  1563ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-11 17:36:29 | MANUAL     | NAV        | +  1563ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-11 17:36:33 | MANUAL     | NAV        | +  5750ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | domcontentloaded 完成 | task_type=manual
+2026-08-11 17:36:34 | MANUAL     | POPUP      | +  6594ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-11 17:36:34 | MANUAL     | AUTH       | +  6702ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-11 17:36:34 | MANUAL     | SCROLL     | +  7031ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | 輕量滾動完成 | task_type=manual
+2026-08-11 17:36:34 | MANUAL     | SCORE      | +  7063ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | 啟發式評分完成 | task_type=manual | tier=SKIP | score=0 | keywords=
+2026-08-11 17:36:34 | MANUAL     | SAVE       | +  7063ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | HTML 已存檔 | task_type=manual | path=testHTML\manual_share.google_20260811_173634.html
+2026-08-11 17:36:35 | MANUAL     | SCREENSHOT | +  7952ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | viewport 截圖完成 | task_type=manual
+2026-08-11 17:36:36 | MANUAL     | IMAGES     | +  9281ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | 商品圖擷取完成 | task_type=manual | count=0
+2026-08-11 17:36:36 | MANUAL     | RESULT     | +  9281ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | 評分 SKIP，仍送一般封包（非「非毒品/無法登入」） | task_type=manual | tier=SKIP
+2026-08-11 17:36:36 | MANUAL     | WEBHOOK    | +  9297ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | 略過發送（資料未齊）: keywords 為空; product_images_b64 為空; product_images_base64 為空 | task_type=manual | sent=False
+2026-08-11 17:36:36 | MANUAL     | DB         | +  9327ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | 任務已寫入 SQLite | task_type=manual
+2026-08-11 17:36:36 | MANUAL     | DONE       | +  9327ms | https://share.google/cyQ4jXM2BZaZYWXvl                                                     | 爬取結束 | task_type=manual | status=skip | total_ms=9327 | tier=SKIP | images=0
+2026-08-11 17:36:36 | VISIT | MANUAL | skip | 9327ms | https://share.google/cyQ4jXM2BZaZYWXvl
+2026-08-14 22:14:05 | MANUAL     | START      | +     0ms | https://www.oieie.tku.edu.tw                                                               | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 22:14:05 | MANUAL     | BROWSER    | +     0ms | https://www.oieie.tku.edu.tw                                                               | 使用常駐 Chromium | task_type=manual
+2026-08-14 22:14:06 | MANUAL     | ROUTE      | +   796ms | https://www.oieie.tku.edu.tw                                                               | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 22:14:06 | MANUAL     | NAV        | +   796ms | https://www.oieie.tku.edu.tw                                                               | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 22:14:16 | MANUAL     | NAV        | + 10827ms | https://www.oieie.tku.edu.tw                                                               | 載入達 timeout，改用已渲染 DOM: Timeout 10000ms exceeded. | task_type=manual
+2026-08-14 22:14:17 | MANUAL     | POPUP      | + 11483ms | https://www.oieie.tku.edu.tw                                                               | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 22:14:17 | MANUAL     | AUTH       | + 11577ms | https://www.oieie.tku.edu.tw                                                               | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 22:14:17 | MANUAL     | SCROLL     | + 11921ms | https://www.oieie.tku.edu.tw                                                               | 輕量滾動完成 | task_type=manual
+2026-08-14 22:14:17 | MANUAL     | SCORE      | + 11968ms | https://www.oieie.tku.edu.tw                                                               | 啟發式評分完成 | task_type=manual | tier=SKIP | score=0 | keywords=
+2026-08-14 22:14:19 | MANUAL     | SCREENSHOT | + 13827ms | https://www.oieie.tku.edu.tw                                                               | viewport 截圖完成 | task_type=manual
+2026-08-14 22:14:43 | MANUAL     | IMAGES     | + 37436ms | https://www.oieie.tku.edu.tw                                                               | 商品圖擷取完成 | task_type=manual | count=9
+2026-08-14 22:14:43 | MANUAL     | WEBHOOK    | + 37546ms | https://www.oieie.tku.edu.tw                                                               | 略過發送（資料未齊）: keywords 為空; text_content 為空 | task_type=manual | sent=False
+2026-08-14 22:14:43 | MANUAL     | DB         | + 37577ms | https://www.oieie.tku.edu.tw                                                               | 任務已寫入 SQLite | task_type=manual
+2026-08-14 22:14:43 | MANUAL     | DONE       | + 37608ms | https://www.oieie.tku.edu.tw                                                               | 爬取結束 | task_type=manual | status=skip | total_ms=37608 | tier=SKIP | images=9
+2026-08-14 22:14:43 | VISIT | MANUAL | skip | 37608ms | https://www.oieie.tku.edu.tw
+2026-08-14 22:51:11 | MANUAL     | START      | +     0ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 22:51:11 | MANUAL     | BROWSER    | +    16ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 使用常駐 Chromium | task_type=manual
+2026-08-14 22:51:12 | MANUAL     | ROUTE      | +   875ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 22:51:12 | MANUAL     | NAV        | +   875ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 22:51:20 | MANUAL     | NAV        | +  9031ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | domcontentloaded 完成 | task_type=manual
+2026-08-14 22:51:23 | MANUAL     | POPUP      | + 12110ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 22:51:23 | MANUAL     | AUTH       | + 12219ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 22:51:23 | MANUAL     | SCROLL     | + 12563ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 輕量滾動完成 | task_type=manual
+2026-08-14 22:51:23 | MANUAL     | SCORE      | + 12641ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 啟發式評分完成 | task_type=manual | tier=HIGH | score=520 | keywords=THC,Hybrid,Bud,Indica,Add to cart,USDT,schema.org/Product,price_pattern,Cannabis,Sativa,Delivery
+2026-08-14 22:51:29 | MANUAL     | SCREENSHOT | + 18219ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | viewport 截圖完成 | task_type=manual
+2026-08-14 22:51:33 | MANUAL     | IMAGES     | + 21969ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 商品圖擷取完成 | task_type=manual | count=10
+2026-08-14 22:51:35 | MANUAL     | WEBHOOK    | + 24656ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 封包已送出 | task_type=manual | sent=True
+2026-08-14 22:51:35 | MANUAL     | DB         | + 24688ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 任務已寫入 SQLite | task_type=manual
+2026-08-14 22:51:35 | MANUAL     | DONE       | + 24688ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 爬取結束 | task_type=manual | status=success | total_ms=24688 | tier=HIGH | images=10
+2026-08-14 22:51:35 | VISIT | MANUAL | success | 24688ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g
+2026-08-14 22:53:57 | MANUAL     | START      | +     0ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 22:53:57 | MANUAL     | BROWSER    | +     0ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | 使用常駐 Chromium | task_type=manual
+2026-08-14 22:53:58 | MANUAL     | ROUTE      | +   672ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 22:53:58 | MANUAL     | NAV        | +   672ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 22:54:01 | MANUAL     | NAV        | +  4391ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | domcontentloaded 完成 | task_type=manual
+2026-08-14 22:54:04 | MANUAL     | POPUP      | +  6563ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 22:54:04 | MANUAL     | AUTH       | +  6703ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 22:54:04 | MANUAL     | SCROLL     | +  7063ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | 輕量滾動完成 | task_type=manual
+2026-08-14 22:54:04 | MANUAL     | SCORE      | +  7281ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | 啟發式評分完成 | task_type=manual | tier=SKIP | score=0 | keywords=
+2026-08-14 22:54:07 | MANUAL     | SCREENSHOT | +  9735ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | viewport 截圖完成 | task_type=manual
+2026-08-14 22:54:08 | MANUAL     | IMAGES     | + 11328ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | 商品圖擷取完成 | task_type=manual | count=1
+2026-08-14 22:54:08 | MANUAL     | WEBHOOK    | + 11328ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | 略過發送（資料未齊）: keywords 不可空; text_content 不可空 | task_type=manual | sent=False
+2026-08-14 22:54:08 | MANUAL     | DB         | + 11360ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | 任務已寫入 SQLite | task_type=manual
+2026-08-14 22:54:08 | MANUAL     | DONE       | + 11375ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347                                          | 爬取結束 | task_type=manual | status=skip | total_ms=11375 | tier=SKIP | images=1
+2026-08-14 22:54:08 | VISIT | MANUAL | skip | 11375ms | https://www.oieie.tku.edu.tw/oieie/?page_id=18347
+2026-08-14 22:55:59 | MANUAL     | START      | +     0ms | https://www.ntu.edu.tw/research/researchdep.html                                           | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 22:55:59 | MANUAL     | BROWSER    | +     0ms | https://www.ntu.edu.tw/research/researchdep.html                                           | 使用常駐 Chromium | task_type=manual
+2026-08-14 22:56:00 | MANUAL     | ROUTE      | +  1078ms | https://www.ntu.edu.tw/research/researchdep.html                                           | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 22:56:00 | MANUAL     | NAV        | +  1078ms | https://www.ntu.edu.tw/research/researchdep.html                                           | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 22:56:02 | MANUAL     | NAV        | +  3000ms | https://www.ntu.edu.tw/research/researchdep.html                                           | domcontentloaded 完成 | task_type=manual
+2026-08-14 22:56:10 | MANUAL     | POPUP      | + 10609ms | https://www.ntu.edu.tw/research/researchdep.html                                           | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 22:56:10 | MANUAL     | AUTH       | + 11015ms | https://www.ntu.edu.tw/research/researchdep.html                                           | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 22:56:11 | MANUAL     | SCROLL     | + 11453ms | https://www.ntu.edu.tw/research/researchdep.html                                           | 輕量滾動完成 | task_type=manual
+2026-08-14 22:56:12 | MANUAL     | SCORE      | + 12311ms | https://www.ntu.edu.tw/research/researchdep.html                                           | 啟發式評分完成 | task_type=manual | tier=SKIP | score=0 | keywords=
+2026-08-14 22:56:13 | MANUAL     | SCREENSHOT | + 13390ms | https://www.ntu.edu.tw/research/researchdep.html                                           | viewport 截圖完成 | task_type=manual
+2026-08-14 22:56:16 | MANUAL     | IMAGES     | + 16468ms | https://www.ntu.edu.tw/research/researchdep.html                                           | 商品圖擷取完成 | task_type=manual | count=4
+2026-08-14 22:56:16 | MANUAL     | WEBHOOK    | + 16484ms | https://www.ntu.edu.tw/research/researchdep.html                                           | 略過發送（資料未齊）: keywords 不可空 | task_type=manual | sent=False
+2026-08-14 22:56:16 | MANUAL     | DB         | + 16593ms | https://www.ntu.edu.tw/research/researchdep.html                                           | 任務已寫入 SQLite | task_type=manual
+2026-08-14 22:56:16 | MANUAL     | DONE       | + 16625ms | https://www.ntu.edu.tw/research/researchdep.html                                           | 爬取結束 | task_type=manual | status=skip | total_ms=16625 | tier=SKIP | images=4
+2026-08-14 22:56:16 | VISIT | MANUAL | skip | 16625ms | https://www.ntu.edu.tw/research/researchdep.html
+2026-08-14 23:00:42 | MANUAL     | START      | +     0ms | https://www.ntu.edu.tw/academics/academics.html                                            | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 23:00:42 | MANUAL     | BROWSER    | +     0ms | https://www.ntu.edu.tw/academics/academics.html                                            | 使用常駐 Chromium | task_type=manual
+2026-08-14 23:00:44 | MANUAL     | ROUTE      | +  1139ms | https://www.ntu.edu.tw/academics/academics.html                                            | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 23:00:44 | MANUAL     | NAV        | +  1139ms | https://www.ntu.edu.tw/academics/academics.html                                            | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 23:00:48 | MANUAL     | NAV        | +  5875ms | https://www.ntu.edu.tw/academics/academics.html                                            | domcontentloaded 完成 | task_type=manual
+2026-08-14 23:00:52 | MANUAL     | POPUP      | +  9281ms | https://www.ntu.edu.tw/academics/academics.html                                            | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 23:00:52 | MANUAL     | AUTH       | +  9656ms | https://www.ntu.edu.tw/academics/academics.html                                            | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 23:00:52 | MANUAL     | SCROLL     | + 10014ms | https://www.ntu.edu.tw/academics/academics.html                                            | 輕量滾動完成 | task_type=manual
+2026-08-14 23:00:53 | MANUAL     | SCORE      | + 10264ms | https://www.ntu.edu.tw/academics/academics.html                                            | 啟發式評分完成 | task_type=manual | tier=SKIP | score=0 | keywords=
+2026-08-14 23:00:54 | MANUAL     | SCREENSHOT | + 11250ms | https://www.ntu.edu.tw/academics/academics.html                                            | viewport 截圖完成 | task_type=manual
+2026-08-14 23:01:01 | MANUAL     | IMAGES     | + 18202ms | https://www.ntu.edu.tw/academics/academics.html                                            | 商品圖擷取完成 | task_type=manual | count=0
+2026-08-14 23:01:01 | MANUAL     | RESULT     | + 18218ms | https://www.ntu.edu.tw/academics/academics.html                                            | 判定為登入牆或非目標（送 negative） | task_type=manual
+2026-08-14 23:01:02 | MANUAL     | WEBHOOK    | + 19546ms | https://www.ntu.edu.tw/academics/academics.html                                            | 封包已送出 | task_type=manual | sent=True
+2026-08-14 23:01:02 | MANUAL     | DB         | + 19859ms | https://www.ntu.edu.tw/academics/academics.html                                            | 任務已寫入 SQLite | task_type=manual
+2026-08-14 23:01:02 | MANUAL     | DONE       | + 19859ms | https://www.ntu.edu.tw/academics/academics.html                                            | 爬取結束 | task_type=manual | status=negative | total_ms=19859
+2026-08-14 23:01:02 | VISIT | MANUAL | negative | 19859ms | https://www.ntu.edu.tw/academics/academics.html
+2026-08-14 23:02:32 | MANUAL     | START      | +     0ms | https://www.weedclubpattaya.com/                                                           | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 23:02:32 | MANUAL     | BROWSER    | +     0ms | https://www.weedclubpattaya.com/                                                           | 使用常駐 Chromium | task_type=manual
+2026-08-14 23:02:32 | MANUAL     | ROUTE      | +   688ms | https://www.weedclubpattaya.com/                                                           | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 23:02:32 | MANUAL     | NAV        | +   688ms | https://www.weedclubpattaya.com/                                                           | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 23:02:34 | MANUAL     | NAV        | +  2765ms | https://www.weedclubpattaya.com/                                                           | domcontentloaded 完成 | task_type=manual
+2026-08-14 23:02:36 | MANUAL     | POPUP      | +  4031ms | https://www.weedclubpattaya.com/                                                           | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 23:02:36 | MANUAL     | AUTH       | +  4375ms | https://www.weedclubpattaya.com/                                                           | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 23:02:36 | MANUAL     | SCROLL     | +  4734ms | https://www.weedclubpattaya.com/                                                           | 輕量滾動完成 | task_type=manual
+2026-08-14 23:02:37 | MANUAL     | SCORE      | +  4906ms | https://www.weedclubpattaya.com/                                                           | 啟發式評分完成 | task_type=manual | tier=SKIP | score=0 | keywords=Cannabis,THC,Bud,Delivery
+2026-08-14 23:03:07 | MANUAL     | ERROR      | + 35640ms | https://www.weedclubpattaya.com/                                                           | 網頁抓取失敗或逾時: Timeout 30000ms exceeded. | task_type=manual
+2026-08-14 23:03:07 | MANUAL     | RESULT     | + 35656ms | https://www.weedclubpattaya.com/                                                           | 爬取失敗，送非毒品封包: 網頁抓取失敗或逾時: Timeout 30000ms exceeded. | task_type=manual
+2026-08-14 23:03:08 | MANUAL     | WEBHOOK    | + 36438ms | https://www.weedclubpattaya.com/                                                           | 封包已送出 | task_type=manual | sent=True
+2026-08-14 23:03:08 | MANUAL     | DB         | + 36469ms | https://www.weedclubpattaya.com/                                                           | 任務已寫入 SQLite | task_type=manual
+2026-08-14 23:03:08 | MANUAL     | DONE       | + 36469ms | https://www.weedclubpattaya.com/                                                           | 爬取結束 | task_type=manual | status=failed | total_ms=36469
+2026-08-14 23:03:08 | VISIT | MANUAL | failed | 36469ms | https://www.weedclubpattaya.com/
+2026-08-14 23:04:27 | MANUAL     | START      | +     0ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 23:04:27 | MANUAL     | BROWSER    | +     0ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 使用常駐 Chromium | task_type=manual
+2026-08-14 23:04:28 | MANUAL     | ROUTE      | +   718ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 23:04:28 | MANUAL     | NAV        | +   718ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 23:04:32 | MANUAL     | NAV        | +  4360ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | domcontentloaded 完成 | task_type=manual
+2026-08-14 23:04:35 | MANUAL     | POPUP      | +  7265ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 23:04:35 | MANUAL     | AUTH       | +  7375ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 23:04:35 | MANUAL     | SCROLL     | +  7703ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 輕量滾動完成 | task_type=manual
+2026-08-14 23:04:35 | MANUAL     | SCORE      | +  7765ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 啟發式評分完成 | task_type=manual | tier=HIGH | score=520 | keywords=Bud,THC,price_pattern,Hybrid,Delivery,Indica,Cannabis,USDT,Sativa,schema.org/Product,Add to cart
+2026-08-14 23:04:36 | MANUAL     | SCREENSHOT | +  8468ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | viewport 截圖完成 | task_type=manual
+2026-08-14 23:04:39 | MANUAL     | IMAGES     | + 12125ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 商品圖擷取完成 | task_type=manual | count=0
+2026-08-14 23:04:41 | MANUAL     | WEBHOOK    | + 13343ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 封包已送出 | task_type=manual | sent=True
+2026-08-14 23:04:41 | MANUAL     | DB         | + 13375ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 任務已寫入 SQLite | task_type=manual
+2026-08-14 23:04:41 | MANUAL     | DONE       | + 13375ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g                              | 爬取結束 | task_type=manual | status=success | total_ms=13375 | tier=HIGH | images=0
+2026-08-14 23:04:41 | VISIT | MANUAL | success | 13375ms | https://mrweedpattaya.com/product/rainbow-beltz-3-the-weed-1g
+2026-08-14 23:07:25 | MANUAL     | START      | +     0ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 23:07:25 | MANUAL     | BROWSER    | +     0ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | 使用常駐 Chromium | task_type=manual
+2026-08-14 23:07:25 | MANUAL     | ROUTE      | +   750ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 23:07:25 | MANUAL     | NAV        | +   765ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 23:07:28 | MANUAL     | NAV        | +  3250ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | domcontentloaded 完成 | task_type=manual
+2026-08-14 23:07:59 | MANUAL     | POPUP      | + 34202ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 23:07:59 | MANUAL     | AUTH       | + 34297ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 23:07:59 | MANUAL     | SCROLL     | + 34640ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | 輕量滾動完成 | task_type=manual
+2026-08-14 23:07:59 | MANUAL     | SCORE      | + 34672ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | 啟發式評分完成 | task_type=manual | tier=SKIP | score=40 | keywords=price_pattern,THC,Indica,21+,Cannabis,schema.org/Product
+2026-08-14 23:08:00 | MANUAL     | SCREENSHOT | + 35344ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | viewport 截圖完成 | task_type=manual
+2026-08-14 23:08:03 | MANUAL     | IMAGES     | + 37984ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | 商品圖擷取完成 | task_type=manual | count=3
+2026-08-14 23:08:04 | MANUAL     | WEBHOOK    | + 39547ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | 封包已送出 | task_type=manual | sent=True
+2026-08-14 23:08:04 | MANUAL     | DB         | + 39563ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | 任務已寫入 SQLite | task_type=manual
+2026-08-14 23:08:04 | MANUAL     | DONE       | + 39563ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/                       | 爬取結束 | task_type=manual | status=skip | total_ms=39563 | tier=SKIP | images=3
+2026-08-14 23:08:04 | VISIT | MANUAL | skip | 39563ms | https://www.wearealiveandwell.com/california/strains/ice-cream-cake/
+2026-08-14 23:11:50 | MANUAL     | START      | +     0ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 23:11:50 | MANUAL     | BROWSER    | +     0ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | 使用常駐 Chromium | task_type=manual
+2026-08-14 23:11:51 | MANUAL     | ROUTE      | +   610ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 23:11:51 | MANUAL     | NAV        | +   610ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 23:11:53 | MANUAL     | NAV        | +  2547ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | domcontentloaded 完成 | task_type=manual
+2026-08-14 23:11:54 | MANUAL     | POPUP      | +  3281ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 23:11:54 | MANUAL     | AUTH       | +  3453ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 23:11:54 | MANUAL     | SCROLL     | +  3781ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | 輕量滾動完成 | task_type=manual
+2026-08-14 23:11:54 | MANUAL     | SCORE      | +  4000ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | 啟發式評分完成 | task_type=manual | tier=SKIP | score=0 | keywords=Cannabis,THC
+2026-08-14 23:11:55 | MANUAL     | SCREENSHOT | +  4672ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | viewport 截圖完成 | task_type=manual
+2026-08-14 23:11:56 | MANUAL     | IMAGES     | +  6140ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | 商品圖擷取完成 | task_type=manual | count=2
+2026-08-14 23:11:58 | MANUAL     | WEBHOOK    | +  7515ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | 封包已送出 | task_type=manual | sent=True
+2026-08-14 23:11:58 | MANUAL     | DB         | +  7563ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | 任務已寫入 SQLite | task_type=manual
+2026-08-14 23:11:58 | MANUAL     | DONE       | +  7578ms | https://share.google/qJGTO3QcndXq9Cv1Z                                                     | 爬取結束 | task_type=manual | status=skip | total_ms=7578 | tier=SKIP | images=2
+2026-08-14 23:11:58 | VISIT | MANUAL | skip | 7578ms | https://share.google/qJGTO3QcndXq9Cv1Z
+2026-08-14 23:14:31 | MANUAL     | START      | +     0ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 23:14:31 | MANUAL     | BROWSER    | +     0ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | 使用常駐 Chromium | task_type=manual
+2026-08-14 23:14:31 | MANUAL     | ROUTE      | +   452ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 23:14:31 | MANUAL     | NAV        | +   468ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 23:14:34 | MANUAL     | NAV        | +  3000ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | domcontentloaded 完成 | task_type=manual
+2026-08-14 23:14:39 | MANUAL     | POPUP      | +  7952ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 23:14:39 | MANUAL     | AUTH       | +  8125ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 23:14:39 | MANUAL     | SCROLL     | +  8468ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | 輕量滾動完成 | task_type=manual
+2026-08-14 23:14:39 | MANUAL     | SCORE      | +  8514ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | 啟發式評分完成 | task_type=manual | tier=SKIP | score=0 | keywords=
+2026-08-14 23:14:40 | MANUAL     | SCREENSHOT | +  9139ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | viewport 截圖完成 | task_type=manual
+2026-08-14 23:17:13 | MANUAL     | IMAGES     | +162280ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | 商品圖擷取完成 | task_type=manual | count=0
+2026-08-14 23:17:13 | MANUAL     | RESULT     | +162280ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | 判定為登入牆或非目標（送 negative） | task_type=manual
+2026-08-14 23:17:14 | MANUAL     | WEBHOOK    | +163218ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | 封包已送出 | task_type=manual | sent=True
+2026-08-14 23:17:14 | MANUAL     | DB         | +163233ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | 任務已寫入 SQLite | task_type=manual
+2026-08-14 23:17:14 | MANUAL     | DONE       | +163233ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ba... | 爬取結束 | task_type=manual | status=negative | total_ms=163233
+2026-08-14 23:17:14 | VISIT | MANUAL | negative | 163233ms | https://edition.cnn.com/2026/08/14/europe/france-constitutional-council-social-media-ban-intl
+2026-08-14 23:22:38 | MANUAL     | START      | +     0ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 23:22:38 | MANUAL     | BROWSER    | +     0ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | 使用常駐 Chromium | task_type=manual
+2026-08-14 23:22:38 | MANUAL     | ROUTE      | +   468ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 23:22:38 | MANUAL     | NAV        | +   468ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 23:22:43 | MANUAL     | NAV        | +  4890ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | domcontentloaded 完成 | task_type=manual
+2026-08-14 23:22:44 | MANUAL     | POPUP      | +  5921ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 23:22:44 | MANUAL     | AUTH       | +  6202ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 23:22:44 | MANUAL     | SCROLL     | +  6546ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | 輕量滾動完成 | task_type=manual
+2026-08-14 23:22:44 | MANUAL     | SCORE      | +  6702ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | 啟發式評分完成 | task_type=manual | tier=SKIP | score=15 | keywords=Sativa,THC,Cannabis,price_pattern
+2026-08-14 23:22:45 | MANUAL     | SCREENSHOT | +  7438ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | viewport 截圖完成 | task_type=manual
+2026-08-14 23:22:46 | MANUAL     | IMAGES     | +  8077ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | 商品圖擷取完成 | task_type=manual | count=1
+2026-08-14 23:22:50 | MANUAL     | WEBHOOK    | + 11859ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | 封包已送出 | task_type=manual | sent=True
+2026-08-14 23:22:50 | MANUAL     | DB         | + 12125ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | 任務已寫入 SQLite | task_type=manual
+2026-08-14 23:22:50 | MANUAL     | DONE       | + 12171ms | https://share.google/KUcDv69ARRgrXxWDS                                                     | 爬取結束 | task_type=manual | status=skip | total_ms=12171 | tier=SKIP | images=1
+2026-08-14 23:22:50 | VISIT | MANUAL | skip | 12171ms | https://share.google/KUcDv69ARRgrXxWDS
+2026-08-14 23:24:29 | MANUAL     | START      | +     0ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 23:24:29 | MANUAL     | BROWSER    | +     0ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | 使用常駐 Chromium | task_type=manual
+2026-08-14 23:24:30 | MANUAL     | ROUTE      | +   703ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 23:24:30 | MANUAL     | NAV        | +   703ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 23:24:33 | MANUAL     | NAV        | +  3265ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | domcontentloaded 完成 | task_type=manual
+2026-08-14 23:24:33 | MANUAL     | POPUP      | +  4063ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 23:24:33 | MANUAL     | AUTH       | +  4203ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 23:24:34 | MANUAL     | SCROLL     | +  4531ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | 輕量滾動完成 | task_type=manual
+2026-08-14 23:24:34 | MANUAL     | SCORE      | +  4593ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | 啟發式評分完成 | task_type=manual | tier=SKIP | score=40 | keywords=schema.org/Product,price_pattern
+2026-08-14 23:24:35 | MANUAL     | SCREENSHOT | +  5406ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | viewport 截圖完成 | task_type=manual
+2026-08-14 23:24:36 | MANUAL     | IMAGES     | +  7172ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | 商品圖擷取完成 | task_type=manual | count=7
+2026-08-14 23:24:38 | MANUAL     | WEBHOOK    | +  8843ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | 封包已送出 | task_type=manual | sent=True
+2026-08-14 23:24:38 | MANUAL     | DB         | +  8843ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | 任務已寫入 SQLite | task_type=manual
+2026-08-14 23:24:38 | MANUAL     | DONE       | +  8843ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/                | 爬取結束 | task_type=manual | status=skip | total_ms=8843 | tier=SKIP | images=7
+2026-08-14 23:24:38 | VISIT | MANUAL | skip | 8843ms | https://shop.ganjagarden.com.tw/product/plam-twist-exotic-hand-rolled-leaf/
+2026-08-14 23:29:34 | MANUAL     | START      | +     0ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 23:29:34 | MANUAL     | BROWSER    | +     0ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | 使用常駐 Chromium | task_type=manual
+2026-08-14 23:29:35 | MANUAL     | ROUTE      | +   890ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 23:29:35 | MANUAL     | NAV        | +   890ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 23:29:42 | MANUAL     | NAV        | +  7952ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | domcontentloaded 完成 | task_type=manual
+2026-08-14 23:29:43 | MANUAL     | POPUP      | +  8811ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 23:29:43 | MANUAL     | AUTH       | +  8922ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 23:29:44 | MANUAL     | SCROLL     | +  9250ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | 輕量滾動完成 | task_type=manual
+2026-08-14 23:29:44 | MANUAL     | SCORE      | +  9327ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | 啟發式評分完成 | task_type=manual | tier=HIGH | score=740 | keywords=Cannabis,Indica,LSD Blotter,Bud,Psilocybin,Delivery,schema.org/Product,Menu,Add to cart,Discreet shipping,price_pattern,
+2026-08-14 23:29:44 | MANUAL     | SCREENSHOT | +  9984ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | viewport 截圖完成 | task_type=manual
+2026-08-14 23:29:47 | MANUAL     | IMAGES     | + 12734ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | 商品圖擷取完成 | task_type=manual | count=10
+2026-08-14 23:29:50 | MANUAL     | WEBHOOK    | + 15343ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | 封包已送出 | task_type=manual | sent=True
+2026-08-14 23:29:50 | MANUAL     | DB         | + 15375ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | 任務已寫入 SQLite | task_type=manual
+2026-08-14 23:29:50 | MANUAL     | DONE       | + 15390ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/         | 爬取結束 | task_type=manual | status=success | total_ms=15390 | tier=HIGH | images=10
+2026-08-14 23:29:50 | VISIT | MANUAL | success | 15390ms | https://psilocybinshoponline.com/product/alacabenzi-cubensis-mushroom-shop-online/
+2026-08-14 23:31:48 | MANUAL     | START      | +     0ms | https://www.asics.com.tw/                                                                  | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 23:31:48 | MANUAL     | BROWSER    | +     0ms | https://www.asics.com.tw/                                                                  | 使用常駐 Chromium | task_type=manual
+2026-08-14 23:31:48 | MANUAL     | ROUTE      | +   718ms | https://www.asics.com.tw/                                                                  | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 23:31:48 | MANUAL     | NAV        | +   733ms | https://www.asics.com.tw/                                                                  | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 23:31:53 | MANUAL     | NAV        | +  5202ms | https://www.asics.com.tw/                                                                  | domcontentloaded 完成 | task_type=manual
+2026-08-14 23:31:57 | MANUAL     | POPUP      | +  9750ms | https://www.asics.com.tw/                                                                  | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 23:31:58 | MANUAL     | AUTH       | + 10296ms | https://www.asics.com.tw/                                                                  | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 23:31:58 | MANUAL     | SCROLL     | + 10702ms | https://www.asics.com.tw/                                                                  | 輕量滾動完成 | task_type=manual
+2026-08-14 23:31:58 | MANUAL     | SCORE      | + 10811ms | https://www.asics.com.tw/                                                                  | 啟發式評分完成 | task_type=manual | tier=SKIP | score=15 | keywords=price_pattern
+2026-08-14 23:32:03 | MANUAL     | SCREENSHOT | + 15530ms | https://www.asics.com.tw/                                                                  | viewport 截圖完成 | task_type=manual
+2026-08-14 23:32:03 | MANUAL     | IMAGES     | + 15577ms | https://www.asics.com.tw/                                                                  | 商品圖擷取完成 | task_type=manual | count=0
+2026-08-14 23:32:05 | MANUAL     | WEBHOOK    | + 17014ms | https://www.asics.com.tw/                                                                  | 封包已送出 | task_type=manual | sent=True
+2026-08-14 23:32:05 | MANUAL     | DB         | + 17046ms | https://www.asics.com.tw/                                                                  | 任務已寫入 SQLite | task_type=manual
+2026-08-14 23:32:05 | MANUAL     | DONE       | + 17046ms | https://www.asics.com.tw/                                                                  | 爬取結束 | task_type=manual | status=skip | total_ms=17046 | tier=SKIP | images=0
+2026-08-14 23:32:05 | VISIT | MANUAL | skip | 17046ms | https://www.asics.com.tw/
+2026-08-14 23:33:40 | MANUAL     | START      | +     0ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 23:33:40 | MANUAL     | BROWSER    | +     0ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | 使用常駐 Chromium | task_type=manual
+2026-08-14 23:33:40 | MANUAL     | ROUTE      | +   422ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 23:33:40 | MANUAL     | NAV        | +   422ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 23:33:44 | MANUAL     | NAV        | +  3609ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | domcontentloaded 完成 | task_type=manual
+2026-08-14 23:34:15 | MANUAL     | POPUP      | + 35234ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 23:34:16 | MANUAL     | AUTH       | + 35750ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 23:34:16 | MANUAL     | SCROLL     | + 36093ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | 輕量滾動完成 | task_type=manual
+2026-08-14 23:34:16 | MANUAL     | SCORE      | + 36281ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | 啟發式評分完成 | task_type=manual | tier=HIGH | score=340 | keywords=Cannabis,Indica,Sativa,schema.org/Product,THC,Hybrid,price_pattern
+2026-08-14 23:34:17 | MANUAL     | SCREENSHOT | + 37031ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | viewport 截圖完成 | task_type=manual
+2026-08-14 23:34:21 | MANUAL     | IMAGES     | + 40843ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | 商品圖擷取完成 | task_type=manual | count=9
+2026-08-14 23:34:29 | MANUAL     | WEBHOOK    | + 48781ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | 封包已送出 | task_type=manual | sent=True
+2026-08-14 23:34:29 | MANUAL     | DB         | + 48797ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | 任務已寫入 SQLite | task_type=manual
+2026-08-14 23:34:29 | MANUAL     | DONE       | + 48797ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads                 | 爬取結束 | task_type=manual | status=success | total_ms=48797 | tier=HIGH | images=9
+2026-08-14 23:34:29 | VISIT | MANUAL | success | 48797ms | https://sweetflower.com/shop/products/2410760/coastal-sun-indica-heirheads
+2026-08-14 23:36:26 | MANUAL     | START      | +     0ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 23:36:26 | MANUAL     | BROWSER    | +     0ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | 使用常駐 Chromium | task_type=manual
+2026-08-14 23:36:27 | MANUAL     | ROUTE      | +   609ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 23:36:27 | MANUAL     | NAV        | +   609ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 23:36:32 | MANUAL     | NAV        | +  5531ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | domcontentloaded 完成 | task_type=manual
+2026-08-14 23:36:36 | MANUAL     | POPUP      | +  9938ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 23:36:37 | MANUAL     | AUTH       | + 10827ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 23:36:38 | MANUAL     | SCROLL     | + 11265ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | 輕量滾動完成 | task_type=manual
+2026-08-14 23:36:38 | MANUAL     | SCORE      | + 11546ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | 啟發式評分完成 | task_type=manual | tier=NORMAL | score=95 | keywords=Add to cart,price_pattern,Delivery
+2026-08-14 23:36:41 | MANUAL     | SCREENSHOT | + 15109ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | viewport 截圖完成 | task_type=manual
+2026-08-14 23:36:43 | MANUAL     | IMAGES     | + 16359ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | 商品圖擷取完成 | task_type=manual | count=1
+2026-08-14 23:36:44 | MANUAL     | WEBHOOK    | + 17906ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | 封包已送出 | task_type=manual | sent=True
+2026-08-14 23:36:44 | MANUAL     | DB         | + 17921ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | 任務已寫入 SQLite | task_type=manual
+2026-08-14 23:36:44 | MANUAL     | DONE       | + 17938ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9... | 爬取結束 | task_type=manual | status=success | total_ms=17938 | tier=NORMAL | images=1
+2026-08-14 23:36:44 | VISIT | MANUAL | success | 17938ms | https://www.walmart.com/ip/Acer-Nitro-ED270RS3-27-Class-Full-HD-Gaming-LCD-Monitor-16-9-Black/5046447739?athAsset=eyJhdGhjcGlkIjoiNTA0NjQ0NzczOSIsImF0aHN0aWQiOiJDUzAyMCIsImF0aGFuY2lkIjoiSXRlbUNhcm91c2VsIiwiYXRocmsiOjAuMH0=&athena=true&athbdg=L1400
+2026-08-14 23:39:08 | MANUAL     | START      | +     0ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682                        | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-14 23:39:08 | MANUAL     | BROWSER    | +     0ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682                        | 使用常駐 Chromium | task_type=manual
+2026-08-14 23:39:09 | MANUAL     | ROUTE      | +  1172ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682                        | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-14 23:39:09 | MANUAL     | NAV        | +  1172ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682                        | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-14 23:39:10 | MANUAL     | NAV        | +  1686ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682                        | domcontentloaded 完成 | task_type=manual
+2026-08-14 23:39:11 | MANUAL     | POPUP      | +  2343ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682                        | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-14 23:39:11 | MANUAL     | AUTH       | +  2422ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682                        | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-14 23:39:11 | MANUAL     | SCROLL     | +  2750ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682                        | 輕量滾動完成 | task_type=manual
+2026-08-14 23:39:11 | MANUAL     | SCORE      | +  2781ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682                        | 啟發式評分完成 | task_type=manual | tier=SKIP | score=0 | keywords=
+2026-08-14 23:39:11 | MANUAL     | RESULT     | +  2797ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682                        | 無關鍵字命中，送非毒品封包（略過截圖/商品圖） | task_type=manual
+2026-08-14 23:39:12 | MANUAL     | WEBHOOK    | +  3484ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682                        | 封包已送出 | task_type=manual | sent=True
+2026-08-14 23:39:12 | MANUAL     | DB         | +  3515ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682                        | 任務已寫入 SQLite | task_type=manual
+2026-08-14 23:39:12 | MANUAL     | DONE       | +  3515ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682                        | 爬取結束 | task_type=manual | status=negative | total_ms=3515
+2026-08-14 23:39:12 | VISIT | MANUAL | negative | 3515ms | https://www.ebay.com/b/Apple-Cell-Phones-Smartphones/9355/bn_319682
+2026-08-17 14:01:50 | MANUAL     | START      | +     0ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-17 14:01:50 | MANUAL     | BROWSER    | +     0ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | 使用常駐 Chromium | task_type=manual
+2026-08-17 14:02:01 | MANUAL     | ROUTE      | + 11125ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-17 14:02:01 | MANUAL     | NAV        | + 11140ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-17 14:02:11 | MANUAL     | NAV        | + 20311ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | domcontentloaded 完成 | task_type=manual
+2026-08-17 14:02:46 | MANUAL     | POPUP      | + 55547ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-17 14:02:48 | MANUAL     | AUTH       | + 57202ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-17 14:02:48 | MANUAL     | SCROLL     | + 57655ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | 輕量滾動完成 | task_type=manual
+2026-08-17 14:02:49 | MANUAL     | SCORE      | + 58500ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | 啟發式評分完成 | task_type=manual | tier=SKIP | score=15 | keywords=Indica,Cannabis Flower,Sativa,THC Edibles,Bud,Cannabis,Delivery,price_pattern,THC
+2026-08-17 14:02:50 | MANUAL     | SCREENSHOT | + 59984ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | viewport 截圖完成 | task_type=manual
+2026-08-17 14:02:58 | MANUAL     | IMAGES     | + 67765ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | 商品圖擷取完成 | task_type=manual | count=8
+2026-08-17 14:03:07 | MANUAL     | WEBHOOK    | + 76561ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | 封包已送出 | task_type=manual | sent=True
+2026-08-17 14:03:07 | MANUAL     | DB         | + 77140ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | 任務已寫入 SQLite | task_type=manual
+2026-08-17 14:03:07 | MANUAL     | DONE       | + 77172ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park                | 爬取結束 | task_type=manual | status=skip | total_ms=77172 | tier=SKIP | images=8
+2026-08-17 14:03:08 | VISIT | MANUAL | skip | 77172ms | https://houseofpot.com/blogs/news/cannabis-friendly-spots-near-lumpini-park
+2026-08-17 14:15:57 | MANUAL     | START      | +     0ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-17 14:15:57 | MANUAL     | BROWSER    | +    15ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | 使用常駐 Chromium | task_type=manual
+2026-08-17 14:16:02 | MANUAL     | ROUTE      | +  5452ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-17 14:16:02 | MANUAL     | NAV        | +  5468ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-17 14:16:10 | MANUAL     | NAV        | + 13813ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | domcontentloaded 完成 | task_type=manual
+2026-08-17 14:16:14 | MANUAL     | POPUP      | + 17156ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-17 14:16:16 | MANUAL     | AUTH       | + 19265ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-17 14:16:17 | MANUAL     | SCROLL     | + 20000ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | 輕量滾動完成 | task_type=manual
+2026-08-17 14:16:17 | MANUAL     | SCORE      | + 20593ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | 啟發式評分完成 | task_type=manual | tier=SKIP | score=0 | keywords=Live Resin,Indica,Cannabis Flower,Menu,Sativa,Hybrid,THC Edibles,Disposable Vape,Cannabis,Delivery,THC
+2026-08-17 14:16:19 | MANUAL     | SCREENSHOT | + 21968ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | viewport 截圖完成 | task_type=manual
+2026-08-17 14:16:19 | MANUAL     | IMAGES     | + 22875ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | 商品圖擷取完成 | task_type=manual | count=2
+2026-08-17 14:16:25 | MANUAL     | WEBHOOK    | + 28093ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | 封包已送出 | task_type=manual | sent=True
+2026-08-17 14:16:26 | MANUAL     | DB         | + 29000ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | 任務已寫入 SQLite | task_type=manual
+2026-08-17 14:16:26 | MANUAL     | DONE       | + 29000ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls                         | 爬取結束 | task_type=manual | status=skip | total_ms=29000 | tier=SKIP | images=2
+2026-08-17 14:16:26 | VISIT | MANUAL | skip | 29000ms | https://thejointcannabisco.com/shop/?dtche%5Bcategory%5D=pre-rolls
+2026-08-17 14:18:04 | MANUAL     | START      | +     0ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-17 14:18:04 | MANUAL     | BROWSER    | +   172ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | 使用常駐 Chromium | task_type=manual
+2026-08-17 14:18:10 | MANUAL     | ROUTE      | +  6360ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-17 14:18:10 | MANUAL     | NAV        | +  6375ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-17 14:18:18 | MANUAL     | NAV        | + 14422ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | domcontentloaded 完成 | task_type=manual
+2026-08-17 14:18:37 | MANUAL     | POPUP      | + 32938ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-17 14:18:38 | MANUAL     | AUTH       | + 34422ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-17 14:18:39 | MANUAL     | SCROLL     | + 35156ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | 輕量滾動完成 | task_type=manual
+2026-08-17 14:18:40 | MANUAL     | SCORE      | + 35985ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | 啟發式評分完成 | task_type=manual | tier=HIGH | score=335 | keywords=Indica,Sativa,Hybrid,Add to cart,price_pattern,Delivery,THC
+2026-08-17 14:18:42 | MANUAL     | SCREENSHOT | + 37875ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | viewport 截圖完成 | task_type=manual
+2026-08-17 14:18:46 | MANUAL     | IMAGES     | + 42453ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | 商品圖擷取完成 | task_type=manual | count=2
+2026-08-17 14:18:55 | MANUAL     | WEBHOOK    | + 51594ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | 封包已送出 | task_type=manual | sent=True
+2026-08-17 14:18:58 | MANUAL     | DB         | + 54594ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | 任務已寫入 SQLite | task_type=manual
+2026-08-17 14:18:58 | MANUAL     | DONE       | + 54641ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=... | 爬取結束 | task_type=manual | status=success | total_ms=54641 | tier=HIGH | images=2
+2026-08-17 14:18:58 | VISIT | MANUAL | success | 54641ms | https://shop.dransay.com/product/bubblegumz-cookies-20-281-bubblegumz/5782462?vendorId=top&deliveryMethod=shipping&filters=%7B%22topProducersLowPrice%22%3Atrue%7D
+2026-08-17 14:20:24 | MANUAL     | START      | +     0ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-17 14:20:24 | MANUAL     | BROWSER    | +     0ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | 使用常駐 Chromium | task_type=manual
+2026-08-17 14:20:31 | MANUAL     | ROUTE      | +  7297ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-17 14:20:31 | MANUAL     | NAV        | +  7360ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-17 14:20:39 | MANUAL     | NAV        | + 15860ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | domcontentloaded 完成 | task_type=manual
+2026-08-17 14:20:52 | MANUAL     | POPUP      | + 28328ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-17 14:20:55 | MANUAL     | AUTH       | + 31468ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-17 14:20:56 | MANUAL     | SCROLL     | + 32218ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | 輕量滾動完成 | task_type=manual
+2026-08-17 14:20:58 | MANUAL     | SCORE      | + 34672ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | 啟發式評分完成 | task_type=manual | tier=HIGH | score=395 | keywords=Indica,Sativa,Hybrid,Add to cart,price_pattern,Cannabis,Delivery,THC
+2026-08-17 14:21:02 | MANUAL     | SCREENSHOT | + 38110ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | viewport 截圖完成 | task_type=manual
+2026-08-17 14:21:06 | MANUAL     | IMAGES     | + 42468ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | 商品圖擷取完成 | task_type=manual | count=2
+2026-08-17 14:21:11 | MANUAL     | WEBHOOK    | + 46968ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | 封包已送出 | task_type=manual | sent=True
+2026-08-17 14:21:12 | MANUAL     | DB         | + 48265ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | 任務已寫入 SQLite | task_type=manual
+2026-08-17 14:21:12 | MANUAL     | DONE       | + 48265ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/593... | 爬取結束 | task_type=manual | status=success | total_ms=48265 | tier=HIGH | images=2
+2026-08-17 14:21:12 | VISIT | MANUAL | success | 48265ms | https://shop.dransay.com/product/rainbow-sherbert-11-187-cannabisflower-rs11-thc-25/5932586?vendorId=top&deliveryMethod=shipping&filters=%7B%22topProducersLowPrice%22%3Atrue%2C%22producers%22%3A%5B37%2C56%2C7%2C17%2C39%2C26%2C41%2C60%2C8%2C16%2C94%2C53%2C221%2C1628%2C48%2C38%2C1623%5D%7D
+2026-08-17 14:23:46 | MANUAL     | START      | +     0ms | https://aventus8.com/collections/cbd                                                       | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-17 14:23:46 | MANUAL     | BROWSER    | +   156ms | https://aventus8.com/collections/cbd                                                       | 使用常駐 Chromium | task_type=manual
+2026-08-17 14:23:56 | MANUAL     | ROUTE      | + 10359ms | https://aventus8.com/collections/cbd                                                       | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-17 14:23:56 | MANUAL     | NAV        | + 10500ms | https://aventus8.com/collections/cbd                                                       | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-17 14:24:02 | MANUAL     | NAV        | + 16843ms | https://aventus8.com/collections/cbd                                                       | domcontentloaded 完成 | task_type=manual
+2026-08-17 14:24:09 | MANUAL     | POPUP      | + 23686ms | https://aventus8.com/collections/cbd                                                       | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-17 14:24:12 | MANUAL     | AUTH       | + 26311ms | https://aventus8.com/collections/cbd                                                       | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-17 14:24:15 | MANUAL     | SCROLL     | + 28984ms | https://aventus8.com/collections/cbd                                                       | 輕量滾動完成 | task_type=manual
+2026-08-17 14:24:16 | MANUAL     | SCORE      | + 30311ms | https://aventus8.com/collections/cbd                                                       | 啟發式評分完成 | task_type=manual | tier=SKIP | score=0 | keywords=
+2026-08-17 14:24:16 | MANUAL     | RESULT     | + 30343ms | https://aventus8.com/collections/cbd                                                       | 無關鍵字命中，送非毒品封包（略過截圖/商品圖） | task_type=manual
+2026-08-17 14:24:23 | MANUAL     | WEBHOOK    | + 37515ms | https://aventus8.com/collections/cbd                                                       | 封包已送出 | task_type=manual | sent=True
+2026-08-17 14:24:27 | MANUAL     | DB         | + 41422ms | https://aventus8.com/collections/cbd                                                       | 任務已寫入 SQLite | task_type=manual
+2026-08-17 14:24:27 | MANUAL     | DONE       | + 41484ms | https://aventus8.com/collections/cbd                                                       | 爬取結束 | task_type=manual | status=negative | total_ms=41484
+2026-08-17 14:24:27 | VISIT | MANUAL | negative | 41484ms | https://aventus8.com/collections/cbd
+2026-08-17 14:33:49 | MANUAL     | START      | +     0ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/                                | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-17 14:33:49 | MANUAL     | BROWSER    | +    15ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/                                | 使用常駐 Chromium | task_type=manual
+2026-08-17 14:33:56 | MANUAL     | ROUTE      | +  7250ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/                                | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-17 14:33:56 | MANUAL     | NAV        | +  7250ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/                                | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-17 14:34:06 | MANUAL     | NAV        | + 16843ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/                                | domcontentloaded 完成 | task_type=manual
+2026-08-17 14:34:11 | MANUAL     | POPUP      | + 22234ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/                                | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-17 14:34:12 | MANUAL     | AUTH       | + 23155ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/                                | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-17 14:34:13 | MANUAL     | SCROLL     | + 23718ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/                                | 輕量滾動完成 | task_type=manual
+2026-08-17 14:34:13 | MANUAL     | SCORE      | + 24327ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/                                | 啟發式評分完成 | task_type=manual | tier=SKIP | score=0 | keywords=
+2026-08-17 14:34:13 | MANUAL     | RESULT     | + 24561ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/                                | 無關鍵字命中，送非毒品封包（略過截圖/商品圖） | task_type=manual
+2026-08-17 14:34:16 | MANUAL     | WEBHOOK    | + 26968ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/                                | 封包已送出 | task_type=manual | sent=True
+2026-08-17 14:34:16 | MANUAL     | DB         | + 27625ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/                                | 任務已寫入 SQLite | task_type=manual
+2026-08-17 14:34:16 | MANUAL     | DONE       | + 27625ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/                                | 爬取結束 | task_type=manual | status=negative | total_ms=27625
+2026-08-17 14:34:16 | VISIT | MANUAL | negative | 27625ms | https://rawgarden.farm/products/vapes/live-sauce-cartridge/
+2026-08-17 14:38:15 | MANUAL     | START      | +     0ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/           | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-17 14:38:15 | MANUAL     | BROWSER    | +     0ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/           | 使用常駐 Chromium | task_type=manual
+2026-08-17 14:38:23 | MANUAL     | ROUTE      | +  8156ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/           | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-17 14:38:23 | MANUAL     | NAV        | +  8188ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/           | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-17 14:38:36 | MANUAL     | NAV        | + 20390ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/           | 載入達 timeout，改用已渲染 DOM: Timeout 10000ms exceeded. | task_type=manual
+2026-08-17 14:38:41 | MANUAL     | POPUP      | + 25438ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/           | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-17 14:38:42 | MANUAL     | AUTH       | + 27094ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/           | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-17 14:38:43 | MANUAL     | SCROLL     | + 27938ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/           | 輕量滾動完成 | task_type=manual
+2026-08-17 14:38:44 | MANUAL     | SCORE      | + 29125ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/           | 啟發式評分完成 | task_type=manual | tier=SKIP | score=0 | keywords=
+2026-08-17 14:38:44 | MANUAL     | RESULT     | + 29140ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/           | 無關鍵字命中，送非毒品封包（略過截圖/商品圖） | task_type=manual
+2026-08-17 14:38:48 | MANUAL     | WEBHOOK    | + 32906ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/           | 封包已送出 | task_type=manual | sent=True
+2026-08-17 14:38:50 | MANUAL     | DB         | + 34969ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/           | 任務已寫入 SQLite | task_type=manual
+2026-08-17 14:38:50 | MANUAL     | DONE       | + 35015ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/           | 爬取結束 | task_type=manual | status=negative | total_ms=35015
+2026-08-17 14:38:50 | VISIT | MANUAL | negative | 35015ms | https://rawgarden.farm/products/pre-rolls/crushed-diamond-infused-joints-3-pack/
+2026-08-17 14:41:11 | MANUAL     | START      | +     0ms | https://rawhemp.eu/product/super-silver-haze/                                              | 開始爬取 | task_type=manual | mode=FAST | save_local=False
+2026-08-17 14:41:11 | MANUAL     | BROWSER    | +    15ms | https://rawhemp.eu/product/super-silver-haze/                                              | 使用常駐 Chromium | task_type=manual
+2026-08-17 14:41:19 | MANUAL     | ROUTE      | +  8093ms | https://rawhemp.eu/product/super-silver-haze/                                              | 資源攔截規則已套用 | task_type=manual | block_fonts=True
+2026-08-17 14:41:19 | MANUAL     | NAV        | +  8093ms | https://rawhemp.eu/product/super-silver-haze/                                              | 開始載入頁面 | task_type=manual | timeout_ms=10000
+2026-08-17 14:41:30 | MANUAL     | NAV        | + 18235ms | https://rawhemp.eu/product/super-silver-haze/                                              | 載入達 timeout，改用已渲染 DOM: Timeout 10000ms exceeded. | task_type=manual
+2026-08-17 14:41:37 | MANUAL     | POPUP      | + 25125ms | https://rawhemp.eu/product/super-silver-haze/                                              | 彈窗/Cookie 處理完成 | task_type=manual | login_wall_hint=False
+2026-08-17 14:41:38 | MANUAL     | AUTH       | + 27110ms | https://rawhemp.eu/product/super-silver-haze/                                              | 屏障掃描完成 | task_type=manual | should_reject=False | barrier_type=none | reason=none
+2026-08-17 14:41:39 | MANUAL     | SCROLL     | + 27985ms | https://rawhemp.eu/product/super-silver-haze/                                              | 輕量滾動完成 | task_type=manual
+2026-08-17 14:41:40 | MANUAL     | SCORE      | + 28781ms | https://rawhemp.eu/product/super-silver-haze/                                              | 啟發式評分完成 | task_type=manual | tier=HIGH | score=520 | keywords=Indica,price_pattern,Sativa,Hybrid,Add to cart,schema.org/Product,Bud,Cannabis,Delivery,Out of stock,THC
+2026-08-17 14:41:42 | MANUAL     | SCREENSHOT | + 30656ms | https://rawhemp.eu/product/super-silver-haze/                                              | viewport 截圖完成 | task_type=manual
+2026-08-17 14:41:47 | MANUAL     | IMAGES     | + 36031ms | https://rawhemp.eu/product/super-silver-haze/                                              | 商品圖擷取完成 | task_type=manual | count=7
+2026-08-17 14:41:56 | MANUAL     | WEBHOOK    | + 44515ms | https://rawhemp.eu/product/super-silver-haze/                                              | 封包已送出 | task_type=manual | sent=True
+2026-08-17 14:41:57 | MANUAL     | DB         | + 45500ms | https://rawhemp.eu/product/super-silver-haze/                                              | 任務已寫入 SQLite | task_type=manual
+2026-08-17 14:41:57 | MANUAL     | DONE       | + 45531ms | https://rawhemp.eu/product/super-silver-haze/                                              | 爬取結束 | task_type=manual | status=success | total_ms=45531 | tier=HIGH | images=7
+2026-08-17 14:41:57 | VISIT | MANUAL | success | 45531ms | https://rawhemp.eu/product/super-silver-haze/
