@@ -7,3 +7,9 @@ venv/
 .env.*
 !.env.*.example
 *.log
+
+# 爬蟲執行時的狀態/輸出，不要包進 image
+app/monitor_state.db
+app/Record/
+app/testjpg/
+app/testHTML/

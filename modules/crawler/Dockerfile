@@ -1,7 +1,12 @@
 # ============================================================
-# 爬蟲模組範本 —— 給負責爬蟲的同學填
+# crawler 模組 —— Playwright + Playwright-stealth 的爬蟲服務
+#
+# 用官方 Playwright image：已經內建對應版本的 Chromium + 系統依賴
+# （libgl、字型等），不用自己在 slim image 上補一堆 apt 套件。
+# tag 版本要跟 requirements.txt 的 playwright==1.42.0 對齊，
+# 版本不一致 pip 會裝新版 playwright 但瀏覽器二進位還是舊的，跑不動。
 # ============================================================
-FROM python:3.12-slim
+FROM mcr.microsoft.com/playwright/python:v1.42.0-jammy
 
 WORKDIR /app
 
@@ -11,17 +16,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# ------------------------------------------------------------
-# 如果爬蟲有用到 Selenium / Playwright（需要真的開瀏覽器），
-# 上面那段換成下面這種，會省掉一堆「本機跑得動、容器裡跑不動」的問題：
-#
-#   FROM mcr.microsoft.com/playwright/python:v1.49.0-noble
-#   RUN playwright install --with-deps chromium
-#
-# 純 requests + BeautifulSoup 的話就維持 slim 即可。
-# ------------------------------------------------------------
-
 COPY app/ /app/
+
+# config.json 裡的 record_paths 預設寫到 Record/，模組重啟資料就不見，
+# 建議在 docker-compose 幫這個服務掛一個 volume 到 /app/Record
 
 EXPOSE 8001
 

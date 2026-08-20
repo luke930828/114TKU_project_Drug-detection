@@ -60,9 +60,15 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
+      # ⚠️ 這幾個目前這個模組還沒真的讀，位址是寫在 app/config.json 的
+      # webhook_settings.backend_url，換環境要手動改那個檔案
       BACKEND_BASE_URL: http://backend:8000
       INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
       HTTP_TIMEOUT: ${HTTP_TIMEOUT:-10}
+    volumes:
+      # Record/ 是爬蟲的執行狀態（queue.db、monitor_state.db、log），
+      # 不掛 volume 的話容器重啟資料就沒了
+      - crawler-record:/app/Record
     depends_on:
       backend:
         condition: service_healthy
@@ -131,3 +137,4 @@ services:
 volumes:
   mysql-data:
   hf-cache:
+  crawler-record:
