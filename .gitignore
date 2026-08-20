@@ -1,2 +1,75 @@
+# ---- 秘密----
+.env
+.env.*
+!.env.example
+!.env.*.example
+*密碼*
+*.key
+*.pem
+secrets/
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
 .venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+
+# ---- Node / 前端 ----
+# 注意：不能用裸的 "dist/"——repo 根目錄的 dist/ 是要追蹤的展示發布包，
+# 只有 modules/frontend/dist/（vite build 產物）該被忽略。
+node_modules/
+/modules/frontend/dist/
+.vite/
+*.local
+
+# ---- 模型權重與資料（用 volume 掛，不進 git）----
 data/
+datasets/
+outputs/
+runs/
+weights/
+*.pt
+*.pth
+*.onnx
+*.engine
+*.h5
+*.ckpt
+
+# ---- 編輯器 / 作業系統 ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---- log ----
+*.log
+logs/
+
+# ---- 專案專用 ----
+.claude
+# backend 還沒搬進 modules/，先整個忽略，也順便擋掉 src/防毒後端瘦身/資料/ 底下的密碼檔
+src/
+results/
+checkpoint-*/
+.cache/
+
+# scripts/make-offline-bundle.sh 產生的離線包，不進 git
+/offline-bundle-*/
+/offline-bundle-*.tar.gz*
+
+# 內部用
+README-docker.md
+Makefile
+CONTRIBUTING.md
+
+# 爬蟲執行時產生的狀態/輸出，不是原始碼
+modules/crawler/app/monitor_state.db
+modules/crawler/app/Record/
+modules/crawler/app/testjpg/
+modules/crawler/app/testHTML/
+*.db
+
+

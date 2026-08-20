@@ -1,0 +1,140 @@
+# ============================================================
+# 單機版：五個模組 + MySQL 全部跑在同一台
+# 用法：docker compose -f deploy/docker-compose.yml --env-file .env.local up -d --build
+# ============================================================
+
+services:
+  # ---------------- 資料庫 ----------------
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME:-drug_prevention_db}
+    # 中文標題、關鍵字都靠這兩個參數，漏掉會變亂碼
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+    # 不 publish 3306：只有 backend 需要連，走內部網路就好。
+    # 真的要用 Workbench 看資料時再暫時打開。
+
+  # ---------------- 後端（統整中心）----------------
+  backend:
+    build:
+      context: ../modules/backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: ${DB_USER:-root}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME:-drug_prevention_db}
+      NLP_BASE_URL: ${NLP_BASE_URL}
+      YOLO_BASE_URL: ${YOLO_BASE_URL}
+      CRAWLER_BASE_URL: ${CRAWLER_BASE_URL}
+      BACKEND_SELF_URL: http://127.0.0.1:8000
+      HTTP_TIMEOUT: ${HTTP_TIMEOUT:-10}
+      HTTP_RETRIES: ${HTTP_RETRIES:-2}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      # 開著方便直接看 /docs 測 API，正式跑可以拿掉讓前端 proxy 就好
+      - "127.0.0.1:8000:8000"
+
+  # ---------------- 爬蟲 ----------------
+  crawler:
+    build:
+      context: ../modules/crawler
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      # ⚠️ 這幾個目前這個模組還沒真的讀，位址是寫在 app/config.json 的
+      # webhook_settings.backend_url，換環境要手動改那個檔案
+      BACKEND_BASE_URL: http://backend:8000
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+      HTTP_TIMEOUT: ${HTTP_TIMEOUT:-10}
+    volumes:
+      # Record/ 是爬蟲的執行狀態（queue.db、monitor_state.db、log），
+      # 不掛 volume 的話容器重啟資料就沒了
+      - crawler-record:/app/Record
+    depends_on:
+      backend:
+        condition: service_healthy
+    profiles: ["full"]
+
+  # ---------------- NLP 引擎 ----------------
+  nlp:
+    build:
+      context: ../modules/nlp
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      MODEL_ID: ${MODEL_ID:-matt0513/drug-detection-xlm-roberta}
+      BACKEND_BASE_URL: http://backend:8000
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+    volumes:
+      # 模型從 Hugging Face Hub 下載，快取掛 volume 避免每次重啟都重抓
+      - hf-cache:/root/.cache/huggingface
+    depends_on:
+      backend:
+        condition: service_healthy
+    profiles: ["full"]
+
+  # ---------------- YOLO 引擎 ----------------
+  yolo:
+    build:
+      context: ../modules/yolo
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      BACKEND_BASE_URL: http://backend:8000
+      MODEL_PATH: /models/best.pt
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+    volumes:
+      # 權重放宿主機，不進 image 也不進 git
+      - ${MODEL_DIR:-../models}:/models:ro
+    depends_on:
+      backend:
+        condition: service_healthy
+    profiles: ["full"]
+    # GPU：需要 nvidia-container-toolkit。沒 GPU 就把整段 deploy 刪掉。
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["0"]
+              capabilities: [gpu]
+        limits:
+          memory: 12G
+
+  # ---------------- 前端 ----------------
+  frontend:
+    build:
+      context: ../modules/frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api}
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+
+volumes:
+  mysql-data:
+  hf-cache:
+  crawler-record:
