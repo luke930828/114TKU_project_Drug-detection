@@ -49,7 +49,7 @@ export default function App() {
         onDetectionsLoaded={(sites) => {
           const highRiskUrls = new Set(
             sites
-              .filter((site) => site.riskLevel === "高風險")
+              .filter((site) => site.riskLevel === "極高風險")
               .map((site) => site.url)
           );
           const mediumRiskSites = sites.filter(
