@@ -116,7 +116,9 @@ services:
       backend:
         condition: service_healthy
     profiles: ["full"]
-    # GPU：需要 nvidia-container-toolkit。沒 GPU 就把整段 deploy 刪掉。
+    # requirements.txt 已經是 GPU 版 torch（+cu128），部署機器要有 NVIDIA GPU +
+    # nvidia-container-toolkit，沒有的話這個服務會啟動失敗——把整段 deploy 刪掉，
+    # 並把 requirements.txt 的 torch/torchvision 換回不帶 +cu128 的版本。
     deploy:
       resources:
         reservations:
