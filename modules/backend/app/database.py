@@ -43,6 +43,7 @@ class AuditLog(Base):
     
     user = relationship("User", back_populates="audit_logs")
 # 4. 定義：「可疑網站黑名單」資料表
+# 4. 定義：「可疑網站黑名單」資料表
 class SuspectWebsite(Base):
     __tablename__ = "suspect_websites"
 
@@ -53,9 +54,9 @@ class SuspectWebsite(Base):
     reported_by = Column(String(50))
     created_at = Column(DateTime, default=func.now())
 
-    html_content = Column(Text, nullable=True)  
-    images_data = Column(Text, nullable=True)   
-
+    # 👇 把這裡原本的 Text 改成 LONGTEXT (建議 HTML 也順便改，因為有些惡意網頁原始碼也很長)
+    html_content = Column(LONGTEXT, nullable=True)  
+    images_data = Column(LONGTEXT, nullable=True)
 # 5. 定義：「白名單」資料表
 class WhitelistWebsite(Base):
     __tablename__ = "whitelist_websites"
