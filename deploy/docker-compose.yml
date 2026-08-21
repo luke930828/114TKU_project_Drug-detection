@@ -38,10 +38,17 @@ services:
       DB_USER: ${DB_USER:-root}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME:-drug_prevention_db}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       NLP_BASE_URL: ${NLP_BASE_URL}
       YOLO_BASE_URL: ${YOLO_BASE_URL}
       CRAWLER_BASE_URL: ${CRAWLER_BASE_URL}
       BACKEND_SELF_URL: http://127.0.0.1:8000
+      # 目前 app/utils.py、app/routers/scan.py 實際讀的是這幾個變數名稱
+      # （不是上面的 *_BASE_URL），從同一組 .env 值組出完整端點
+      NLP_PREDICT_URL: ${NLP_BASE_URL}/predict
+      YOLO_API_URL: ${YOLO_BASE_URL}/api/v1/predict/trigger
+      CRAWLER_API_URL: ${CRAWLER_BASE_URL}/api/v1/crawl
+      BACKEND_NLP_REPORT_URL: http://127.0.0.1:8000/api/nlp/report/
       HTTP_TIMEOUT: ${HTTP_TIMEOUT:-10}
       HTTP_RETRIES: ${HTTP_RETRIES:-2}
       INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
@@ -60,7 +67,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
-      # ⚠️ 這幾個目前這個模組還沒真的讀，位址是寫在 app/config.json 的
+      #  這幾個目前這個模組還沒真的讀，位址是寫在 app/config.json 的
       # webhook_settings.backend_url，換環境要手動改那個檔案
       BACKEND_BASE_URL: http://backend:8000
       INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
@@ -109,7 +116,9 @@ services:
       backend:
         condition: service_healthy
     profiles: ["full"]
-    # GPU：需要 nvidia-container-toolkit。沒 GPU 就把整段 deploy 刪掉。
+    # requirements.txt 已經是 GPU 版 torch（+cu128），部署機器要有 NVIDIA GPU +
+    # nvidia-container-toolkit，沒有的話這個服務會啟動失敗——把整段 deploy 刪掉，
+    # 並把 requirements.txt 的 torch/torchvision 換回不帶 +cu128 的版本。
     deploy:
       resources:
         reservations:

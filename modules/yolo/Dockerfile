@@ -1,37 +1,29 @@
-# ============================================================
-# YOLO 模組範本 —— 給負責 YOLO 的同學填
-# ============================================================
-# 選 base image 的規則：容器內的 CUDA 版本「可以比宿主機 driver 舊，不能比它新」。
-# 先在要當主機的那台跑 nvidia-smi 看 CUDA Version，再挑對應的 tag。
-#
-# 只用 CPU 推論的話，把下面這行換成 FROM python:3.12-slim 就好，image 會小非常多
-# （CUDA base 大概 6-8GB，slim 只有 150MB 左右）。
+FROM python:3.12-slim
 
-FROM pytorch/pytorch:2.5.1-cuda12.1-cudnn9-runtime
+# opencv (cv2) 需要這兩個系統套件才能 import 成功，slim image 預設沒有，
+# 沒裝的話 import cv2 會直接炸 libGL.so.1 找不到
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# ultralytics 需要 libgl / libglib，slim 或 runtime image 預設沒有，缺了會出現
-# "ImportError: libGL.so.1: cannot open shared object file"
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        libgl1 libglib2.0-0 curl \
-    && rm -rf /var/lib/apt/lists/*
-
+# 先只複製 requirements.txt 裝套件，程式碼改動不會讓這層快取失效，重build比較快
+#
+# GPU 版：torch/torchvision 釘的是 +cu128，用 --extra-index-url 讓 pip 找得到這個 local
+# version；其他套件（fastapi、numpy...）還是照舊從預設的 PyPI 裝，兩邊不衝突。
+# 不需要 nvidia/cuda 系列的 base image —— pip 裝 +cu128 wheel 時會自動帶進
+# nvidia-cuda-runtime-cu12 等一整包 CUDA 執行期函式庫，真正的 GPU 驅動由
+# nvidia-container-toolkit 在 container 啟動時注入，跟 base image 是哪個無關。
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt \
+    --extra-index-url https://download.pytorch.org/whl/cu128
 
-COPY app/ /app/
-
-# ⚠️ 模型權重 (.pt) 不要 COPY 進 image，也不要進 git。
-#    幾百 MB 的檔案會讓 image 肥掉、build 變慢、git repo 永久變大。
-#    改用 volume 掛進來，路徑從環境變數讀：
-ENV MODEL_PATH=/models/best.pt
+# app/ 底下的東西（main.py、ai_model/、models/）直接複製進 /app，
+# 對應 main.py 用 __file__ 定位模型路徑的邏輯，最後會落在 /app/models/best.pt
+COPY app/ .
 
 EXPOSE 5000
-
-HEALTHCHECK --interval=15s --timeout=5s --start-period=90s --retries=5 \
-    CMD curl -f http://localhost:5000/health || exit 1
-
-# start_period 要放長：載模型權重通常要 30-60 秒，太短會被判定不健康一直重啟
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]

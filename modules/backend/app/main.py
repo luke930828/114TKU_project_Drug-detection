@@ -23,8 +23,9 @@ def init_default_admin(db):
         new_admin = database.User(
             user_id=new_user_id,
             account="admin",
-            password_hash=get_password_hash("password123"), 
-            role="admin",
+            password_hash=get_password_hash("password123"),
+            # dependencies.py 的 verify_admin 檢查的是這個中文字串，"admin" 會直接被 403 擋掉
+            role="系統管理員",
             department="系統管理部", 
             is_active=True
         )
