@@ -7,3 +7,4 @@ SQLAlchemy==2.0.52
 uvicorn
 pymysql
 python-multipart
+openpyxl

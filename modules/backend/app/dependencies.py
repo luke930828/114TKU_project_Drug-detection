@@ -2,9 +2,11 @@ from fastapi import FastAPI, Depends, HTTPException, Header
 from fastapi import status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-import database  
-import jwt 
+import database
+import jwt
 import hashlib
+import os
+
 def get_password_hash(password: str) -> str:
     return hashlib.sha256(password.encode("utf-8")).hexdigest()
 
@@ -14,7 +16,9 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login/")
 
-SECRET_KEY = "drug_prevention_super_secret_key_2026" 
+# 必填，沒設就直接爆掉：這是 JWT 簽章密鑰，寫死在程式碼裡等於任何看得到原始碼的人
+# 都能自己簽發 super_admin 的 token，比洩漏資料庫密碼更嚴重
+SECRET_KEY = os.environ["JWT_SECRET_KEY"]
 ALGORITHM = "HS256"
 
 def get_db():
