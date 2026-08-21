@@ -12,8 +12,9 @@ router = APIRouter(tags=["白名單維護"])
 def list_whitelist(db: Session = Depends(get_db), current_admin: database.User = Depends(verify_admin)):
     return db.query(database.WhitelistWebsite).all()
 
-@router.post("/api/whitelist/", summary="最高權限：新增白名單")
-def add_whitelist(data: WhitelistCreate, admin: database.User = Depends(verify_super_admin), db: Session = Depends(get_db)):
+# 👇 這裡把 verify_super_admin 換成了 verify_admin
+@router.post("/api/whitelist/", summary="管理員：新增白名單")
+def add_whitelist(data: WhitelistCreate, admin: database.User = Depends(verify_admin), db: Session = Depends(get_db)):
     existing = db.query(database.WhitelistWebsite).filter(database.WhitelistWebsite.url == data.url).first()
     if existing:
         raise HTTPException(status_code=400, detail="該網址已存在於白名單中。")
@@ -29,10 +30,11 @@ def add_whitelist(data: WhitelistCreate, admin: database.User = Depends(verify_s
         details=f"將網址 {data.url} 加入白名單"
     )
     
-    return {"status": "success", "message": f"成功由總管理員 {admin.account} 新增白名單。"}
+    return {"status": "success", "message": f"成功由管理員 {admin.account} 新增白名單。"}
 
-@router.delete("/api/whitelist/{id}", summary="最高權限：刪除白名單")
-def delete_whitelist(id: int, admin: database.User = Depends(verify_super_admin), db: Session = Depends(get_db)):
+# 👇 這裡的刪除也一併把 verify_super_admin 換成了 verify_admin
+@router.delete("/api/whitelist/{id}", summary="管理員：刪除白名單")
+def delete_whitelist(id: int, admin: database.User = Depends(verify_admin), db: Session = Depends(get_db)):
     target = db.query(database.WhitelistWebsite).filter(database.WhitelistWebsite.id == id).first()
     if not target:
         raise HTTPException(status_code=404, detail="找不到該白名單項目。")

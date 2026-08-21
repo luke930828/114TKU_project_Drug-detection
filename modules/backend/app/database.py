@@ -1,21 +1,12 @@
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text, JSON, Boolean
 from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
 from sqlalchemy.dialects.mysql import LONGTEXT
-import json
-import os
-
-# 1. 設定資料庫連線網址（一律從環境變數讀，不要寫死密碼）
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASSWORD = os.environ["DB_PASSWORD"]  # 必填，沒設就直接爆掉，不要靜靜用預設值跑錯
-DB_HOST = os.getenv("DB_HOST", "mysql")
-DB_PORT = os.getenv("DB_PORT", "3306")
-DB_NAME = os.getenv("DB_NAME", "drug_prevention_db")
-SQLALCHEMY_DATABASE_URL = (
-    f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    "?charset=utf8mb4"
-)
+import json 
+# 1. 設定資料庫連線網址
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:MySQLdrug2026@localhost:3306/drug_prevention_db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
@@ -63,7 +54,6 @@ class SuspectWebsite(Base):
     reported_by = Column(String(50))
     created_at = Column(DateTime, default=func.now())
 
-    # 👇 把這裡原本的 Text 改成 LONGTEXT (建議 HTML 也順便改，因為有些惡意網頁原始碼也很長)
     html_content = Column(LONGTEXT, nullable=True)  
     images_data = Column(LONGTEXT, nullable=True)
 # 5. 定義：「白名單」資料表
