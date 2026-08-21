@@ -1,5 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text, JSON, Boolean
 from sqlalchemy.sql import func
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 from sqlalchemy.orm import declarative_base, relationship
 from datetime import datetime
 from sqlalchemy.dialects.mysql import LONGTEXT
@@ -7,6 +8,7 @@ import json
 # 1. 設定資料庫連線網址
 SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:MySQLdrug2026@localhost:3306/drug_prevention_db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 # 2. 定義「使用者與權限」資料表
