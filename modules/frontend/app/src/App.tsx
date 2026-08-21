@@ -22,6 +22,9 @@ export default function App() {
   );
 
   const handleLogout = () => {
+    const shouldLogout = window.confirm("確定要登出系統嗎？");
+    if (!shouldLogout) return;
+
     clearAuthToken();
     setIsAuthenticated(false);
     setPage("home");
