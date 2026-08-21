@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text, JSON, Boolean
 from sqlalchemy.sql import func
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 from datetime import datetime
 from sqlalchemy.dialects.mysql import LONGTEXT
 import json
@@ -17,6 +17,7 @@ SQLALCHEMY_DATABASE_URL = (
     "?charset=utf8mb4"
 )
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 # 2. 定義「使用者與權限」資料表

@@ -8,3 +8,5 @@ uvicorn
 pymysql
 python-multipart
 openpyxl
+passlib
+bcrypt
