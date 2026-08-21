@@ -1,0 +1,20 @@
+# 用 pipreqs 掃 app/ 底下的 import 產生，並人工校正成本機實測過的版本
+# (pipreqs 是查 PyPI 最新版，不是查本機實際裝的版本，兩者不一定一樣，已手動核對修正)
+fastapi==0.136.1
+numpy==2.4.3
+opencv-python==4.13.0.92
+pydantic==2.13.4
+requests==2.32.5
+ultralytics==8.4.24
+
+# uvicorn: 拿來啟動服務的，main.py 本身沒有 import，pipreqs 掃不到但一定要有
+uvicorn==0.47.0
+
+# torch / torchvision: ultralytics 的必要依賴，main.py 沒有直接 import 所以 pipreqs 也漏掉。
+# 這裡刻意釘一般 CPU 版本（不是我們本機測試機用的 +cu128 CUDA 版），
+# 因為 CUDA 版需要額外的 --index-url 才能裝，且大部分人 docker build 的機器不一定有 GPU passthrough。
+# 如果之後 Docker 部署的機器確定有 GPU 且有設定 nvidia-container-toolkit，
+# 再把這兩行換成 torch==2.10.0+cu128 / torchvision==0.25.0+cu128，
+# 並在 Dockerfile 的 pip install 加上 --index-url https://download.pytorch.org/whl/cu128
+torch==2.10.0
+torchvision==0.25.0

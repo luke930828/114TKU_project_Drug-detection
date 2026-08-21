@@ -23,7 +23,7 @@ from typing import List, Tuple
 
 import yaml
 
-from src.ai_model.scoring import CLASS_WEIGHTS
+from modules.yolo.app.ai_model.scoring import CLASS_WEIGHTS
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")

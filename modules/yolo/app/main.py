@@ -1,5 +1,8 @@
 import base64
+import os
 import threading
+from pathlib import Path
+
 import cv2
 import numpy as np
 import requests
@@ -8,7 +11,7 @@ from pydantic import BaseModel
 from typing import Any
 from ultralytics import YOLO
 
-from src.ai_model.scoring import (
+from ai_model.scoring import (
     compute_visual_risk,
     merge_class_metadata,
     new_class_metadata,
@@ -17,19 +20,24 @@ from src.ai_model.scoring import (
 
 app = FastAPI(title="防毒軟體 - YOLO 影像分析部門 API")
 
-# 1. 載入妳的專屬權重檔 (維持正確的 models/best.pt 相對路徑)
+# 1. 載入專屬權重檔。用 __file__ 定位而不是相對於「執行指令當下的目錄」，
+# 這樣不管是本機從專案根目錄跑、還是 Docker 裡 WORKDIR=/app 跑，都一定能找到同一個 models/best.pt
+MODEL_PATH = Path(os.getenv("MODEL_PATH", Path(__file__).parent / "models" / "best.pt"))
+model = None
 try:
-    model = YOLO("models/best.pt")
-    print("🎉 [成功] YOLOv8 自定義模型 models/best.pt 已順利載入！")
+    model = YOLO(str(MODEL_PATH))
+    print(f"🎉 [成功] YOLOv8 自定義模型 {MODEL_PATH} 已順利載入！")
     print("🚨 模型內部真正的 ID 對應是：", model.names)
 except Exception as e:
-    print(f"🚨 [錯誤] 模型載入失敗，請確認 best.pt 是否在 models/ 目錄下！錯誤: {e}")
+    print(f"🚨 [錯誤] 模型載入失敗，請確認 {MODEL_PATH} 是否存在！錯誤: {e}")
 
-# 2. 用「類別名稱」而非數字 ID 對齊 16 個 YOLO 類別，權重與組合加成定義於 src/ai_model/scoring.py
+# 2. 用「類別名稱」而非數字 ID 對齊 16 個 YOLO 類別，權重與組合加成定義於 ai_model/scoring.py
 # 用名稱比對可以在模型重新訓練、ID 洗牌時依然正確對齊，達成計分邏輯與模型 ID 的解耦。
 
-# 後端同學的接收網址
-BACKEND_REPORT_URL = "http://100.123.184.43:8000/api/ai_result/report/"
+# 後端同學的接收網址 —— 用環境變數 BACKEND_BASE_URL 覆寫，方便單機測試/跨機測試/未來 docker-compose 切換，
+# 沒有設定環境變數時預設用目前的 Tailscale 位址，行為不變
+BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://100.122.59.16:8000")
+BACKEND_REPORT_URL = f"{BACKEND_BASE_URL}/api/ai_result/report/"
 
 # 3. 前端展示用的信心度門檻，跟算分用的 conf=0.1 刻意分開：
 # 算分要低門檻才能逼出弱訊號，但畫框給人看只想看有把握的框，避免「代表圖是靠一個 0.11 的雜訊框選出來的，
@@ -239,7 +247,13 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
     except Exception as e:
         print(f"❌ 背景處理或回報失敗: {str(e)}")
 
-# 7. 接收口
+# 7. 健康檢查：讓 docker-compose 之類的編排工具知道這個模組是不是真的活了（模型有沒有載完）
+@app.get("/health")
+def health():
+    return {"status": "ok", "model_loaded": model is not None}
+
+
+# 8. 接收口
 @app.post("/api/v1/predict/trigger")
 async def receive_from_backend(data: dict, background_tasks: BackgroundTasks):
     task_id = data.get("task_id", "unknown_task")

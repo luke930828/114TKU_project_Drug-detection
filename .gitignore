@@ -15,5 +15,10 @@ models/*.pt
 models/*.onnx
 runs/
 
+# 各模組（modules/<模組>/app/models/）自己的權重檔，同樣不推上 git，走 Release 下載流程
+modules/*/app/models/*.pt
+modules/*/app/models/*.onnx
+modules/*/app/models/*.pth
+
 .DS_Store
 *.log
