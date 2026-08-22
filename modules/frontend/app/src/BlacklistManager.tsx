@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import { hasMaliciousInput, MALICIOUS_INPUT_MESSAGE } from "./inputSecurity";
 
 interface Props {
   onBack: () => void;
@@ -15,6 +16,10 @@ export default function BlacklistManager({ onBack }: Props) {
 
   const addItem = () => {
     if (!input) return;
+    if (hasMaliciousInput([input])) {
+      alert(MALICIOUS_INPUT_MESSAGE);
+      return;
+    }
     setList([...list, input]);
     setInput("");
   };

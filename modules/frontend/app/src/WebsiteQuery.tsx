@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, Check, ShieldAlert, ShieldCheck } from "lucide-react";
 import { authFetch, getErrorMessage } from "./auth";
+import { hasMaliciousInput, MALICIOUS_INPUT_MESSAGE } from "./inputSecurity";
 
 export interface PendingWebsite {
   url: string;
@@ -67,6 +68,10 @@ export default function WebsiteQuery({
   const addBlacklistItem = () => {
     const value = input.trim();
     if (!value) return;
+    if (hasMaliciousInput([value])) {
+      alert(MALICIOUS_INPUT_MESSAGE);
+      return;
+    }
     onAdd("black", value);
     setInput("");
   };
@@ -115,6 +120,10 @@ export default function WebsiteQuery({
     const reason = whiteReason.trim();
     if (!url || !title || !reason) {
       alert("請完整填寫網址、標題與加入原因。");
+      return;
+    }
+    if (hasMaliciousInput([url, title, reason])) {
+      alert(MALICIOUS_INPUT_MESSAGE);
       return;
     }
 

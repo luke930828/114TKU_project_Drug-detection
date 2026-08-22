@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { authFetch } from "./auth";
+import { hasMaliciousInput, MALICIOUS_INPUT_MESSAGE } from "./inputSecurity";
 
 interface URLAnalysisProps {
   onBack: () => void;
@@ -294,6 +295,13 @@ export function URLAnalysis({ onBack }: URLAnalysisProps) {
     const currentUrl = url.trim();
 
     if (!currentUrl || loading) {
+      return;
+    }
+
+    if (hasMaliciousInput([currentUrl])) {
+      setUrlError(MALICIOUS_INPUT_MESSAGE);
+      setServerMessage(null);
+      setAnalysisData(null);
       return;
     }
 
