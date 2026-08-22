@@ -1,19 +1,51 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from typing import List, Dict, Any, Optional
+import html
+import re
+
+def check_xss(value: str) -> str:
+    if not isinstance(value, str):
+        return value
+    
+    dangerous_keywords = ["<script>", "javascript:", "onload=", "onerror="]
+    val_lower = value.lower()
+    for kw in dangerous_keywords:
+        if kw in val_lower:
+            raise ValueError("系統警告：偵測到危險的惡意程式碼，連線已攔截！")
+            
+    return html.escape(value)
+
+
+# 前端輸入區 (嚴格防護)
 class UserLogin(BaseModel):
     account: str
     password: str
 
+    @field_validator('account')
+    @classmethod
+    def sanitize_account(cls, v):
+        return check_xss(v)
 
 class FrontendScanRequest(BaseModel):
     url: str
+
+    @field_validator('url')
+    @classmethod
+    def sanitize_url(cls, v):
+        return check_xss(v)
 
 class WhitelistCreate(BaseModel):
     url: str
     title: str
     reason: str
 
+    @field_validator('url', 'title', 'reason')
+    @classmethod
+    def sanitize_whitelist(cls, v):
+        return check_xss(v)
 
+
+#  內部通訊區 
 class WebsiteReport(BaseModel):
     task_type: Optional[str] = "unknown"  
     timestamp: Optional[str] = "unknown"  
