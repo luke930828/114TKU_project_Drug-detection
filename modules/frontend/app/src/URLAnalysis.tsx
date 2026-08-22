@@ -587,7 +587,7 @@ export function URLAnalysis({ onBack }: URLAnalysisProps) {
             <div className="flex items-center gap-2 mb-4">
               <AlertTriangle
                 className={
-                  analysisData.risk_score >= 74
+                  analysisData.risk_score > 74
                     ? "text-red-500"
                     : "text-yellow-500"
                 }
@@ -617,12 +617,10 @@ export function URLAnalysis({ onBack }: URLAnalysisProps) {
 
                 <span
                   className={`text-xl font-bold ${
-                    analysisData.risk_level ===
-                    "極高風險"
+                    analysisData.risk_level === "極高風險"
                       ? "text-red-500"
-                      : analysisData.risk_level ===
-                          "高風險"
-                        ? "text-orange-500"
+                      : analysisData.risk_level.startsWith("中風險")
+                        ? "text-amber-500"
                         : "text-green-400"
                   }`}
                 >

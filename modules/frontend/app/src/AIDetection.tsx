@@ -69,8 +69,8 @@ const normalizeKeywords = (value: unknown): string[] => {
 };
 
 const normalizeRiskLevel = (score: number): ResultType["riskLevel"] => {
-  if (score >= 74) return "high";
-  if (score >= 40) return "medium";
+  if (score > 74) return "high";
+  if (score >= 35) return "medium";
   return "low";
 };
 
@@ -296,7 +296,7 @@ export function AIDetection({ onBack, onDetectionsLoaded }: Props) {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <Stat title="總筆數" value={stats.total} />
-            <Stat title="高風險" value={stats.high} color="text-red-600" />
+            <Stat title="極高風險" value={stats.high} color="text-red-600" />
             <Stat title="中風險" value={stats.medium} color="text-yellow-600" />
             <Stat title="低風險" value={stats.low} color="text-green-600" />
           </div>
@@ -308,7 +308,7 @@ export function AIDetection({ onBack, onDetectionsLoaded }: Props) {
               className="border-2 border-gray-200 rounded-lg p-2 focus:border-[#2B4C7E]"
             >
               <option value="all">全部</option>
-              <option value="high">高風險</option>
+              <option value="high">極高風險</option>
               <option value="medium">中風險</option>
               <option value="low">低風險</option>
             </select>
@@ -453,7 +453,7 @@ export function AIDetection({ onBack, onDetectionsLoaded }: Props) {
 }
 
 function getRiskText(level: ResultType["riskLevel"]) {
-  if (level === "high") return "高風險";
+  if (level === "high") return "極高風險";
   if (level === "medium") return "中風險";
   return "低風險";
 }
