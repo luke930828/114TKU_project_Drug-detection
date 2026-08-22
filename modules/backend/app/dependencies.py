@@ -16,9 +16,11 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login/")
 
-# 必填，沒設就直接爆掉：這是 JWT 簽章密鑰，寫死在程式碼裡等於任何看得到原始碼的人
-# 都能自己簽發 super_admin 的 token，比洩漏資料庫密碼更嚴重
-SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your_super_secret_key_for_local_testing")
+# 必填，沒設就直接爆掉：這是 JWT 簽章密鑰，寫死在程式碼裡（或給預設值）等於任何看得到
+# 原始碼的人都能自己簽發 super_admin 的 token，比洩漏資料庫密碼更嚴重。
+# 這行已經被改回有預設值兩次了——本機測試請在 .env.local 設好 JWT_SECRET_KEY，
+# 不要在這裡加預設值繞過去。
+SECRET_KEY = os.environ["JWT_SECRET_KEY"]
 ALGORITHM = "HS256"
 
 def get_db():

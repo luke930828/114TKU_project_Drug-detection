@@ -3,17 +3,20 @@ from typing import List, Dict, Any, Optional
 import html
 import re
 
-def check_xss(value: str) -> str:
+def check_xss(value: str, escape: bool = True) -> str:
     if not isinstance(value, str):
         return value
-    
+
     dangerous_keywords = ["<script>", "javascript:", "onload=", "onerror="]
     val_lower = value.lower()
     for kw in dangerous_keywords:
         if kw in val_lower:
             raise ValueError("系統警告：偵測到危險的惡意程式碼，連線已攔截！")
-            
-    return html.escape(value)
+
+    # url 不能用 html.escape()：& 會變成 &amp;、< 會變成 &lt;，網址的意義就變了，
+    # 拿去打 request 或跟資料庫比對都會對不起來（例如白名單網址悄悄失效）。
+    # XSS 防護該在「顯示」資料的地方做，不是在存網址的時候做。
+    return html.escape(value) if escape else value
 
 
 # 前端輸入區 (嚴格防護)
@@ -32,16 +35,21 @@ class FrontendScanRequest(BaseModel):
     @field_validator('url')
     @classmethod
     def sanitize_url(cls, v):
-        return check_xss(v)
+        return check_xss(v, escape=False)
 
 class WhitelistCreate(BaseModel):
     url: str
     title: str
     reason: str
 
-    @field_validator('url', 'title', 'reason')
+    @field_validator('url')
     @classmethod
-    def sanitize_whitelist(cls, v):
+    def sanitize_whitelist_url(cls, v):
+        return check_xss(v, escape=False)
+
+    @field_validator('title', 'reason')
+    @classmethod
+    def sanitize_whitelist_text(cls, v):
         return check_xss(v)
 
 
