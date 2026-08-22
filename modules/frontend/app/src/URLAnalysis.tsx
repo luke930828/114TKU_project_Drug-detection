@@ -27,6 +27,25 @@ interface RepresentativeDetection {
 
 const clampCoordinate = (value: number) => Math.min(1, Math.max(0, value));
 
+const isValidTargetUrl = (value: string) => {
+  try {
+    const parsedUrl = new URL(value);
+    if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+      return false;
+    }
+
+    const hostname = parsedUrl.hostname;
+    const isIpv4 = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname);
+    const isIpv6 = hostname.includes(":");
+    const hasValidHost =
+      hostname === "localhost" || hostname.includes(".") || isIpv4 || isIpv6;
+
+    return hasValidHost;
+  } catch {
+    return false;
+  }
+};
+
 const normalizeRepresentativeDetections = (
   value: unknown
 ): RepresentativeDetection[] => {
@@ -87,6 +106,7 @@ const getDetectionPosition = (
 
 export function URLAnalysis({ onBack }: URLAnalysisProps) {
   const [url, setUrl] = useState("");
+  const [urlError, setUrlError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [serverMessage, setServerMessage] = useState<string | null>(null);
   const [analysisData, setAnalysisData] = useState<any | null>(null);
@@ -276,6 +296,15 @@ export function URLAnalysis({ onBack }: URLAnalysisProps) {
     if (!currentUrl || loading) {
       return;
     }
+
+    if (!isValidTargetUrl(currentUrl)) {
+      setUrlError("請輸入完整且有效的網址，例如：https://example.com");
+      setServerMessage(null);
+      setAnalysisData(null);
+      return;
+    }
+
+    setUrlError(null);
 
     stopPolling();
     abortCurrentRequest();
@@ -502,44 +531,58 @@ export function URLAnalysis({ onBack }: URLAnalysisProps) {
           AI 進行即時分析。
         </p>
 
-        <div className="flex gap-2 mb-6">
-          <input
-            value={url}
-            onChange={(event) =>
-              setUrl(event.target.value)
-            }
-            disabled={loading}
-            onKeyDown={(event) => {
-              if (
-                event.key === "Enter" &&
-                !loading
-              ) {
-                handleAnalyze();
-              }
-            }}
-            placeholder="輸入目標網址，例如 https://littlehigh.com/cart"
-            className="flex-1 px-4 py-2 rounded bg-gray-50 text-gray-800 placeholder:text-gray-400 border border-gray-300 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 text-sm disabled:opacity-50"
-          />
+        <div className="mb-6">
+          <div className="flex gap-2">
+            <input
+              value={url}
+              onChange={(event) => {
+                setUrl(event.target.value);
+                if (urlError) setUrlError(null);
+              }}
+              disabled={loading}
+              aria-invalid={Boolean(urlError)}
+              aria-describedby={urlError ? "url-validation-error" : undefined}
+              onKeyDown={(event) => {
+                if (
+                  event.key === "Enter" &&
+                  !loading
+                ) {
+                  handleAnalyze();
+                }
+              }}
+              placeholder="輸入目標網址，例如 https://littlehigh.com/cart"
+              className={`flex-1 px-4 py-2 rounded bg-gray-50 text-gray-800 placeholder:text-gray-400 border focus:outline-none focus:ring-2 text-sm disabled:opacity-50 ${
+                urlError
+                  ? "border-red-500 focus:border-red-500 focus:ring-red-100"
+                  : "border-gray-300 focus:border-blue-500 focus:ring-blue-100"
+              }`}
+            />
 
-          {!loading ? (
-            <button
-              type="button"
-              onClick={handleAnalyze}
-              disabled={!url.trim()}
-              className="bg-blue-500 hover:bg-blue-600 px-5 py-2 rounded flex items-center gap-2 font-medium transition disabled:bg-blue-900 disabled:text-gray-500 disabled:cursor-not-allowed text-sm"
-            >
-              <Search size={18} />
-              開始檢測
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={handleCancelAnalysis}
-              className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded flex items-center gap-2 font-medium transition text-sm"
-            >
-              <XCircle size={18} />
-              停止測試
-            </button>
+            {!loading ? (
+              <button
+                type="button"
+                onClick={handleAnalyze}
+                disabled={!url.trim()}
+                className="bg-blue-500 hover:bg-blue-600 px-5 py-2 rounded flex items-center gap-2 font-medium transition disabled:bg-blue-900 disabled:text-gray-500 disabled:cursor-not-allowed text-sm"
+              >
+                <Search size={18} />
+                開始檢測
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleCancelAnalysis}
+                className="bg-red-600 hover:bg-red-700 px-5 py-2 rounded flex items-center gap-2 font-medium transition text-sm"
+              >
+                <XCircle size={18} />
+                停止測試
+              </button>
+            )}
+          </div>
+          {urlError && (
+            <p id="url-validation-error" className="mt-2 text-sm font-medium text-red-600">
+              {urlError}
+            </p>
           )}
         </div>
 
