@@ -21,12 +21,12 @@ export const hasMaliciousInput = (values: string[]) =>
   values.some(containsMaliciousInput);
 
 export const PASSWORD_REQUIREMENTS =
-  "密碼至少需要 12 碼，並包含英文大寫、英文小寫、數字及特殊符號。";
+  "密碼至少需要 8 碼，並包含英文大寫、英文小寫、數字及特殊符號。";
 
 export const getPasswordValidationMessage = (password: string) => {
   const missing: string[] = [];
 
-  if (password.length < 12) missing.push("至少 12 碼");
+  if (password.length < 8) missing.push("至少 8 碼");
   if (!/[A-Z]/.test(password)) missing.push("英文大寫");
   if (!/[a-z]/.test(password)) missing.push("英文小寫");
   if (!/\d/.test(password)) missing.push("數字");

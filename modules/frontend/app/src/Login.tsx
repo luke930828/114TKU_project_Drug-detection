@@ -109,7 +109,7 @@ export default function Login({ onLogin }: Props) {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           autoComplete="current-password"
-          minLength={12}
+          minLength={8}
           aria-describedby="login-password-requirements"
           className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           placeholder="請輸入密碼"
