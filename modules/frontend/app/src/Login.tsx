@@ -5,6 +5,7 @@ import {
   getErrorMessage,
   saveAuthToken,
 } from "./auth";
+import { hasMaliciousInput, MALICIOUS_INPUT_MESSAGE } from "./inputSecurity";
 
 interface Props {
   onLogin: () => void;
@@ -19,6 +20,10 @@ export default function Login({ onLogin }: Props) {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!account.trim() || !password) return;
+    if (hasMaliciousInput([account, password])) {
+      setError(MALICIOUS_INPUT_MESSAGE);
+      return;
+    }
 
     setLoading(true);
     setError(null);

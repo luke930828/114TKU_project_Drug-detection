@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { ArrowLeft, RefreshCw, ScrollText, UserPlus } from "lucide-react";
 import { authFetch, getErrorMessage } from "./auth";
+import { hasMaliciousInput, MALICIOUS_INPUT_MESSAGE } from "./inputSecurity";
 
 interface Props {
   onBack: () => void;
@@ -152,6 +153,10 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
   const createUser = async (event: FormEvent) => {
     event.preventDefault();
     if (!account.trim() || !password || !department.trim()) return;
+    if (hasMaliciousInput([account, password, department])) {
+      alert(MALICIOUS_INPUT_MESSAGE);
+      return;
+    }
     setSaving(true);
     try {
       const response = await authFetch("/api/users/", {
