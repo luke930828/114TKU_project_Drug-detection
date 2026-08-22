@@ -241,7 +241,7 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
 
         <form onSubmit={createUser} className="grid grid-cols-1 md:grid-cols-5 gap-3 bg-blue-50 border border-blue-100 rounded-xl p-4 mb-8">
           <input value={account} onChange={(event) => setAccount(event.target.value)} placeholder="帳號" className="border rounded-lg px-3 py-2.5" />
-          <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={12} title={PASSWORD_REQUIREMENTS} placeholder="密碼（至少 12 碼）" className="border rounded-lg px-3 py-2.5" />
+          <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={8} title={PASSWORD_REQUIREMENTS} placeholder="密碼（至少 8 碼）" className="border rounded-lg px-3 py-2.5" />
           <select value={role} onChange={(event) => setRole(event.target.value)} className="border rounded-lg px-3 py-2.5 bg-white">
             <option>一般人員</option><option>系統管理員</option>
           </select>
