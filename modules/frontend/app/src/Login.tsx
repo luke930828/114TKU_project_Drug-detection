@@ -5,7 +5,12 @@ import {
   getErrorMessage,
   saveAuthToken,
 } from "./auth";
-import { hasMaliciousInput, MALICIOUS_INPUT_MESSAGE } from "./inputSecurity";
+import {
+  getPasswordValidationMessage,
+  hasMaliciousInput,
+  MALICIOUS_INPUT_MESSAGE,
+  PASSWORD_REQUIREMENTS,
+} from "./inputSecurity";
 
 interface Props {
   onLogin: () => void;
@@ -22,6 +27,11 @@ export default function Login({ onLogin }: Props) {
     if (!account.trim() || !password) return;
     if (hasMaliciousInput([account, password])) {
       setError(MALICIOUS_INPUT_MESSAGE);
+      return;
+    }
+    const passwordError = getPasswordValidationMessage(password);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
 
@@ -99,9 +109,14 @@ export default function Login({ onLogin }: Props) {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           autoComplete="current-password"
-          className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-7 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          minLength={12}
+          aria-describedby="login-password-requirements"
+          className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           placeholder="請輸入密碼"
         />
+        <p id="login-password-requirements" className="text-xs text-gray-500 mb-7">
+          {PASSWORD_REQUIREMENTS}
+        </p>
 
         <button
           type="submit"

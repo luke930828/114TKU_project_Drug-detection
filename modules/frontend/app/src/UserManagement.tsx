@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { ArrowLeft, RefreshCw, ScrollText, UserPlus } from "lucide-react";
 import { authFetch, getErrorMessage } from "./auth";
-import { hasMaliciousInput, MALICIOUS_INPUT_MESSAGE } from "./inputSecurity";
+import {
+  getPasswordValidationMessage,
+  hasMaliciousInput,
+  MALICIOUS_INPUT_MESSAGE,
+  PASSWORD_REQUIREMENTS,
+} from "./inputSecurity";
 
 interface Props {
   onBack: () => void;
@@ -157,6 +162,11 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
       alert(MALICIOUS_INPUT_MESSAGE);
       return;
     }
+    const passwordError = getPasswordValidationMessage(password);
+    if (passwordError) {
+      alert(passwordError);
+      return;
+    }
     setSaving(true);
     try {
       const response = await authFetch("/api/users/", {
@@ -231,7 +241,7 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
 
         <form onSubmit={createUser} className="grid grid-cols-1 md:grid-cols-5 gap-3 bg-blue-50 border border-blue-100 rounded-xl p-4 mb-8">
           <input value={account} onChange={(event) => setAccount(event.target.value)} placeholder="帳號" className="border rounded-lg px-3 py-2.5" />
-          <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="密碼" className="border rounded-lg px-3 py-2.5" />
+          <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} minLength={12} title={PASSWORD_REQUIREMENTS} placeholder="密碼（至少 12 碼）" className="border rounded-lg px-3 py-2.5" />
           <select value={role} onChange={(event) => setRole(event.target.value)} className="border rounded-lg px-3 py-2.5 bg-white">
             <option>一般人員</option><option>系統管理員</option>
           </select>
@@ -239,6 +249,7 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
           <button disabled={saving} className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-lg px-4 py-2.5 flex items-center justify-center gap-2">
             <UserPlus size={18} />{saving ? "儲存中…" : "新增人員"}
           </button>
+          <p className="md:col-span-5 text-xs text-gray-500">{PASSWORD_REQUIREMENTS}</p>
         </form>
 
         {error && <div className="mb-5 bg-red-50 border border-red-200 text-red-700 rounded-lg p-3">{error}</div>}
