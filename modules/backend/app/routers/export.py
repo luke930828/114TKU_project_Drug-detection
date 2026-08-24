@@ -1,29 +1,53 @@
 from dependencies import get_db, get_current_user
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
+from typing import Optional
 import pandas as pd
 import io
 import database
-from dependencies import get_db
 
 router = APIRouter(tags=["報表匯出模組"])
 
-# 模組九：資料庫報表匯出 
 @router.get("/api/export/ai_results_excel/", summary="匯出 AI 分析結果資料表")
-def export_raw_results_to_excel(db: Session = Depends(get_db), current_user = Depends(get_current_user)): 
-    results = db.query(database.AIAnalysisResult).all()
+def export_raw_results_to_excel(
+    start_date: Optional[str] = Query(None, description="開始日期 (YYYY-MM-DD)"),
+    end_date: Optional[str] = Query(None, description="結束日期 (YYYY-MM-DD)"),
+    db: Session = Depends(get_db), 
+    current_user = Depends(get_current_user)
+): 
+    # 🌟 效能升級：只 Select 需要的欄位，絕不抓取 LONGTEXT 圖片欄位
+    query = db.query(
+        database.AIAnalysisResult.id,
+        database.AIAnalysisResult.url,
+        database.AIAnalysisResult.risk_score,
+        database.AIAnalysisResult.risk_level,
+        database.AIAnalysisResult.created_at # 需要把時間抓出來做過濾判定，但不一定要放進 Excel
+    )
+    
+    if start_date:
+        query = query.filter(database.AIAnalysisResult.created_at >= start_date)
+    if end_date:
+        query = query.filter(database.AIAnalysisResult.created_at <= f"{end_date} 23:59:59")
+        
+    results = query.all()
     
     if not results:
-        raise HTTPException(status_code=404, detail="目前沒有任何分析資料可以匯出")
+        raise HTTPException(status_code=404, detail="目前沒有符合該時間區間的分析資料可以匯出")
 
-    data_list = []
-    for row in results:
-        row_dict = {column.name: getattr(row, column.name) for column in row.__table__.columns}
-        data_list.append(row_dict)
+    # 🌟 寫法簡化：直接將查詢結果轉成字典列表，省略了複雜的 getattr
+    data_list = [
+        {
+            "id": row.id,
+            "url": row.url,
+            "risk_score": row.risk_score,
+            "risk_level": row.risk_level
+        }
+        for row in results
+    ]
 
+    # 直接將乾淨的字典載入 DataFrame，不需要再 df = df[...] 篩選欄位了
     df = pd.DataFrame(data_list)
-    df = df[['id', 'url','risk_score', 'risk_level']]
     
     stream = io.BytesIO()
     
