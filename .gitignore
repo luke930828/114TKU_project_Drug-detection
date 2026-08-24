@@ -18,9 +18,11 @@ env/
 .pytest_cache/
 
 # ---- Node / 前端 ----
-# 注意：不能用裸的 "dist/"——repo 根目錄的 dist/ 是要追蹤的展示發布包，
-# 只有 modules/frontend/dist/（vite build 產物）該被忽略。
+# 兩個 dist 都不進 git，但分開寫比較清楚哪個是哪個：
+#   /dist/                    根目錄的展示發布包（已停用，不再對外發布）
+#   /modules/frontend/dist/   vite build 產物
 node_modules/
+/dist/
 /modules/frontend/dist/
 .vite/
 *.local
@@ -66,6 +68,7 @@ checkpoint-*/
 README-docker.md
 Makefile
 CONTRIBUTING.md
+TEST-PLAN.md
 
 # 爬蟲執行時產生的狀態/輸出，不是原始碼
 modules/crawler/app/monitor_state.db
