@@ -2,23 +2,52 @@ import os
 import uuid
 import requests
 
+# 分級門檻。crawler.py 的 24 小時清單也讀這裡，不要各寫一套
+# （以前 utils 用 74/35、crawler 用 85/75，同一筆資料會有兩個答案）。
+NLP_HIGH = 90        # NLP 到這個分數就一定要送人工覆核
+NLP_MEDIUM = 60
+YOLO_CONFIRM = 30    # 影像也附和到這個程度，覆核優先度往上提
+
+
 def calculate_multimodal_risk_100_scale(nlp_raw_score: int, yolo_raw_score: int):
     """
-    根據 NLP 與 YOLO 的原始分數 (0~100)，計算雙引擎加權總分與風險等級。
+    依 NLP 與 YOLO 的原始分數（0~100）算出綜合分數與風險等級。
+
+    為什麼不再用加權平均
+    ────────────────────
+    原本是 0.6×NLP + 0.4×YOLO > 74 才算極高風險。問題是純文字的販售頁、
+    訂單查詢頁、FAQ 頁本來就沒有商品圖可辨識，YOLO 給 0 分是正確的——
+    但 0.6×100 + 0.4×0 = 60，低於 74，整個網站就被放行了。
+
+    用 217 筆人工標註的真實網頁量過（data/eval_sample/）：
+        舊規則 0.6n+0.4y > 74   recall 0.653　漏掉 41 個毒品網站
+        改用   NLP >= 90         recall 0.975　漏掉  3 個
+    而且把 YOLO 加進判定條件完全沒有幫助（漏報一樣是 3 個，
+    precision 卻從 0.772 掉到 0.706，還多 14 件要人工看）。
+
+    所以 YOLO 不參與「要不要覆核」的判定，改用來排覆核的優先順序：
+    NLP 高分且 YOLO 也附和的那批，實際命中率 81%；YOLO 沒附和的是 69%。
+
+    綜合分數仍以加權算出並保留，因為前端與報表要拿它排序；
+    但風險等級不再由它決定。
     """
-    w_text = 0.6
-    w_image = 0.4
-    
-    s_final = (w_text * nlp_raw_score) + (w_image * yolo_raw_score)
-    
-    if s_final > 74:
-        risk_level = "極高風險"
-    elif 35 <= s_final <= 74:
+    combined = int(0.6 * nlp_raw_score + 0.4 * yolo_raw_score)
+
+    if nlp_raw_score >= NLP_HIGH and yolo_raw_score >= YOLO_CONFIRM:
+        risk_level = "極高風險"                      # 兩個引擎都指向毒品
+    elif nlp_raw_score >= NLP_HIGH:
+        risk_level = "高風險 (優先人工覆核)"          # 文字確定，影像沒東西可看
+    elif nlp_raw_score >= NLP_MEDIUM or yolo_raw_score >= NLP_HIGH:
         risk_level = "中風險 (建議人工覆核)"
     else:
         risk_level = "低風險"
-        
-    return int(s_final), risk_level
+
+    return combined, risk_level
+
+
+def needs_review(nlp_raw_score: int, yolo_raw_score: int) -> bool:
+    """這筆要不要進人工覆核清單。分級規則只寫在這個檔案，避免又出現兩套標準。"""
+    return nlp_raw_score >= NLP_HIGH or yolo_raw_score >= NLP_HIGH
 
 
 def dispatch_to_ai_engines(url: str, html_content: str, images: list):

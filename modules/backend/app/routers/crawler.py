@@ -5,7 +5,7 @@ import json
 import database
 from schemas import WebsiteReport
 from dependencies import get_db, verify_admin
-from utils import calculate_multimodal_risk_100_scale, dispatch_to_ai_engines
+from utils import calculate_multimodal_risk_100_scale, dispatch_to_ai_engines, needs_review
 import traceback
 
 router = APIRouter(tags=["自動爬蟲管理"])
@@ -130,10 +130,14 @@ def get_automated_24h_results(
         database.AIAnalysisResult.task_source.like("%[automated_24h]%")
     )
 
+    # 統計也依 risk_level，不要再用 risk_score 自己切一套門檻
     total_count = base_query.count()
-    high_risk_count = base_query.filter(database.AIAnalysisResult.risk_score >= 85).count()
-    med_risk_count = base_query.filter(database.AIAnalysisResult.risk_score >= 75, database.AIAnalysisResult.risk_score < 85).count()
-    low_risk_count = base_query.filter(database.AIAnalysisResult.risk_score < 75).count()
+    high_risk_count = base_query.filter(
+        database.AIAnalysisResult.risk_level == "極高風險").count()
+    med_risk_count = base_query.filter(
+        database.AIAnalysisResult.risk_level.in_(
+            ["高風險 (優先人工覆核)", "中風險 (建議人工覆核)"])).count()
+    low_risk_count = total_count - high_risk_count - med_risk_count
     skip = (page - 1) * limit
     results = base_query.order_by(database.AIAnalysisResult.created_at.desc()) \
                         .offset(skip) \
@@ -147,13 +151,15 @@ def get_automated_24h_results(
         if hasattr(ai_record, 'created_at') and ai_record.created_at:
             date_str = ai_record.created_at.strftime("%Y-%m-%d")
 
-        status = "Active"
-        if ai_record.risk_score >= 85:
-            status = "Blocked"
-        elif 75 <= ai_record.risk_score < 85:
-            status = "Investigation"
-        elif ai_record.risk_score < 75:
-            status = "Monitored"
+        # status 直接對應 risk_level，不要另外拿 risk_score 算一套門檻。
+        # 以前這裡用 85/75，utils.py 用 74/35，同一筆資料在報表和清單上
+        # 會顯示成不同等級——68 分在 risk_level 是「中風險」，在這裡卻是
+        # 最低的 Monitored。
+        status = {
+            "極高風險": "Blocked",
+            "高風險 (優先人工覆核)": "Investigation",
+            "中風險 (建議人工覆核)": "Investigation",
+        }.get(ai_record.risk_level, "Monitored")
 
         frontend_data.append({
             "id": ai_record.id,                                 
