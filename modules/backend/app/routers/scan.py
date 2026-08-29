@@ -1,13 +1,15 @@
 #  模組二：輸入網址識別 
 import os
-from dependencies import get_db, get_current_user
-import time 
+import time
+import traceback
+
+import requests
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-import requests
+
 import database
+from dependencies import get_db, get_current_user
 from schemas import FrontendScanRequest
-from dependencies import get_db
 
 router = APIRouter(tags=["網址即時識別模組"])
 
@@ -67,11 +69,15 @@ def scan_target_url(request_data: FrontendScanRequest, db: Session = Depends(get
 
     except requests.exceptions.RequestException as req_err:
         db.rollback()
+        # 原本這裡把 str(req_err) 回給前端，會洩漏爬蟲的內部位址與埠號。
+        print(f"呼叫爬蟲引擎失敗（{target_url}）：{req_err!r}")
         return {
             "status": "error",
-            "message": f"無法連線至爬蟲引擎，請確認對方伺服器是否開啟。詳細錯誤：{str(req_err)}"
+            "message": "無法連線至爬蟲引擎，請確認該服務是否正常運作。"
         }
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"即時識別處理失敗：{str(e)}")
+        print(f"即時識別處理失敗（{target_url}）：{e!r}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail="即時識別處理失敗，請聯繫系統管理員")
 

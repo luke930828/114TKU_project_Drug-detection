@@ -6,6 +6,7 @@ import database
 from schemas import WebsiteReport
 from dependencies import get_db, verify_admin
 from utils import calculate_multimodal_risk_100_scale, dispatch_to_ai_engines
+import traceback
 
 router = APIRouter(tags=["自動爬蟲管理"])
 
@@ -111,8 +112,12 @@ def receive_crawler_raw_data(report: WebsiteReport, background_tasks: Background
 
     except Exception as e:
         db.rollback()
-        print(f"嚴重錯誤：API 崩潰了，原因：{str(e)}")
-        raise HTTPException(status_code=500, detail=f"伺服器內部錯誤：{str(e)}")
+        # 詳細錯誤只留在伺服器日誌，不要回給客戶端。
+        # SQLAlchemy 的例外訊息會夾帶完整 SQL 語句、參數值與內部主機名，
+        # 這個端點又沒有驗證，等於免費把資料庫結構送給任何人。
+        print(f"嚴重錯誤：/api/crawler/report/ 處理失敗（{report.url}）：{e!r}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail="伺服器內部錯誤，請聯繫系統管理員")
 @router.get("/api/crawler/automated_24h_list/", summary="獲取 24 小時自動爬蟲清單")
 def get_automated_24h_results(
     db: Session = Depends(get_db), 
