@@ -11,12 +11,16 @@ import {
   clearAuthToken,
   getAuthToken,
 } from "./auth";
+import { isHighRisk, isMediumRisk } from "./riskLevel";
 
 export default function App() {
   const [page, setPage] = useState("home");
   const [blacklist, setBlacklist] = useState<string[]>(["dark-market-x.onion"]);
   const [whitelist, setWhitelist] = useState<string[]>(["google.com"]);
   const [pendingSites, setPendingSites] = useState<PendingWebsite[]>([]);
+  // 後端對全部資料算出來的待覆核總數。pendingSites 只是已載入的那幾頁，
+  // 顯示筆數要用這個，不然使用者會以為只有幾筆要處理。
+  const [pendingTotal, setPendingTotal] = useState(0);
 
   const [isAuthenticated, setIsAuthenticated] = useState(
     Boolean(getAuthToken())
@@ -58,15 +62,12 @@ export default function App() {
     return (
       <AIDetection
         onBack={() => setPage("home")}
-        onDetectionsLoaded={(sites) => {
+        onDetectionsLoaded={(sites, meta) => {
+          setPendingTotal(meta.pendingTotal);
           const highRiskUrls = new Set(
-            sites
-              .filter((site) => site.riskLevel === "極高風險")
-              .map((site) => site.url)
+            sites.filter((site) => isHighRisk(site.riskLevel)).map((site) => site.url)
           );
-          const mediumRiskSites = sites.filter(
-            (site) => site.riskLevel === "中風險"
-          );
+          const mediumRiskSites = sites.filter((site) => isMediumRisk(site.riskLevel));
 
           setBlacklist((current) =>
             Array.from(new Set([...current, ...highRiskUrls]))
@@ -79,7 +80,7 @@ export default function App() {
               current
                 .filter(
                   (site) =>
-                    site.riskLevel === "中風險" &&
+                    isMediumRisk(site.riskLevel) &&
                     !highRiskUrls.has(site.url)
                 )
                 .map((site) => [site.url, site])
@@ -115,6 +116,7 @@ export default function App() {
         onBack={() => setPage("home")}
         blacklist={blacklist}
         pendingSites={pendingSites}
+        pendingTotal={pendingTotal}
         onAdd={(type, url) => {
           if (type === "black") {
             setBlacklist((current) => current.includes(url) ? current : [...current, url]);

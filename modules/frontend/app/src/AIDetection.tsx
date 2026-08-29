@@ -14,7 +14,15 @@ interface PendingSiteInput {
 
 interface Props {
   onBack: () => void;
-  onDetectionsLoaded?: (sites: PendingSiteInput[]) => void;
+  /**
+   * sites 只是「目前這一頁」的資料（一次 50 筆）。
+   * pendingTotal 是後端對全部資料算出來的待覆核總數——
+   * 兩者不會一樣，顯示筆數時要用 pendingTotal，不要用 sites.length。
+   */
+  onDetectionsLoaded?: (
+    sites: PendingSiteInput[],
+    meta: { pendingTotal: number }
+  ) => void;
 }
 
 interface RepresentativeDetection {
@@ -30,7 +38,7 @@ interface ResultType {
   content: string;
   drugType: string;
   language: string;
-  riskLevel: "high" | "medium" | "low";
+  riskLevel: "critical" | "high" | "medium" | "low";
   score: number;
   caseNumber: string;
   nlpKeywords: string[];
@@ -68,9 +76,14 @@ const normalizeKeywords = (value: unknown): string[] => {
   return [...new Set(keywords.map((keyword) => keyword.trim()).filter(Boolean))];
 };
 
-const normalizeRiskLevel = (score: number): ResultType["riskLevel"] => {
-  if (score > 74) return "high";
-  if (score >= 35) return "medium";
+// 分級由後端決定（utils.py 是唯一定義門檻的地方），前端只負責顯示。
+// 這裡以前是 score > 74 / >= 35 自己重算一套——那是第三套門檻，
+// 後端怎麼改都沒有作用，2026-08-30 把加權平均改成門檻判定時就是這樣被吃掉的。
+const normalizeRiskLevel = (level: string): ResultType["riskLevel"] => {
+  const l = (level ?? "").trim();
+  if (l.startsWith("極高風險")) return "critical";
+  if (l.startsWith("高風險")) return "high";
+  if (l.startsWith("中風險")) return "medium";
   return "low";
 };
 
@@ -119,7 +132,7 @@ const normalizeResult = (value: unknown, index: number): ResultType | null => {
     ),
     drugType: getString(value.drugType ?? value.drug_type, "待確認"),
     language: getString(value.language, "未知"),
-    riskLevel: normalizeRiskLevel(Number.isFinite(score) ? score : 0),
+    riskLevel: normalizeRiskLevel(getString(value.risk_level, "")),
     score: Number.isFinite(score) ? score : 0,
     caseNumber: getString(
       value.caseNumber ?? value.case_number,
@@ -214,7 +227,8 @@ export function AIDetection({ onBack, onDetectionsLoaded }: Props) {
             score: item.score,
             riskLevel: getRiskText(item.riskLevel),
             detectedAt: item.time,
-          }))
+          })),
+        { pendingTotal: Number(responseStats?.medium ?? 0) }
       );
     } catch (requestError) {
       const message =
@@ -297,7 +311,7 @@ export function AIDetection({ onBack, onDetectionsLoaded }: Props) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <Stat title="總筆數" value={stats.total} />
             <Stat title="極高風險" value={stats.high} color="text-red-600" />
-            <Stat title="中風險" value={stats.medium} color="text-yellow-600" />
+            <Stat title="待覆核" value={stats.medium} color="text-yellow-600" />
             <Stat title="低風險" value={stats.low} color="text-green-600" />
           </div>
 
@@ -308,8 +322,9 @@ export function AIDetection({ onBack, onDetectionsLoaded }: Props) {
               className="border-2 border-gray-200 rounded-lg p-2 focus:border-[#2B4C7E]"
             >
               <option value="all">全部</option>
-              <option value="high">極高風險</option>
-              <option value="medium">中風險</option>
+              <option value="critical">極高風險</option>
+              <option value="high">高風險 (優先覆核)</option>
+              <option value="medium">中風險 (建議覆核)</option>
               <option value="low">低風險</option>
             </select>
           </div>
@@ -453,19 +468,22 @@ export function AIDetection({ onBack, onDetectionsLoaded }: Props) {
 }
 
 function getRiskText(level: ResultType["riskLevel"]) {
-  if (level === "high") return "極高風險";
-  if (level === "medium") return "中風險";
+  if (level === "critical") return "極高風險";
+  if (level === "high") return "高風險 (優先人工覆核)";
+  if (level === "medium") return "中風險 (建議人工覆核)";
   return "低風險";
 }
 
 function getRiskProgressColor(level: ResultType["riskLevel"]) {
-  if (level === "high") return "bg-red-500";
+  if (level === "critical") return "bg-red-600";
+  if (level === "high") return "bg-orange-500";
   if (level === "medium") return "bg-amber-500";
   return "bg-green-500";
 }
 
 function getRiskScoreColor(level: ResultType["riskLevel"]) {
-  if (level === "high") return "text-red-600";
+  if (level === "critical") return "text-red-700";
+  if (level === "high") return "text-orange-600";
   if (level === "medium") return "text-amber-600";
   return "text-green-600";
 }

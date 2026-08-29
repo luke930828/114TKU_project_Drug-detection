@@ -42,6 +42,8 @@ interface Props {
   onBack: () => void;
   blacklist: string[];
   pendingSites: PendingWebsite[];
+  /** 後端算出的待覆核總數。pendingSites 只是已載入的那幾頁，兩者不會一樣。 */
+  pendingTotal?: number;
   onAdd: (type: "black" | "white", url: string) => void;
   onRemove: (type: "black" | "white", url: string) => void;
   onClassify: (url: string, type: "black" | "white") => void;
@@ -51,6 +53,7 @@ export default function WebsiteQuery({
   onBack,
   blacklist,
   pendingSites,
+  pendingTotal,
   onAdd,
   onRemove,
   onClassify,
@@ -196,7 +199,7 @@ export default function WebsiteQuery({
           </div>
           {pendingSites.length > 0 && (
             <span className="bg-amber-100 text-amber-700 px-3 py-1.5 rounded-full text-sm font-medium">
-              {pendingSites.length} 筆待確認
+              {pendingTotal ?? pendingSites.length} 筆待確認
             </span>
           )}
         </div>
@@ -227,7 +230,7 @@ export default function WebsiteQuery({
               tab === "pending" ? "bg-amber-500 text-white" : "bg-gray-100 hover:bg-gray-200"
             }`}
           >
-            待確認（{pendingSites.length}）
+            待確認（{pendingTotal ?? pendingSites.length}）
           </button>
         </div>
 
@@ -360,7 +363,15 @@ export default function WebsiteQuery({
                 <p className="text-sm text-gray-400 mt-1">AI 發現可疑網站後會自動出現在這裡。</p>
               </div>
             ) : (
-              pendingSites.map((site) => (
+              <>
+              {typeof pendingTotal === "number" && pendingTotal > pendingSites.length && (
+                <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                  共 <strong>{pendingTotal}</strong> 筆待確認，
+                  這裡顯示已載入的 {pendingSites.length} 筆。
+                  到「24 小時 AI 自動識別」翻頁可以載入更多。
+                </div>
+              )}
+              {pendingSites.map((site) => (
                 <div key={site.url} className="border border-amber-200 bg-amber-50/50 rounded-xl p-5">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div className="min-w-0">
@@ -395,7 +406,8 @@ export default function WebsiteQuery({
                     </div>
                   </div>
                 </div>
-              ))
+              ))}
+              </>
             )}
           </div>
         )}
