@@ -16,13 +16,12 @@ def export_raw_results_to_excel(
     db: Session = Depends(get_db), 
     current_user = Depends(get_current_user)
 ): 
-    # 🌟 效能升級：只 Select 需要的欄位，絕不抓取 LONGTEXT 圖片欄位
     query = db.query(
         database.AIAnalysisResult.id,
         database.AIAnalysisResult.url,
         database.AIAnalysisResult.risk_score,
         database.AIAnalysisResult.risk_level,
-        database.AIAnalysisResult.created_at # 需要把時間抓出來做過濾判定，但不一定要放進 Excel
+        database.AIAnalysisResult.created_at 
     )
     
     if start_date:
@@ -35,7 +34,6 @@ def export_raw_results_to_excel(
     if not results:
         raise HTTPException(status_code=404, detail="目前沒有符合該時間區間的分析資料可以匯出")
 
-    # 🌟 寫法簡化：直接將查詢結果轉成字典列表，省略了複雜的 getattr
     data_list = [
         {
             "id": row.id,
@@ -46,7 +44,6 @@ def export_raw_results_to_excel(
         for row in results
     ]
 
-    # 直接將乾淨的字典載入 DataFrame，不需要再 df = df[...] 篩選欄位了
     df = pd.DataFrame(data_list)
     
     stream = io.BytesIO()
