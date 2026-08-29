@@ -1,56 +1,40 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Optional
-import html
-import re
 
-def check_xss(value: str, escape: bool = True) -> str:
-    if not isinstance(value, str):
-        return value
+# 為什麼這裡沒有 XSS 黑名單了
+# ─────────────────────────────
+# 原本擋 <script>、javascript:、onload=、onerror= 四個字串。問題有兩個：
+#
+# 1. 黑名單永遠列不完。<img src=x onmouseover=1>、<script >（多一個空格）、
+#    <svg onfocus=>、<details ontoggle=> 全部繞得過。擋掉四個字串只是讓人
+#    以為擋住了，實際的攻擊面一點都沒縮小。
+#
+# 2. 它還在存進資料庫前做 html.escape()，但只做在「讀」的那一側。
+#    UserLogin 會把帳號跳脫後才去查資料庫，UserCreate 卻是原文存進去，
+#    結果帳號含 & < > " ' 的人永遠登不進去——防護沒做到，資料先壞了。
+#
+# XSS 要在「輸出」的地方擋，不是在輸入的地方：
+#   前端是 React，插值預設就會跳脫（要小心的是 dangerouslySetInnerHTML）；
+#   後端回應是 application/json，瀏覽器不會拿去當 HTML 解析。
+#
+# 所以輸入端只負責它真正該負責的事：型別與長度。
+# 長度上限對齊 database.py 的欄位定義，避免寫入時才炸出 MySQL DataError。
 
-    dangerous_keywords = ["<script>", "javascript:", "onload=", "onerror="]
-    val_lower = value.lower()
-    for kw in dangerous_keywords:
-        if kw in val_lower:
-            raise ValueError("系統警告：偵測到危險的惡意程式碼，連線已攔截！")
 
-    # url 不能用 html.escape()：& 會變成 &amp;、< 會變成 &lt;，網址的意義就變了，
-    # 拿去打 request 或跟資料庫比對都會對不起來（例如白名單網址悄悄失效）。
-    # XSS 防護該在「顯示」資料的地方做，不是在存網址的時候做。
-    return html.escape(value) if escape else value
-
-
-# 前端輸入區 (嚴格防護)
+# 前端輸入區
 class UserLogin(BaseModel):
-    account: str
-    password: str
+    account: str = Field(min_length=1, max_length=50)      # users.account String(50)
+    password: str = Field(min_length=1, max_length=200)
 
-    @field_validator('account')
-    @classmethod
-    def sanitize_account(cls, v):
-        return check_xss(v)
 
 class FrontendScanRequest(BaseModel):
-    url: str
+    url: str = Field(min_length=1, max_length=768)         # ai_analysis_results.url String(768)
 
-    @field_validator('url')
-    @classmethod
-    def sanitize_url(cls, v):
-        return check_xss(v, escape=False)
 
 class WhitelistCreate(BaseModel):
-    url: str
-    title: str
-    reason: str
-
-    @field_validator('url')
-    @classmethod
-    def sanitize_whitelist_url(cls, v):
-        return check_xss(v, escape=False)
-
-    @field_validator('title', 'reason')
-    @classmethod
-    def sanitize_whitelist_text(cls, v):
-        return check_xss(v)
+    url: str = Field(min_length=1, max_length=768)         # whitelist_websites 各欄位
+    title: str = Field(max_length=100)
+    reason: str = Field(max_length=255)
 
 
 #  內部通訊區 
