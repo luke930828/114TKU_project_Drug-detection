@@ -1,4 +1,4 @@
-from dependencies import get_db, get_current_user
+from dependencies import get_db, get_current_user, log_audit_action
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
@@ -52,6 +52,13 @@ def export_raw_results_to_excel(
         df.to_excel(writer, index=False, sheet_name='AI分析總表')
     
     stream.seek(0)
+
+    # 「誰在什麼時候把整批蒐證資料帶走了」——這是稽核軌跡裡最該留的一筆
+    log_audit_action(
+        db, current_user.user_id, "匯出報表",
+        f"匯出 {len(data_list)} 筆 AI 分析結果"
+        + (f"（{start_date} ~ {end_date}）" if start_date or end_date else ""),
+    )
 
     headers = {
         'Content-Disposition': 'attachment; filename="ai_analysis_database_export.xlsx"'

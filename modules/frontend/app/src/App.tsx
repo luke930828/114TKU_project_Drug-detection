@@ -7,6 +7,7 @@ import Login from "./Login";
 import UserManagement from "./UserManagement";
 import {
   AUTH_UNAUTHORIZED_EVENT,
+  authFetch,
   clearAuthToken,
   getAuthToken,
 } from "./auth";
@@ -21,9 +22,17 @@ export default function App() {
     Boolean(getAuthToken())
   );
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     const shouldLogout = window.confirm("確定要登出系統嗎？");
     if (!shouldLogout) return;
+
+    // 先通知後端留一筆稽核紀錄。就算這步失敗（網路斷了、後端掛了）也一定要
+    // 讓使用者登出，所以不擋在前面。
+    try {
+      await authFetch("/api/logout/", { method: "POST" });
+    } catch {
+      // 記不到就算了，不影響登出本身
+    }
 
     clearAuthToken();
     setIsAuthenticated(false);

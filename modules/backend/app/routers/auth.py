@@ -6,7 +6,7 @@ from schemas import UserLogin
 import jwt
 import hashlib
 import os
-from dependencies import get_db, SECRET_KEY, ALGORITHM
+from dependencies import get_db, get_current_user, log_audit_action, SECRET_KEY, ALGORITHM
 
 # token 有效時數。以前沒有 exp，簽出去的 token 永久有效：
 # 改密碼、停權、刪帳號通通讓它失效不了，外洩一次就是永久通行證。
@@ -36,6 +36,10 @@ def login_for_access_token(login_data: UserLogin, db: Session = Depends(get_db))
 
     # 第四道鎖：密碼驗證失敗
     if not verify_password(login_data.password, user.password_hash):
+        # 失敗的嘗試也要留痕，不然看不出有沒有人在猜密碼。
+        # 注意：帳號不存在的那種失敗記不了——audit_logs.user_id 是
+        # nullable=False 的外鍵，沒有對應的使用者就寫不進去。
+        log_audit_action(db, user.user_id, "登入失敗", f"帳號 {user.account} 密碼錯誤")
         raise HTTPException(status_code=401, detail="帳號或密碼錯誤")
         
     # 通過所有考驗，發放通行證 (Token)
@@ -48,8 +52,19 @@ def login_for_access_token(login_data: UserLogin, db: Session = Depends(get_db))
     }
     encrypted_token = jwt.encode(token_payload, SECRET_KEY, algorithm=ALGORITHM)
 
+    log_audit_action(db, user.user_id, "登入", f"帳號 {user.account} 登入系統")
+
     return {
         "status": "success",
         "message": f"登入成功！{user.account}",
         "access_token": encrypted_token 
     }
+
+@router.post("/api/logout/", summary="系統登出")
+def logout(current_user = Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    token 是無狀態的，這個端點不會讓它失效——單純是為了在稽核軌跡上
+    留下「這個人什麼時候結束操作」。前端呼叫完再自己清掉 token。
+    """
+    log_audit_action(db, current_user.user_id, "登出", f"帳號 {current_user.account} 登出系統")
+    return {"status": "success", "message": "已登出"}
