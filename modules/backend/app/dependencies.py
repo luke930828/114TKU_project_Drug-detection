@@ -47,8 +47,14 @@ def get_current_user(x_token: str = Header(...), db: Session = Depends(get_db)):
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="身分驗證失敗：無效或偽造的憑證！")
 
-    user = db.query(database.User).filter(database.User.account == account).first()
-    
+    # is_deleted 一定要一起查。delete_user 只設 is_deleted=True、沒動 is_active，
+    # 所以只看 is_active 的話，被刪掉的人手上那張 token 還是暢行無阻——
+    # 配合以前 token 不會過期，等於帳號刪不掉。
+    user = db.query(database.User).filter(
+        database.User.account == account,
+        database.User.is_deleted == False,      # noqa: E712
+    ).first()
+
     if not user:
         raise HTTPException(status_code=401, detail="身分驗證失敗：找不到該使用者！")
     
