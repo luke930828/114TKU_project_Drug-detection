@@ -74,6 +74,9 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
   const [department, setDepartment] = useState("");
   const [saving, setSaving] = useState(false);
   const [auditLogs, setAuditLogs] = useState<AuditLogRecord[]>([]);
+  const [logsPage, setLogsPage] = useState(1);
+  const [logsTotalPages, setLogsTotalPages] = useState(1);
+  const [logsTotalCount, setLogsTotalCount] = useState(0);
   const [logsLoading, setLogsLoading] = useState(true);
   const [logsError, setLogsError] = useState<string | null>(null);
 
@@ -115,10 +118,10 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
     }
   }, [handleResponseError]);
 
-  const loadAuditLogs = useCallback(async () => {
+  const loadAuditLogs = useCallback(async (page = 1) => {
     setLogsLoading(true);
     try {
-      const response = await authFetch("/api/users/audit-logs");
+      const response = await authFetch(`/api/users/audit-logs?page=${page}&limit=100`);
       if (!response.ok) await handleResponseError(response);
 
       const payload = (await response.json()) as unknown;
@@ -135,6 +138,15 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
           .map(normalizeAuditLog)
           .filter((log): log is AuditLogRecord => log !== null)
       );
+
+      // 後端加上分頁之後會回 pagination；舊版只回陣列，這時就當成只有一頁。
+      const pagination =
+        payload && typeof payload === "object"
+          ? (payload as { pagination?: { total_pages?: number; total_count?: number } }).pagination
+          : undefined;
+      setLogsTotalPages(pagination?.total_pages ?? 1);
+      setLogsTotalCount(pagination?.total_count ?? list.length);
+      setLogsPage(page);
       setLogsError(null);
     } catch (requestError) {
       const message = requestError instanceof Error
@@ -152,7 +164,7 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
 
   useEffect(() => {
     loadUsers();
-    loadAuditLogs();
+    loadAuditLogs(1);
   }, [loadAuditLogs, loadUsers]);
 
   const createUser = async (event: FormEvent) => {
@@ -296,7 +308,7 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
             </div>
             <button
               type="button"
-              onClick={loadAuditLogs}
+              onClick={() => loadAuditLogs(logsPage)}
               disabled={logsLoading}
               className="flex items-center gap-2 rounded-lg bg-[#2B4C7E] px-4 py-2 text-sm font-medium text-white hover:bg-[#1A2F4F] disabled:cursor-not-allowed disabled:opacity-60"
             >
@@ -343,6 +355,31 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
             )}
             {!logsLoading && !logsError && auditLogs.length === 0 && (
               <div className="py-10 text-center text-gray-400">目前沒有操作日誌</div>
+            )}
+            {!logsLoading && logsTotalPages > 1 && (
+              <div className="flex items-center justify-between border-t border-gray-100 px-3 py-3 text-sm">
+                <span className="text-gray-500">
+                  第 {logsPage} / {logsTotalPages} 頁　共 {logsTotalCount} 筆
+                </span>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => loadAuditLogs(logsPage - 1)}
+                    disabled={logsPage <= 1}
+                    className="rounded border border-gray-300 px-3 py-1 text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    上一頁
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => loadAuditLogs(logsPage + 1)}
+                    disabled={logsPage >= logsTotalPages}
+                    className="rounded border border-gray-300 px-3 py-1 text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    下一頁
+                  </button>
+                </div>
+              </div>
             )}
           </div>
         </section>

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 import database
@@ -189,15 +189,38 @@ def delete_user(user_id: str, db: Session = Depends(get_db), current_admin = Dep
     return {"status": "success", "message": f"已成功移除人員：{account_name}"}
 # 5. 查看系統稽核日誌 (限管理員)
 @router.get("/audit-logs", summary="查看系統操作回溯紀錄")
-def get_audit_logs(db: Session = Depends(get_db), current_admin = Depends(verify_admin)):
-    
-    logs = db.query(database.AuditLog).order_by(database.AuditLog.action_timestamp.desc()).limit(100).all()
-    
-    return [{
-        "log_id": log.log_id,
-        "user_id": log.user_id,
-        "account": log.user.account if log.user else "未知或已刪除的使用者", 
-        "action": log.action_type,
-        "details": log.details,
-        "time": log.action_timestamp.strftime("%Y-%m-%d %H:%M:%S") if log.action_timestamp else None
-    } for log in logs]
+def get_audit_logs(
+    db: Session = Depends(get_db),
+    current_admin = Depends(verify_admin),
+    page: int = Query(1, ge=1, description="頁碼，從 1 開始"),
+    limit: int = Query(100, ge=1, le=500, description="每頁筆數"),
+):
+    """
+    以前這裡是寫死的 .limit(100)，而且沒有分頁——超過 100 筆之後，
+    更早的紀錄就再也看不到了。對一個要留存數位證據的系統來說，
+    「查不到當時發生什麼事」等於稽核軌跡是斷的。
+    """
+    base = db.query(database.AuditLog).order_by(
+        database.AuditLog.action_timestamp.desc(),
+        database.AuditLog.log_id.desc(),          # 同一秒內的順序才穩定
+    )
+    total = base.count()
+    logs = base.offset((page - 1) * limit).limit(limit).all()
+
+    return {
+        "status": "success",
+        "data": [{
+            "log_id": log.log_id,
+            "user_id": log.user_id,
+            "account": log.user.account if log.user else "未知或已刪除的使用者",
+            "action": log.action_type,
+            "details": log.details,
+            "time": log.action_timestamp.strftime("%Y-%m-%d %H:%M:%S") if log.action_timestamp else None
+        } for log in logs],
+        "pagination": {
+            "total_count": total,
+            "current_page": page,
+            "limit": limit,
+            "total_pages": (total + limit - 1) // limit if total else 1,
+        },
+    }
