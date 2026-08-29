@@ -69,6 +69,7 @@ README-docker.md
 Makefile
 CONTRIBUTING.md
 TEST-PLAN.md
+tests/
 
 # 爬蟲執行時產生的狀態/輸出，不是原始碼
 modules/crawler/app/monitor_state.db
