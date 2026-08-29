@@ -12,6 +12,41 @@ def get_password_hash(password: str) -> str:
 
 router = APIRouter(prefix="/api/users", tags=["人員管理模組"])
 
+# dependencies.py 的 verify_admin 比對的就是這個字串，不要改動
+ADMIN_ROLE = "系統管理員"
+ALLOWED_ROLES = {"一般人員", ADMIN_ROLE}
+
+
+def _active_admin_count(db: Session, excluding: str | None = None) -> int:
+    """算還有幾個「能用的」管理員：沒被刪除、沒被凍結。"""
+    q = db.query(database.User).filter(
+        database.User.role == ADMIN_ROLE,
+        database.User.is_deleted == False,      # noqa: E712
+        database.User.is_active == True,        # noqa: E712
+    )
+    if excluding:
+        q = q.filter(database.User.user_id != excluding)
+    return q.count()
+
+
+def _guard_last_admin(db: Session, target: database.User):
+    """
+    擋掉「把最後一個管理員弄掉」的操作。
+
+    這不是假想的風險：2026-08-29 有人在介面上把 admin 自己從系統管理員降成
+    一般人員，當下系統就只有他一個管理員，降完之後沒有任何人能改回去，
+    只能直接進資料庫改。刪除有防（見 delete_user），但改權限和凍結都沒有。
+    """
+    if target.role != ADMIN_ROLE:
+        return
+    if _active_admin_count(db, excluding=target.user_id) == 0:
+        raise HTTPException(
+            status_code=400,
+            detail="操作錯誤：這是系統唯一的管理員，移除後就沒有人能管理系統了。"
+                   "請先指派另一位管理員。",
+        )
+
+
 class UserRoleUpdate(BaseModel):
     role: str 
 
@@ -76,7 +111,13 @@ def toggle_user_status(user_id: str, db: Session = Depends(get_db), current_admi
     target_user = db.query(database.User).filter(database.User.user_id == user_id).first()
     if not target_user:
         raise HTTPException(status_code=404, detail="找不到該人員")
-    
+
+    if target_user.user_id == current_admin.user_id:
+        raise HTTPException(status_code=400, detail="操作錯誤：您無法凍結自己的帳號！")
+
+    if target_user.is_active:                 # 只有「要凍結」時才需要擋
+        _guard_last_admin(db, target_user)
+
     target_user.is_active = not target_user.is_active
     db.commit()
     
@@ -91,10 +132,22 @@ def toggle_user_status(user_id: str, db: Session = Depends(get_db), current_admi
 # 3. 修改人員權限
 @router.put("/{user_id}/role", summary="修改人員權限")
 def update_user_role(user_id: str, payload: UserRoleUpdate, db: Session = Depends(get_db), current_admin = Depends(verify_admin)):
+    if payload.role not in ALLOWED_ROLES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"權限值不正確，只接受：{'、'.join(sorted(ALLOWED_ROLES))}",
+        )
+
     target_user = db.query(database.User).filter(database.User.user_id == user_id).first()
     if not target_user:
         raise HTTPException(status_code=404, detail="找不到該人員")
-        
+
+    if target_user.user_id == current_admin.user_id:
+        raise HTTPException(status_code=400, detail="操作錯誤：您無法變更自己的權限！")
+
+    if payload.role != ADMIN_ROLE:            # 只有「要降級」時才需要擋
+        _guard_last_admin(db, target_user)
+
     old_role = target_user.role
     target_user.role = payload.role
     db.commit()
@@ -118,7 +171,9 @@ def delete_user(user_id: str, db: Session = Depends(get_db), current_admin = Dep
         
     if target_user.user_id == current_admin.user_id:
         raise HTTPException(status_code=400, detail="操作錯誤：您無法刪除自己的帳號！")
-        
+
+    _guard_last_admin(db, target_user)
+
     account_name = target_user.account 
     
     target_user.is_deleted = True
