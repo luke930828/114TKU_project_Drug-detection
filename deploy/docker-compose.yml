@@ -39,6 +39,9 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME:-drug_prevention_db}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      # 第一個管理員的初始密碼。留空的話 main.py 會隨機產生一組並印在啟動 log，
+      # 只出現那一次——要指定就在 .env.local 設 ADMIN_INITIAL_PASSWORD。
+      ADMIN_INITIAL_PASSWORD: ${ADMIN_INITIAL_PASSWORD:-}
       NLP_BASE_URL: ${NLP_BASE_URL}
       YOLO_BASE_URL: ${YOLO_BASE_URL}
       CRAWLER_BASE_URL: ${CRAWLER_BASE_URL}

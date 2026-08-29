@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
+import os
+import secrets
 import uuid
 import hashlib
 import database
@@ -10,29 +12,55 @@ from routers import auth, scan, crawler, whitelist, ai_engine, export, users
 def get_password_hash(password: str) -> str:
     return hashlib.sha256(password.encode("utf-8")).hexdigest()
 
+
+def _initial_admin_password() -> tuple[str, bool]:
+    """
+    第一個管理員的密碼從環境變數來；沒設就隨機產生。
+
+    以前這裡寫死一組固定密碼。那等於帳密就放在原始碼裡、放在公開的 repo 上，
+    任何看得到程式碼的人都有管理員權限——而且系統從來不要求改密。
+
+    回傳 (密碼, 是否為隨機產生)。隨機產生的那組只會在建立當下印出來一次，
+    之後再也拿不回來，所以正式環境請自己設 ADMIN_INITIAL_PASSWORD。
+    """
+    pw = os.getenv("ADMIN_INITIAL_PASSWORD", "").strip()
+    if pw:
+        return pw, False
+    return secrets.token_urlsafe(18), True
+
+
 # --- 初始化腳本區塊 ---
 def init_default_admin(db):
     print("🌱 進入資料庫初始化檢查...")
-    
+
     admin_user = db.query(database.User).filter(database.User.account == "admin").first()
-    
+
     if not admin_user:
         print("⚠️ 未偵測到管理員帳號，正在自動建立預設管理員...")
         new_user_id = "U" + str(uuid.uuid4().hex)[:8].upper()
-        
+        password, generated = _initial_admin_password()
+
         new_admin = database.User(
             user_id=new_user_id,
             account="admin",
-            password_hash=get_password_hash("password123"),
+            password_hash=get_password_hash(password),
             # dependencies.py 的 verify_admin 檢查的是這個中文字串，"admin" 會直接被 403 擋掉
             role="系統管理員",
-            department="系統管理部", 
+            department="系統管理部",
             is_active=True
         )
         db.add(new_admin)
         db.commit()
-        
-        print("✅ 預設管理員建立完成！(帳號: admin / 密碼: password123)")
+
+        print("✅ 預設管理員建立完成！帳號：admin")
+        if generated:
+            print("=" * 62)
+            print("  這是隨機產生的初始密碼，只會出現這一次，請立刻登入並修改：")
+            print(f"    {password}")
+            print("  下次要指定密碼的話，啟動前設好 ADMIN_INITIAL_PASSWORD。")
+            print("=" * 62)
+        else:
+            print("   密碼取自 ADMIN_INITIAL_PASSWORD，請登入後盡快修改。")
     else:
         print("✅ 預設管理員帳號已存在，跳過初始化。")
 
