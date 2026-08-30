@@ -148,3 +148,33 @@ def test_training_uses_metrics_not_just_loss():
     text = src.read_text(encoding="utf-8")
     assert "compute_metrics" in text, "訓練腳本沒有計算 accuracy / f1 / auc"
     assert "roc_auc" in text, "沒有計算 ROC-AUC，無法比較不同版本的排序能力"
+
+
+@known_vuln("ML-02")
+def test_nlp_keywords_are_whole_words_not_subwords():
+    """
+    extract_keywords 必須把 SentencePiece 的碎片組回完整的字，並過濾停用詞。
+
+    這裡驗原始碼而不是實際輸出：stub 測試環境沒有真的 NLP 服務
+    （真模型要下載 1 GB 權重又要 GPU）。要驗實際關鍵字品質請跑 make test-full。
+
+    判斷依據是三個具體作法：
+      1. convert_ids_to_tokens——拿得到 ▁ 字首標記才有辦法把碎片組回完整的字。
+         舊版用 tokenizer.decode([token_id])，單一 token 解出來必然是碎片。
+      2. 有停用詞表——CLS attention 天生集中在功能詞上，沒表就會被 the/and/of 佔滿。
+      3. attention 不是對全部層取平均——前面幾層分布幾乎均勻，會稀釋後段的訊號。
+    """
+    src_path = REPO / "modules/nlp/app/main.py"
+    if not src_path.exists():
+        pytest.skip("找不到 nlp/app/main.py")
+    src = src_path.read_text(encoding="utf-8")
+
+    missing = []
+    if "convert_ids_to_tokens" not in src:
+        missing.append("沒有用 convert_ids_to_tokens 取回帶 ▁ 標記的 token，組不回完整的字")
+    if "STOPWORDS" not in src:
+        missing.append("沒有停用詞表，關鍵字會被 the / and / of 佔滿")
+    if "attentions[:, 0, :, 0, :]" in src:
+        missing.append("attention 仍對全部層取平均，前段的均勻分布會稀釋後段訊號")
+
+    assert not missing, "NLP 關鍵字抽取仍有問題：\n  " + "\n  ".join(missing)

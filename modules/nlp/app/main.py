@@ -86,6 +86,30 @@ com www http https html org net
 """.split())
 
 
+# 電商樣板用語。這些字在每一頁都出現、attention 也不低，但對「這是不是毒品
+# 網站」毫無資訊量——實測它們佔關鍵字欄位的 11%。
+#
+# 註：試過改用「出現次數加總」來壓過它們，結果更糟——重複最多次的正是橫幅與
+# 頁尾（SITEWIDE、FREE SHIPPING、MONDAY–FRIDAY），六個網頁裡三個變差。
+# 所以是列表過濾，不是改計分方式。
+UI_NOISE = frozenset("""
+cart carts checkout basket shop shops store stores home menu login logout signin signup
+account search view browse click press skip content site sitewide page pages next prev
+product products item items collection collections category categories tag tags
+add remove select sort filter default popularity latest price prices free shipping ship
+delivery deliver order orders buy sale sales off discount coupon deal deals gift gifts
+review reviews rating ratings star stars contact about faq blog news info help support
+policy privacy terms cookie cookies copyright rights reserved subscribe newsletter email
+result results showing all more less read learn share follow us we you your our my
+alt screen reader enter open close toggle button link image images
+monday tuesday wednesday thursday friday saturday sunday
+""".split())
+
+# 夾雜這些符號的多半是介面殘留（Alt+0、Alt+1 這種無障礙提示），不是內容詞。
+# 連字號刻意不列入——4-MMC、2C-B 這類毒品名稱要留著。
+SYMBOL_CHARS = frozenset("+=<>|@#$%^&*/\\~`")
+
+
 def _merge_subwords(tokens, scores):
     """把 SentencePiece 的碎片組回完整的字，分數取該字所有碎片的平均。"""
     words = []
@@ -105,7 +129,10 @@ def _merge_subwords(tokens, scores):
 
 
 def _is_meaningful(word: str) -> bool:
-    if len(word) < 2 or word.lower() in STOPWORDS:
+    low = word.lower()
+    if len(word) < 2 or low in STOPWORDS or low in UI_NOISE:
+        return False
+    if any(ch in SYMBOL_CHARS for ch in word):
         return False
     # 純標點或純數字不是關鍵字（實測佔 9%）
     return any(ch.isalpha() for ch in word)

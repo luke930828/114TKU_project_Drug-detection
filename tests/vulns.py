@@ -324,3 +324,25 @@ VULNS["ML-01"] = dict(
         "recall 從 0.653 拉到 0.983——效益遠大於任何模型調整。"
         "\n這輪實驗最大的價值不是找到改善，而是排除了四個看似合理的方向。",
 )
+
+VULNS["ML-02"] = dict(
+    severity=MEDIUM,
+    title="NLP 關鍵字抽取回傳的是 subword 碎片與停用詞",
+    where="modules/nlp/app/main.py（extract_keywords）",
+    impact="XLM-RoBERTa 用 SentencePiece 切詞，dispensary 會被切成 ▁di+spen+sa+ry，"
+           "而 extract_keywords 直接把單一 token decode 出來當關鍵字，"
+           "所以畫面上長期出現 ana、pensa、ed、BU、va、Edi 這種看不懂的碎片。"
+           "又沒有停用詞表，而 CLS 的 attention 天生會集中在功能詞上（attention sink），"
+           "the / and / of 一直霸佔前幾名。"
+           "實測 87 筆真正跑過模型的結果：長度 ≤3 的碎片佔 58%、停用詞 29%、"
+           "純標點或數字 9%——前五名幾乎沒有一個是有用的資訊。"
+           "這個欄位是承辦人員判讀「模型為什麼判定這是毒品網站」的唯一依據，"
+           "顯示不出理由等於無法人工覆核。",
+    fix="用 SentencePiece 的 ▁ 字首標記把碎片組回完整的字，分數取該字所有碎片的平均；"
+        "加上停用詞與電商樣板用語（cart / HOME / SITEWIDE）的過濾表，"
+        "寫死在檔案裡不要用 nltk 或 spacy——那兩個啟動時要下載語料，容器沒網路就起不來；"
+        "attention 只取最後四層，前面幾層還在做位置與語法，一起平均等於用雜訊稀釋訊號。"
+        "註：試過改用「出現次數加總」壓過樣板用語，實測更糟——重複最多次的正是橫幅與頁尾"
+        "（SITEWIDE、FREE SHIPPING、MONDAY–FRIDAY），六個網頁裡三個變差，"
+        "所以是列表過濾而不是改計分方式。",
+)
