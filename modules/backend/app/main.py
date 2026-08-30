@@ -84,13 +84,41 @@ app = FastAPI(
 )
 
 # --- 中介軟體 (CORS) ---
+# CORS_ORIGINS 早就在 .env.local 與 compose 裡設好了（http://localhost:8080），
+# 但這裡以前寫死 allow_origins=["*"]，那個設定完全沒有作用。
+#
+# 而且 "*" 配 allow_credentials=True 是規格上無效的組合。更重要的是
+# 這個系統的 token 是手動放在 X-Token header，不是 cookie——
+# 瀏覽器的 credential 規則保護不到它，任何網站都能讀到 API 回應。
+_origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
+if not _origins:
+    # 沒設就只開本機，不要退回全開。寧可前端連不上讓人發現，
+    # 也不要靜靜地對全世界開放。
+    _origins = ["http://localhost:8080", "http://127.0.0.1:8080"]
+    print(f"⚠️ 沒有設定 CORS_ORIGINS，預設只允許 {_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "X-Token"],
 )
+
+
+@app.middleware("http")
+async def security_headers(request, call_next):
+    """
+    API 回應也要帶安全標頭。前端那邊由 nginx 負責，但後端可能被直接存取
+    （SEC-22：nginx 的 /api/ 未過濾轉發），所以兩邊都要有。
+    """
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    # API 只回 JSON，不需要載入任何資源
+    response.headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'"
+    return response
 
 # --- 路由註冊 ---
 app.include_router(auth.router)
