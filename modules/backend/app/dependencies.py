@@ -4,14 +4,11 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 import database
 import jwt
-import hashlib
 import os
 
-def get_password_hash(password: str) -> str:
-    return hashlib.sha256(password.encode("utf-8")).hexdigest()
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return get_password_hash(plain_password) == hashed_password
+# 密碼相關一律用 password.py，不要再在各檔案自己寫一份 sha256
+from password import hash_password as get_password_hash          # noqa: F401
+from password import validate_strength, verify_password          # noqa: F401
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login/")

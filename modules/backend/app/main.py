@@ -4,13 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 import secrets
 import uuid
-import hashlib
 import database
 from routers import auth, scan, crawler, whitelist, ai_engine, export, users
 
-# --- 密碼加密工具 (與你 users.py 保持一致) ---
-def get_password_hash(password: str) -> str:
-    return hashlib.sha256(password.encode("utf-8")).hexdigest()
+from password import hash_password as get_password_hash
 
 
 def _initial_admin_password() -> tuple[str, bool]:

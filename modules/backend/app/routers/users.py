@@ -1,14 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 import database
-import uuid 
-import hashlib 
+import uuid
 from dependencies import get_db, verify_admin, log_audit_action
+from password import hash_password as get_password_hash, validate_strength
 
-# 密碼加密工具 
-def get_password_hash(password: str) -> str:
-    return hashlib.sha256(password.encode("utf-8")).hexdigest()
 
 router = APIRouter(prefix="/api/users", tags=["人員管理模組"])
 
@@ -51,10 +48,23 @@ class UserRoleUpdate(BaseModel):
     role: str 
 
 class UserCreate(BaseModel):
-    account: str       
-    password: str      
-    role: str          
-    department: str    
+    account: str = Field(min_length=1, max_length=50)
+    password: str = Field(max_length=200)
+    role: str = Field(max_length=20)
+    department: str = Field(max_length=50)
+
+    @field_validator("password")
+    @classmethod
+    def check_strength(cls, v: str) -> str:
+        """
+        以前這裡完全沒有驗證，POST /api/users/ 接受空字串密碼。
+        8 碼規則只寫在前端 inputSecurity.ts，直接打 API 就繞過了——
+        前端做的是即時提示，把關要在後端。
+        """
+        problem = validate_strength(v)
+        if problem:
+            raise ValueError(problem)
+        return v
 
 # 0. 新增人員 (限管理員)
 @router.post("/", summary="新增人員與管理員")

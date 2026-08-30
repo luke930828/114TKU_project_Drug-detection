@@ -8,5 +8,4 @@ uvicorn
 pymysql
 python-multipart
 openpyxl
-passlib
-bcrypt
+bcrypt>=4.1
