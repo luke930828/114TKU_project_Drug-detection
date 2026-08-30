@@ -22,5 +22,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
+# 用 127.0.0.1 而不是 localhost：容器的 /etc/hosts 讓 localhost 同時對應
+# 127.0.0.1 與 ::1，wget 會先試 ::1，但 nginx.conf 只寫 listen 80（IPv4），
+# 於是連線被拒、健康檢查永遠失敗——服務其實是好的，狀態卻一直是 unhealthy，
+# 真的出問題時反而看不出來。
 HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=3 \
-    CMD wget -q --spider http://localhost/ || exit 1
+    CMD wget -q --spider http://127.0.0.1/ || exit 1
