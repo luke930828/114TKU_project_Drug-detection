@@ -36,6 +36,11 @@ services:
       start_period: 40s
     # 不 publish 3306：只有 backend 需要連，走內部網路就好。
     # 真的要用 Workbench 看資料時再暫時打開。
+    deploy:
+      resources:
+        limits:
+          # InnoDB buffer pool 預設會依主機記憶體長大，容器裡要自己框住
+          memory: 2G
 
   # ---------------- 後端（統整中心）----------------
   backend:
@@ -73,6 +78,11 @@ services:
     ports:
       # 開著方便直接看 /docs 測 API，正式跑可以拿掉讓前端 proxy 就好
       - "127.0.0.1:8000:8000"
+    deploy:
+      resources:
+        limits:
+          # 背景派發會把整批 base64 圖片讀進記憶體，沒上限的話單一請求就能吃光
+          memory: 2G
 
   # ---------------- 爬蟲 ----------------
   crawler:
@@ -94,6 +104,11 @@ services:
       backend:
         condition: service_healthy
     profiles: ["full"]
+    deploy:
+      resources:
+        limits:
+          # INFRA-02 未修前的保險絲：撐爆時只殺這個容器，不要拖垮整台機器
+          memory: 3G
 
   # ---------------- NLP 引擎 ----------------
   nlp:
@@ -112,6 +127,11 @@ services:
       backend:
         condition: service_healthy
     profiles: ["full"]
+    deploy:
+      resources:
+        limits:
+          # XLM-RoBERTa 載入後常駐約 2~3 GB，留一倍餘裕
+          memory: 6G
 
   # ---------------- YOLO 引擎 ----------------
   yolo:
