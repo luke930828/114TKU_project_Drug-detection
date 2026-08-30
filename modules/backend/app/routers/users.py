@@ -197,6 +197,32 @@ def delete_user(user_id: str, db: Session = Depends(get_db), current_admin = Dep
     )
     
     return {"status": "success", "message": f"已成功移除人員：{account_name}"}
+# 4.5 解除登入鎖定 (限管理員)
+@router.post("/{user_id}/unlock", summary="解除登入失敗鎖定")
+def unlock_user(user_id: str, db: Session = Depends(get_db), current_admin = Depends(verify_admin)):
+    """
+    連續失敗達上限的帳號會被鎖 15 分鐘（見 routers/auth.py）。
+    使用者不該只能乾等——管理員要有辦法立刻解開。
+
+    鎖定次數是從 audit_logs 的「登入失敗」筆數算的，
+    所以解鎖就是把那些紀錄標記為已解除。這裡不刪除原始紀錄
+    （稽核軌跡不能被抹掉），改成補一筆「解除鎖定」，
+    auth.py 的計數會從最近一次成功登入或解鎖之後起算。
+    """
+    target = db.query(database.User).filter(database.User.user_id == user_id).first()
+    if not target:
+        raise HTTPException(status_code=404, detail="找不到該人員")
+
+    # 補一筆「登入」型別的紀錄當作計數起點，等同把失敗次數歸零，
+    # 但原本的失敗紀錄仍然留著可供事後追查。
+    log_audit_action(db, target.user_id, "登入",
+                     f"管理員 {current_admin.account} 解除了 {target.account} 的登入鎖定")
+    log_audit_action(db, current_admin.user_id, "解除登入鎖定",
+                     f"解除了帳號 {target.account} 的登入失敗鎖定")
+
+    return {"status": "success", "message": f"已解除 {target.account} 的登入鎖定"}
+
+
 # 5. 查看系統稽核日誌 (限管理員)
 @router.get("/audit-logs", summary="查看系統操作回溯紀錄")
 def get_audit_logs(

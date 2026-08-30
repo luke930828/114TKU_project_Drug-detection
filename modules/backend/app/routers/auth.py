@@ -12,33 +12,82 @@ from password import hash_password, verify_password
 # 改密碼、停權、刪帳號通通讓它失效不了，外洩一次就是永久通行證。
 TOKEN_TTL_HOURS = int(os.getenv("JWT_TTL_HOURS", "8"))
 
+# 連續失敗幾次就暫時鎖住，以及鎖多久。
+MAX_FAILED_ATTEMPTS = int(os.getenv("LOGIN_MAX_ATTEMPTS", "5"))
+LOCKOUT_MINUTES = int(os.getenv("LOGIN_LOCKOUT_MINUTES", "15"))
+
+# 所有登入失敗都回這一句。以前帳號不存在、被註銷、被凍結、密碼錯誤
+# 各回不同訊息，攻擊者送一個帳號進去就知道它存不存在、狀態是什麼。
+# 真正的原因寫進稽核紀錄，管理員查得到，使用者問起來也答得出來。
+GENERIC_LOGIN_ERROR = "帳號或密碼錯誤"
+
 router = APIRouter(tags=["系統登入"])
+
+
+def _recent_failures(db: Session, user_id: str) -> int:
+    """
+    算「最近的連續失敗次數」。
+
+    起算點取兩者較晚的：LOCKOUT_MINUTES 分鐘前，或上一次成功登入。
+    所以登入成功會自動把計數歸零，不需要另外清。
+
+    直接查 audit_logs 而不是另開一張表——失敗紀錄本來就要寫進去
+    （SEC-17 補的），這裡順便拿來用，少一張表要維護。
+    """
+    since = datetime.utcnow() - timedelta(minutes=LOCKOUT_MINUTES)
+    last_ok = (
+        db.query(database.AuditLog.action_timestamp)
+        .filter(database.AuditLog.user_id == user_id,
+                database.AuditLog.action_type == "登入")
+        .order_by(database.AuditLog.action_timestamp.desc())
+        .first()
+    )
+    if last_ok and last_ok[0] and last_ok[0] > since:
+        since = last_ok[0]
+
+    return (
+        db.query(database.AuditLog)
+        .filter(database.AuditLog.user_id == user_id,
+                database.AuditLog.action_type == "登入失敗",
+                database.AuditLog.action_timestamp > since)
+        .count()
+    )
 
 @router.post("/api/login/", summary="系統登入")
 def login_for_access_token(login_data: UserLogin, db: Session = Depends(get_db)):
     
     user = db.query(database.User).filter(database.User.account == login_data.account).first()
-    
-    # 第一道鎖：帳號不存在
+
+    # 帳號不存在。這種失敗記不進 audit_logs——user_id 是 nullable=False 的
+    # 外鍵，沒有對應使用者就寫不進去，所以也無法對它計數鎖定。
+    # 要補得改 schema 讓 user_id 可為 null，那是另一次改動。
     if not user:
-        raise HTTPException(status_code=401, detail="帳號或密碼錯誤")
+        raise HTTPException(status_code=401, detail=GENERIC_LOGIN_ERROR)
 
-    # 第二道鎖：帳號已被軟刪除 (註銷)
+    # 先看有沒有被鎖。放在密碼驗證之前，否則暴力破解仍然可以一直試。
+    if _recent_failures(db, user.user_id) >= MAX_FAILED_ATTEMPTS:
+        log_audit_action(db, user.user_id, "登入遭鎖定",
+                         f"帳號 {user.account} 連續失敗達 {MAX_FAILED_ATTEMPTS} 次，"
+                         f"暫時鎖定 {LOCKOUT_MINUTES} 分鐘")
+        raise HTTPException(
+            status_code=429,
+            detail=f"嘗試次數過多，請於 {LOCKOUT_MINUTES} 分鐘後再試。",
+        )
+
+    def _fail(reason: str):
+        """失敗一律回同一句話，真正的原因只寫進稽核紀錄。"""
+        log_audit_action(db, user.user_id, "登入失敗", f"帳號 {user.account}：{reason}")
+        return HTTPException(status_code=401, detail=GENERIC_LOGIN_ERROR)
+
     if user.is_deleted:
-        raise HTTPException(status_code=401, detail="此帳號已被註銷，無法登入")
+        raise _fail("帳號已註銷")
 
-    # 第三道鎖：帳號被凍結
     if not user.is_active:
-        raise HTTPException(status_code=401, detail="此帳號目前已被凍結，請聯繫管理員")
+        raise _fail("帳號已凍結")
 
-    # 第四道鎖：密碼驗證失敗
     ok, needs_rehash = verify_password(login_data.password, user.password_hash)
     if not ok:
-        # 失敗的嘗試也要留痕，不然看不出有沒有人在猜密碼。
-        # 注意：帳號不存在的那種失敗記不了——audit_logs.user_id 是
-        # nullable=False 的外鍵，沒有對應的使用者就寫不進去。
-        log_audit_action(db, user.user_id, "登入失敗", f"帳號 {user.account} 密碼錯誤")
-        raise HTTPException(status_code=401, detail="帳號或密碼錯誤")
+        raise _fail("密碼錯誤")
         
     # 通過所有考驗，發放通行證 (Token)
     # PyJWT 解碼時只要 payload 裡有 exp 就會自動驗，不用另外寫檢查。
