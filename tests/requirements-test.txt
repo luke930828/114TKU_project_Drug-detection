@@ -1,0 +1,7 @@
+# 測試端（跑在宿主機，不進任何 image）
+pytest==8.3.4
+pytest-timeout==2.3.1
+requests==2.32.3
+PyJWT==2.10.1
+PyMySQL==1.1.1
+openpyxl==3.1.5

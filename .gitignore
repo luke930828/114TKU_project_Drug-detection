@@ -66,10 +66,15 @@ checkpoint-*/
 
 # 內部用
 README-docker.md
-Makefile
 CONTRIBUTING.md
 TEST-PLAN.md
-tests/
+
+# Makefile 與 tests/ 要進版控——CI 在 GitHub 上跑的是 clone 出來的內容，
+# 這兩個不在裡面的話，workflow 只會得到一個必定失敗的 CI。
+# 測試產生的報告則是每次執行覆寫，不需要追蹤。
+tests/report/
+tests/.pytest_cache/
+tests/**/__pycache__/
 
 # 爬蟲執行時產生的狀態/輸出，不是原始碼
 modules/crawler/app/monitor_state.db

@@ -1,0 +1,150 @@
+"""部署與執行環境。"""
+import json
+import subprocess
+from pathlib import Path
+
+import pytest
+from conftest import known_vuln
+
+pytestmark = pytest.mark.security
+
+REPO = Path(__file__).resolve().parents[2]
+
+
+def _health(service):
+    """問 docker 這個服務的健康狀態。拿不到就跳過（可能不是用 compose 起的）。"""
+    try:
+        cid = subprocess.run(
+            ["docker", "compose",
+             "-f", "deploy/docker-compose.yml",
+             "-f", "tests/docker-compose.test.yml",
+             "--env-file", ".env.local", "ps", "-q", service],
+            capture_output=True, text=True, timeout=30, cwd="..",
+        ).stdout.strip()
+        if not cid:
+            pytest.skip(f"找不到 {service} 容器")
+        out = subprocess.run(
+            ["docker", "inspect", "--format", "{{json .State.Health}}", cid],
+            capture_output=True, text=True, timeout=30,
+        ).stdout.strip()
+    except OSError:
+        # FileNotFoundError 也是 OSError；docker 不在或叫不動時都走這裡
+        pytest.skip("這個環境叫不動 docker 指令")
+    if out in ("", "null"):
+        return None
+    return json.loads(out)
+
+
+@pytest.mark.parametrize("service", ["backend", "mysql"])
+def test_core_services_healthy(service):
+    h = _health(service)
+    if h is None:
+        pytest.skip(f"{service} 沒有定義 healthcheck")
+    assert h["Status"] == "healthy", f"{service} 的健康狀態是 {h['Status']}"
+
+
+@known_vuln("INFRA-01")
+def test_frontend_healthcheck_passes():
+    """
+    nginx 只監聽 IPv4，但 healthcheck 用 localhost（會先解析成 ::1），
+    所以 frontend 永遠 unhealthy——即使它其實好好的。
+    """
+    h = _health("frontend")
+    if h is None:
+        pytest.skip("frontend 沒有定義 healthcheck")
+    assert h["Status"] == "healthy", (
+        f"frontend 健康狀態是 {h['Status']}，但服務本身其實是通的："
+        f"{h['Log'][-1]['Output'].strip()[:120] if h.get('Log') else ''}"
+    )
+
+
+@known_vuln("INFRA-02")
+def test_record_append_does_not_rewrite_whole_file():
+    """
+    append_images_record / append_nlp_record 不該把整個檔案讀進來再整份寫回。
+
+    2026-08-29 這個寫法讓 images.json 長到 934 MB，爬蟲每頁產生約 1.9 GB 的
+    磁碟 I/O、佔用 4.5 GB 記憶體，最後記憶體耗盡 OOM，Chromium 崩潰後
+    WSL 寫出 191.7 GB 的核心傾印。
+
+    正確作法是 open(path, "a") 逐行追加（JSONL）。
+    """
+    import ast
+    src_path = REPO / "modules/crawler/app/record_paths.py"
+    if not src_path.exists():
+        pytest.skip("找不到 record_paths.py")
+
+    tree = ast.parse(src_path.read_text(encoding="utf-8"))
+    offenders = []
+    for fn in [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)
+               and n.name.startswith("append_")]:
+        calls = {n.func.id for n in ast.walk(fn)
+                 if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
+        if "_load_json_list" in calls or "_save_json_list" in calls:
+            offenders.append(f"{fn.name}()（第 {fn.lineno} 行）")
+
+    assert not offenders, (
+        "這些函式每次追加都會重寫整個檔案，檔案越大越慢：\n  "
+        + "\n  ".join(offenders)
+        + "\n改用 open(path, 'a') 逐行追加即可。"
+    )
+
+
+@known_vuln("INFRA-03")
+def test_services_have_memory_limits():
+    """
+    每個服務都要有記憶體上限，否則失控的模組會拖垮整台機器——
+    而且 OOM killer 殺的往往不是肇事者（當天被殺的是 nlp 和 yolo，
+    真正吃掉 4.5 GB 的是 crawler）。
+    """
+    import re
+    compose = REPO / "deploy/docker-compose.yml"
+    text = compose.read_text(encoding="utf-8")
+
+    # 服務區塊拆開來看，每個都要有 mem_limit 或 deploy.resources.limits.memory
+    blocks = re.split(r"\n  (?=\w[\w-]*:\n)", text)
+    missing = []
+    for b in blocks:
+        m = re.match(r"\n?  ([\w-]+):", b)
+        if not m or m.group(1) in ("volumes", "networks", "services"):
+            continue
+        if "mem_limit" not in b and "memory:" not in b:
+            missing.append(m.group(1))
+
+    assert not missing, "這些服務沒有設記憶體上限：" + "、".join(missing)
+
+
+@known_vuln("ML-01")
+def test_model_evaluated_against_real_labels():
+    """
+    模型必須用人工標註的真實網頁驗收，不能只看跟訓練資料同源的驗證集。
+
+    同源驗證集會給出 0.998，真實表現是 0.879——差 0.12。
+    只看前者的話，會把更差的模型當成改善推上線。
+    """
+    import csv
+    ev = REPO / "data/eval_sample/eval_sample_ALL.csv"
+    assert ev.exists(), "找不到人工標註的評估集 data/eval_sample/"
+
+    with ev.open(encoding="utf-8-sig") as f:
+        rows = list(csv.DictReader(f))
+    labelled = [r for r in rows if (r.get("label") or "").strip() not in ("", "nan")]
+    assert len(labelled) >= 200, f"標註樣本只有 {len(labelled)} 筆，不足以當驗收標準"
+
+    domains = {r["domain"] for r in labelled}
+    assert len(domains) >= 100, f"只涵蓋 {len(domains)} 個網域，代表性不足"
+
+    pos = sum(1 for r in labelled if r["label"].strip().startswith("1"))
+    ratio = pos / len(labelled)
+    assert 0.3 <= ratio <= 0.7, f"正負樣本失衡（正樣本佔 {ratio:.0%}），評估會失真"
+
+
+@known_vuln("ML-01")
+def test_training_uses_metrics_not_just_loss():
+    """train_bert.py 沒有 compute_metrics 的話，評估只印 loss，看不出模型好壞。"""
+    src = REPO / "src/bert_train/train_bert.py"
+    if not src.exists():
+        pytest.skip("找不到 train_bert.py（/src/ 不在版控裡）")
+    text = src.read_text(encoding="utf-8")
+    assert "compute_metrics" in text, "訓練腳本沒有計算 accuracy / f1 / auc"
+    assert "roc_auc" in text, "沒有計算 ROC-AUC，無法比較不同版本的排序能力"
