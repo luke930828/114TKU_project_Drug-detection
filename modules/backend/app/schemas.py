@@ -1,5 +1,51 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Dict, Any, Optional
+import ipaddress
+import socket
+from urllib.parse import urlparse
+
+
+def reject_if_internal(url: str) -> str:
+    """
+    擋掉指向內網的網址（SSRF）。
+
+    /api/scan_target/ 會把使用者給的網址直接交給爬蟲去抓，原本完全不檢查。
+    可以拿來探測內網、打雲端 metadata（169.254.169.254）、或是叫爬蟲去打
+    後端自己那三個沒有驗證的端點。前端雖然有網址格式檢查，
+    但直接打 API 就繞過了——把關要在後端。
+
+    設計上刻意「只在解析成功且指向內網時才拒絕」：
+    解析不出來的網域（例如測試用的 .invalid）本來就連不到任何東西，
+    沒有 SSRF 風險，讓爬蟲自己去失敗即可。太嚴會擋掉正常的新網站
+    （DNS 短暫查不到）以及整合測試。
+    """
+    parsed = urlparse(url)
+
+    if parsed.scheme not in ("http", "https"):
+        raise ValueError("網址必須以 http:// 或 https:// 開頭")
+
+    host = parsed.hostname
+    if not host:
+        raise ValueError("網址格式不正確，找不到主機名稱")
+
+    if host.lower() in ("localhost", "localhost.localdomain"):
+        raise ValueError("不接受指向本機的網址")
+
+    try:
+        # getaddrinfo 會一併處理 IPv6、IPv4-mapped、以及 http://2130706433/
+        # 這種十進位寫法，不用自己拆解各種變形
+        infos = socket.getaddrinfo(host, parsed.port or 80, proto=socket.IPPROTO_TCP)
+    except (socket.gaierror, UnicodeError, ValueError):
+        # 查不到就查不到——爬蟲照樣抓不到，構不成 SSRF
+        return url
+
+    for info in infos:
+        ip = ipaddress.ip_address(info[4][0])
+        if (ip.is_private or ip.is_loopback or ip.is_link_local
+                or ip.is_reserved or ip.is_multicast or ip.is_unspecified):
+            raise ValueError(f"不接受指向內部網路的網址（{host} → {ip}）")
+
+    return url
 
 # 為什麼這裡沒有 XSS 黑名單了
 # ─────────────────────────────
@@ -29,6 +75,11 @@ class UserLogin(BaseModel):
 
 class FrontendScanRequest(BaseModel):
     url: str = Field(min_length=1, max_length=768)         # ai_analysis_results.url String(768)
+
+    @field_validator("url")
+    @classmethod
+    def block_ssrf(cls, v: str) -> str:
+        return reject_if_internal(v)
 
 
 class WhitelistCreate(BaseModel):
