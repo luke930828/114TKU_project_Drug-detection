@@ -13,7 +13,8 @@ DEV_OVERRIDE := -f deploy/docker-compose.dev.yml
 
 .DEFAULT_GOAL := help
 .PHONY: help dev local full demo tailscale logs ps stop clean rebuild check \
-	smoke up-staged models test test-up test-down test-security test-full
+	smoke up-staged models test test-up test-down test-security test-full \
+	backup restore-help
 
 help: ## 顯示這份說明
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -136,6 +137,25 @@ test-integration: ## 只跑整合測試（模組間介面契約，應該全綠�
 test-full: ## 用真實的 NLP/YOLO/爬蟲跑（需要 GPU 與 models/best.pt）
 	$(COMPOSE) --env-file $(ENV_FILE) --profile full up -d --build
 	@$(PYTEST) -m fullstack
+
+backup: ## 備份資料庫到 data/backups/（Docker volume 不是備份）
+	@# 2026-08-31 三個 volume 同時消失過一次，原因至今不明。
+	@# 蒐證資料重建一次要跑爬蟲加 YOLO，不是幾分鐘的事——定期跑這個。
+	@mkdir -p data/backups
+	@set -a; . ./$(ENV_FILE); set +a; \
+	  out=data/backups/$${DB_NAME}_$$(date +%Y%m%d_%H%M).sql.gz; \
+	  $(COMPOSE) exec -T -e P="$$DB_PASSWORD" -e U="$$DB_USER" -e D="$$DB_NAME" mysql \
+	    sh -c 'exec mysqldump -h127.0.0.1 --protocol=TCP -u"$$U" -p"$$P" \
+	           --single-transaction --no-tablespaces --default-character-set=utf8mb4 \
+	           --routines --events "$$D"' 2>/dev/null | gzip > $$out; \
+	  gzip -t $$out && zcat $$out | tail -2 | grep -q "Dump completed" \
+	    && echo "  ✅ $$out（$$(du -h $$out | cut -f1)）" \
+	    || (echo "  ❌ 備份不完整，已刪除" && rm -f $$out && exit 1)
+
+restore-help: ## 資料庫壞掉／volume 不見時怎麼救
+	@echo "  先看 data/backups/ 有沒有 .sql.gz，有的話照 scripts/restore/README.md 灌回去。"
+	@echo "  沒有的話那份 README 也寫了從爬蟲記錄檔重建的完整流程。"
+	@ls -lh data/backups/*.sql.gz 2>/dev/null | tail -5 || echo "  ⚠️  目前沒有任何 dump"
 
 smoke: ## 整合冒煙測試：驗證模組間的介面契約
 	python3 scripts/smoke_test.py --base-url http://localhost:8000
