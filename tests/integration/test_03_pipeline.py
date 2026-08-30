@@ -18,15 +18,15 @@ EXPECTED_YOLO = 80
 EXPECTED_TOTAL = 68
 
 
-def test_crawler_report_accepted(anon, unique_url):
-    r = crawler_report(anon, unique_url)
+def test_crawler_report_accepted(internal, unique_url):
+    r = crawler_report(internal, unique_url)
     assert r.status_code == 200, r.text[:300]
     assert r.json()["status"] == "success"
 
 
-def test_raw_evidence_stored(anon, db, unique_url):
+def test_raw_evidence_stored(internal, db, unique_url):
     """原始蒐證資料要真的落庫，不是只有 API 回 200。"""
-    crawler_report(anon, unique_url)
+    crawler_report(internal, unique_url)
     with db.cursor() as c:
         c.execute("SELECT * FROM suspect_websites WHERE url=%s", (unique_url,))
         row = c.fetchone()
@@ -35,9 +35,9 @@ def test_raw_evidence_stored(anon, db, unique_url):
     assert "測試關鍵字" in (row["keywords_found"] or "")
 
 
-def test_full_pipeline_merges_both_engines(anon, admin, unique_url):
+def test_full_pipeline_merges_both_engines(internal, admin, unique_url):
     """整條鏈路跑完，兩個引擎的分數要合併在同一筆。"""
-    assert crawler_report(anon, unique_url).status_code == 200
+    assert crawler_report(internal, unique_url).status_code == 200
     row = wait_both_engines(admin, unique_url)
 
     assert row["nlp_score"] == EXPECTED_NLP, f"NLP 分數不對：{row['nlp_score']}"
@@ -49,9 +49,9 @@ def test_full_pipeline_merges_both_engines(anon, admin, unique_url):
     assert row["risk_level"] == "中風險 (建議人工覆核)"
 
 
-def test_backend_dispatched_to_both_engines(anon, unique_url):
+def test_backend_dispatched_to_both_engines(internal, unique_url):
     """後端有沒有真的把任務派出去（而不是自己算一算就好）。"""
-    crawler_report(anon, unique_url)
+    crawler_report(internal, unique_url)
 
     def got(port, path_key):
         calls = requests.get(f"http://127.0.0.1:{port}/__stub/calls", timeout=10).json()
@@ -61,11 +61,11 @@ def test_backend_dispatched_to_both_engines(anon, unique_url):
     assert wait_for(lambda: got(15000, "/api/v1/predict/trigger"), what="YOLO 收到派發")
 
 
-def test_later_engine_does_not_overwrite_earlier(anon, admin, unique_url):
+def test_later_engine_does_not_overwrite_earlier(internal, admin, unique_url):
     """先到的引擎結果不能被後到的洗掉——這是原本 smoke test 唯一驗到的點。"""
-    anon.post("/api/nlp/report/", auth=False,
+    internal.post("/api/nlp/report/",
               json={"url": unique_url, "risk_score": 55, "nlp_keywords": ["先到"]})
-    anon.post("/api/ai_result/report/", auth=False,
+    internal.post("/api/ai_result/report/",
               json={"url": unique_url, "risk_score": 90, "yolo_objects": ["後到"],
                     "class_metadata": {"後到": 1}})
 
@@ -75,11 +75,11 @@ def test_later_engine_does_not_overwrite_earlier(anon, admin, unique_url):
     assert row["risk_score"] == int(0.6 * 55 + 0.4 * 90)
 
 
-def test_reverse_order_also_merges(anon, admin, unique_url):
+def test_reverse_order_also_merges(internal, admin, unique_url):
     """反過來 YOLO 先到、NLP 後到，也要正確合併。"""
-    anon.post("/api/ai_result/report/", auth=False,
+    internal.post("/api/ai_result/report/",
               json={"url": unique_url, "risk_score": 70, "yolo_objects": ["先到"]})
-    anon.post("/api/nlp/report/", auth=False,
+    internal.post("/api/nlp/report/",
               json={"url": unique_url, "risk_score": 40, "nlp_keywords": ["後到"]})
 
     row = wait_for(lambda: find_result(admin, unique_url), what="合併結果")
@@ -88,13 +88,13 @@ def test_reverse_order_also_merges(anon, admin, unique_url):
     assert row["risk_score"] == int(0.6 * 40 + 0.4 * 70)
 
 
-def test_nlp_result_written_exactly_once(anon, admin, db, unique_url):
+def test_nlp_result_written_exactly_once(internal, admin, db, unique_url):
     """
     BUG-03：後端 utils.py 推一次、NLP 服務自己再推一次，同一筆結果寫兩遍。
     ai_analysis_results 以 url 做 upsert，所以資料上看不出來，
     這裡驗的是同一個網址不該產生重複的分析列。
     """
-    crawler_report(anon, unique_url)
+    crawler_report(internal, unique_url)
     wait_both_engines(admin, unique_url)      # 等整條鏈路真的跑完再查
     with db.cursor() as c:
         c.execute("SELECT COUNT(*) n FROM ai_analysis_results WHERE url=%s", (unique_url,))

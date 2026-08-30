@@ -20,6 +20,11 @@ from fastapi import FastAPI, Request
 ROLE = os.environ["ROLE"]
 BACKEND = os.getenv("BACKEND_BASE_URL", "http://backend:8000").rstrip("/")
 
+# 三個 report 端點現在要驗 token（SEC-01）。stub 扮演的是真的 nlp/yolo/爬蟲，
+# 所以它也得照規矩帶——不帶的話回推會被 401 擋掉，整條管線的測試會全部失敗，
+# 而且失敗看起來像「後端沒有合併分數」，很難查。
+INTERNAL_TOKEN = os.getenv("INTERNAL_API_TOKEN", "")
+
 NLP_SCORE = float(os.getenv("STUB_NLP_SCORE", "0.6"))    # → 後端算成 60
 YOLO_SCORE = int(os.getenv("STUB_YOLO_SCORE", "80"))
 PUSH_BACK = os.getenv("STUB_PUSH_BACK", "1") == "1"
@@ -41,7 +46,12 @@ def _push(path, payload):
     if not PUSH_BACK:
         return
     try:
-        requests.post(f"{BACKEND}{path}", json=payload, timeout=10)
+        requests.post(
+            f"{BACKEND}{path}",
+            json=payload,
+            headers={"X-Internal-Token": INTERNAL_TOKEN},
+            timeout=10,
+        )
     except Exception as e:                                    # noqa: BLE001
         print(f"[stub-{ROLE}] 回推 {path} 失敗：{e}", flush=True)
 

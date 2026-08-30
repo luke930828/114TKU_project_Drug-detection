@@ -8,8 +8,8 @@ pytestmark = pytest.mark.integration
 
 
 @pytest.fixture
-def one_result(anon, admin, unique_url):
-    crawler_report(anon, unique_url)
+def one_result(internal, admin, unique_url):
+    crawler_report(internal, unique_url)
     wait_both_engines(admin, unique_url)
     return unique_url
 

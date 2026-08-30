@@ -28,6 +28,10 @@ WEB = os.getenv("TEST_WEB_URL", "http://127.0.0.1:8080").rstrip("/")
 # 測試環境在 docker-compose.test.yml 固定成一個已知值，這裡讀同一個變數。
 DEFAULT_ADMIN = ("admin", os.getenv("TEST_ADMIN_PASSWORD", "IntegrationTest!2026"))
 
+# 服務間驗證的共用 token（SEC-01）。Makefile 的 PYTEST 目標會把 .env 整份
+# source 進來，所以這裡讀得到跟後端容器同一組值。
+INTERNAL_TOKEN = os.getenv("INTERNAL_API_TOKEN", "")
+
 
 # ============================================================
 # known_vuln
@@ -53,15 +57,20 @@ def known_vuln(vuln_id):
 class Api:
     """薄薄一層 requests 包裝，帶 base url 與預設 token。"""
 
-    def __init__(self, base, token=None):
+    def __init__(self, base, token=None, internal_token=None):
         self.base = base
         self.token = token
+        # 機器對機器端點用的 token，跟使用者的 JWT 是兩回事，可以同時帶或都不帶。
+        self.internal_token = internal_token
         self.s = requests.Session()
 
     def _headers(self, extra, auth):
         h = dict(extra or {})
-        if auth and self.token and "x-token" not in {k.lower() for k in h}:
+        lower = {k.lower() for k in h}
+        if auth and self.token and "x-token" not in lower:
             h["X-Token"] = self.token
+        if self.internal_token and "x-internal-token" not in lower:
+            h["X-Internal-Token"] = self.internal_token
         return h
 
     def request(self, method, path, *, auth=True, headers=None, **kw):
@@ -83,7 +92,7 @@ class Api:
         return self.request("DELETE", p, **kw)
 
     def with_token(self, token):
-        return Api(self.base, token)
+        return Api(self.base, token, internal_token=self.internal_token)
 
 
 def _login(account, password):
@@ -196,6 +205,24 @@ def anon(stack_ready):
 @pytest.fixture
 def admin(admin_token):
     return Api(BACKEND, admin_token)
+
+
+@pytest.fixture
+def internal(stack_ready):
+    """
+    扮演 crawler / nlp / yolo 這些內部服務的客戶端，帶 X-Internal-Token。
+
+    整合測試要模擬「引擎回報結果」這個正常流程，所以必須帶 token；
+    資安測試要證明「外人不能回報」，那邊用 anon（不帶）。兩個 fixture
+    刻意分開，免得哪天有人為了讓測試變綠就把 token 加進 anon——
+    那會讓 SEC-01 的四個測試全部失去意義。
+    """
+    if not INTERNAL_TOKEN:
+        pytest.fail(
+            "INTERNAL_API_TOKEN 沒讀到。Makefile 的 PYTEST 會 source .env，"
+            "直接跑 pytest 的話要自己 export。"
+        )
+    return Api(BACKEND, internal_token=INTERNAL_TOKEN)
 
 
 @pytest.fixture

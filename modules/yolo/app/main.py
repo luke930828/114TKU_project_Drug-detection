@@ -41,6 +41,10 @@ except Exception as e:
 BACKEND_BASE_URL = os.environ["BACKEND_BASE_URL"]
 BACKEND_REPORT_URL = f"{BACKEND_BASE_URL}/api/ai_result/report/"
 
+# 服務間驗證。跟 BACKEND_BASE_URL 一樣沒設就爆掉：回推被擋掉時這裡只是
+# 印一行錯誤，不會中斷推論，所以靜靜掉資料的風險比啟動失敗高得多。
+INTERNAL_API_TOKEN = os.environ["INTERNAL_API_TOKEN"]
+
 # 3. 前端展示用的信心度門檻，跟算分用的 conf=0.1 刻意分開：
 # 算分要低門檻才能逼出弱訊號，但畫框給人看只想看有把握的框，避免「代表圖是靠一個 0.11 的雜訊框選出來的，
 # 結果框被濾掉後畫面上什麼都沒有」這種有分數卻沒有標籤可看的情況。
@@ -235,7 +239,12 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
             print(f"   -> 有效圖筆數: {valid_image_count} / {total_images}, 總類別: {detected_objects}")
             print(f"   -> 批次整體分數 (全批合併證據計算): {final_risk_score} 分 (最高風險類別: {batch_visual_result['top_class']}, 組合加成: {batch_visual_result['combo_multiplier']}x)")
 
-            response = requests.post(BACKEND_REPORT_URL, json=payload, timeout=5)
+            response = requests.post(
+                BACKEND_REPORT_URL,
+                json=payload,
+                headers={"X-Internal-Token": INTERNAL_API_TOKEN},
+                timeout=5,
+            )
             print(f"[✨ 後端回應] 狀態碼: {response.status_code}, 內容: {response.text}")
             
             # 釋放記憶體

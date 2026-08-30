@@ -37,6 +37,7 @@ services:
       ROLE: nlp
       PORT: "8000"
       BACKEND_BASE_URL: http://backend:8000
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
       STUB_NLP_SCORE: "0.6"          # 後端會算成 60
     networks:
       default:
@@ -55,6 +56,7 @@ services:
       ROLE: yolo
       PORT: "5000"
       BACKEND_BASE_URL: http://backend:8000
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
       STUB_YOLO_SCORE: "80"
     networks:
       default:
@@ -73,6 +75,7 @@ services:
       ROLE: crawler
       PORT: "8001"
       BACKEND_BASE_URL: http://backend:8000
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
     networks:
       default:
         aliases: [crawler]

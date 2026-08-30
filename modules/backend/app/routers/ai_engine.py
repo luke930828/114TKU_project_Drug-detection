@@ -3,14 +3,18 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 import database
 from schemas import YOLOAnalysisReport, NLPAnalysisReport
-from dependencies import get_db
+from dependencies import get_db, verify_internal_token
 from utils import calculate_multimodal_risk_100_scale
 
 router = APIRouter(tags=["AI 引擎分析結果接收"])
 
 # 模組七：YOLO 獨立分析結果接收通道
 @router.post("/api/ai_result/report/", summary="YOLO 引擎專用：接收影像與分數並自動統整")
-def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends(get_db)):
+def receive_ai_analysis_result(
+    report: YOLOAnalysisReport,
+    db: Session = Depends(get_db),
+    _internal: bool = Depends(verify_internal_token),
+):
     yolo_str = ", ".join(report.yolo_objects) if report.yolo_objects else "無檢出影像特徵"
     existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
     suspect = db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == report.url).first()
@@ -68,7 +72,11 @@ def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends
             return {"status": "success", "message": "遭遇併發衝突，已轉為更新模式寫入！"}
 # 模組八：NLP 獨立分析結果接收通道
 @router.post("/api/nlp/report/", summary="NLP 引擎專用：接收可疑文字與分數並自動統整")
-def receive_nlp_analysis_result(report: NLPAnalysisReport, db: Session = Depends(get_db)):
+def receive_nlp_analysis_result(
+    report: NLPAnalysisReport,
+    db: Session = Depends(get_db),
+    _internal: bool = Depends(verify_internal_token),
+):
     nlp_str = ", ".join(report.nlp_keywords) if report.nlp_keywords else "無檢出文字特徵"
     existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
     suspect = db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == report.url).first()

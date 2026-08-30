@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 import json
 import database
 from schemas import WebsiteReport
-from dependencies import get_db, verify_admin
+from dependencies import get_db, verify_admin, verify_internal_token
 from utils import calculate_multimodal_risk_100_scale, dispatch_to_ai_engines, needs_review
 import traceback
 
@@ -23,7 +23,12 @@ def get_frontend_report(current_user: database.User = Depends(verify_admin), db:
 
 # 模組四：爬蟲專用通道 
 @router.post("/api/crawler/report/", summary="爬蟲端專用：將原始結果寫入 suspect_websites 表")
-def receive_crawler_raw_data(report: WebsiteReport, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+def receive_crawler_raw_data(
+    report: WebsiteReport,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+    _internal: bool = Depends(verify_internal_token),
+):
     try:
         print(f"收到爬蟲通報網址：{report.url}")
         is_whitelisted = db.query(database.WhitelistWebsite).filter(

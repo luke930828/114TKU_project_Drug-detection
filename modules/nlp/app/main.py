@@ -17,6 +17,11 @@ MODEL_ID = os.getenv("MODEL_ID", "matt0513/drug-detection-xlm-roberta")
 BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://backend:8000")
 BACKEND_NLP_URL = f"{BACKEND_BASE_URL}/api/nlp/report/"
 
+# 服務間驗證。沒設就直接爆掉——如果讓它用空字串跑下去，模型會照常推論、
+# 回推卻每次都被後端擋成 401，而 push_to_backend 只記 warning，
+# 表面上一切正常，實際上分析結果一筆都沒進資料庫。
+INTERNAL_API_TOKEN = os.environ["INTERNAL_API_TOKEN"]
+
 # ── 啟動時只載入一次模型 ─────────────────────────────────────────────────────
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
@@ -105,7 +110,11 @@ async def push_to_backend(url: str, risk_score: float, nlp_keywords: List[str]) 
     }
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.post(BACKEND_NLP_URL, json=payload)
+            resp = await client.post(
+                BACKEND_NLP_URL,
+                json=payload,
+                headers={"X-Internal-Token": INTERNAL_API_TOKEN},
+            )
             resp.raise_for_status()
             logger.info(f"推送成功 {url} → {resp.status_code}")
     except Exception as e:

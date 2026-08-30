@@ -32,15 +32,19 @@ def test_report_endpoints_require_auth(anon, unique_url, path, body):
 
 
 @known_vuln("SEC-01")
-def test_attacker_cannot_rewrite_risk_score(anon, admin, unique_url):
+def test_attacker_cannot_rewrite_risk_score(anon, internal, admin, unique_url):
     """
     先讓系統把某網址判為高風險，再模擬攻擊者把它洗成 0 分。
     這等於任何人都能把已知的毒品網站從黑名單洗白。
+
+    佈置階段用 internal（扮演真的引擎），攻擊階段才用 anon。
+    兩段都用 anon 的話，SEC-01 修好之後連佈置都會被擋掉，
+    測試會因為「找不到那筆紀錄」而失敗——看起來像漏洞還在，其實剛好相反。
     """
-    anon.post("/api/nlp/report/", auth=False,
-              json={"url": unique_url, "risk_score": 95, "nlp_keywords": ["毒品"]})
-    anon.post("/api/ai_result/report/", auth=False,
-              json={"url": unique_url, "risk_score": 95, "yolo_objects": ["毒品"]})
+    internal.post("/api/nlp/report/",
+                  json={"url": unique_url, "risk_score": 95, "nlp_keywords": ["毒品"]})
+    internal.post("/api/ai_result/report/",
+                  json={"url": unique_url, "risk_score": 95, "yolo_objects": ["毒品"]})
     row = wait_for(lambda: find_result(admin, unique_url), what="高風險紀錄")
     assert row["risk_score"] >= 90
 

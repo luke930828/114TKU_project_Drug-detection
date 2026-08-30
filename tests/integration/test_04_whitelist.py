@@ -21,8 +21,8 @@ def test_add_and_list(admin, whitelisted):
     assert whitelisted in urls
 
 
-def test_crawler_report_skipped_for_whitelisted(anon, admin, whitelisted):
-    r = crawler_report(anon, whitelisted)
+def test_crawler_report_skipped_for_whitelisted(internal, admin, whitelisted):
+    r = crawler_report(internal, whitelisted)
     assert r.status_code == 200
     assert r.json()["status"] == "skipped", "白名單網址仍然被寫進黑名單流程"
     assert find_result(admin, whitelisted) is None, "白名單網址不該產生 AI 分析結果"

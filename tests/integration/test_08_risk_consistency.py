@@ -33,10 +33,10 @@ CASES = [
 
 @pytest.mark.parametrize("nlp,yolo,level,why", CASES,
                          ids=[c[3] for c in CASES])
-def test_risk_level(anon, admin, unique_url, nlp, yolo, level, why):
-    anon.post("/api/nlp/report/", auth=False,
+def test_risk_level(internal, admin, unique_url, nlp, yolo, level, why):
+    internal.post("/api/nlp/report/",
               json={"url": unique_url, "risk_score": nlp, "nlp_keywords": ["t"]})
-    anon.post("/api/ai_result/report/", auth=False,
+    internal.post("/api/ai_result/report/",
               json={"url": unique_url, "risk_score": yolo, "yolo_objects": ["t"]})
 
     row = wait_for(lambda: find_result(admin, unique_url), what="分析結果")
@@ -46,33 +46,33 @@ def test_risk_level(anon, admin, unique_url, nlp, yolo, level, why):
     assert row["risk_score"] == int(0.6 * nlp + 0.4 * yolo)
 
 
-def test_no_high_confidence_site_is_released(anon, admin, unique_url):
+def test_no_high_confidence_site_is_released(internal, admin, unique_url):
     """
     NLP 完全確定卻沒有商品圖的網站，絕對不能被放行。
     實測 42 個被舊規則漏掉的毒品網站裡，39 個是這種。
     """
-    anon.post("/api/nlp/report/", auth=False,
+    internal.post("/api/nlp/report/",
               json={"url": unique_url, "risk_score": 100, "nlp_keywords": ["毒品"]})
-    anon.post("/api/ai_result/report/", auth=False,
+    internal.post("/api/ai_result/report/",
               json={"url": unique_url, "risk_score": 0, "yolo_objects": []})
 
     row = wait_for(lambda: find_result(admin, unique_url), what="分析結果")
     assert row["risk_level"] != "低風險", "NLP 100 分的網站被判為低風險並放行"
 
 
-def test_status_matches_risk_level(anon, admin, unique_url):
+def test_status_matches_risk_level(internal, admin, unique_url):
     """24 小時清單的 status 要跟 risk_level 講同一件事（BUG-01）。"""
     # 先讓爬蟲流程跑完。順序不能顛倒——crawler/report 會觸發背景派發，
     # stub 回報的分數會把我們設好的值蓋掉。
-    anon.post("/api/crawler/report/", auth=False, json={
+    internal.post("/api/crawler/report/", json={
         "task_type": "automated_24h", "url": unique_url,
         "text_content": "x", "keywords": [], "product_images_b64": []})
     wait_for(lambda: find_result(admin, unique_url), what="爬蟲建檔")
 
     # 再覆寫成要驗的分數：文字確定、影像沒東西
-    anon.post("/api/nlp/report/", auth=False,
+    internal.post("/api/nlp/report/",
               json={"url": unique_url, "risk_score": 100, "nlp_keywords": ["t"]})
-    anon.post("/api/ai_result/report/", auth=False,
+    internal.post("/api/ai_result/report/",
               json={"url": unique_url, "risk_score": 0, "yolo_objects": []})
     wait_for(lambda: (find_result(admin, unique_url) or {}).get("nlp_score") == 100,
              what="分數覆寫完成")

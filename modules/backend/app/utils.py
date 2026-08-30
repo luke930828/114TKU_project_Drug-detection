@@ -61,6 +61,10 @@ def dispatch_to_ai_engines(url: str, html_content: str, images: list):
     NLP_PREDICT_URL = os.environ["NLP_PREDICT_URL"]
     YOLO_API_URL = os.environ["YOLO_API_URL"]
     BACKEND_NLP_REPORT_URL = os.getenv("BACKEND_NLP_REPORT_URL", "http://127.0.0.1:8000/api/nlp/report/")
+    # /api/nlp/report/ 現在要驗證了，後端打自己也不例外。
+    # 走 HTTP 回推自己這件事本身有點怪（BUG-03 的重複寫入就是這樣來的），
+    # 但在改掉之前，它一樣得帶 token，不然這條路徑會靜靜地全部 401。
+    INTERNAL_HEADERS = {"X-Internal-Token": os.environ["INTERNAL_API_TOKEN"]}
     
     generated_task_id = str(uuid.uuid4())[:8]
 
@@ -87,7 +91,8 @@ def dispatch_to_ai_engines(url: str, html_content: str, images: list):
                 "nlp_keywords": nlp_result.get("keywords", [])
             }
             # 同步回傳給後端資料庫
-            requests.post(BACKEND_NLP_REPORT_URL, json=internal_payload)
+            requests.post(BACKEND_NLP_REPORT_URL, json=internal_payload,
+                          headers=INTERNAL_HEADERS, timeout=10)
             print("NLP 結果已成功同步至資料庫！")
             
     except requests.exceptions.Timeout:

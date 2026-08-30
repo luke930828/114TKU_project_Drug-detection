@@ -3,6 +3,7 @@ from fastapi import status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 import database
+import hmac
 import jwt
 import os
 
@@ -19,6 +20,18 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login/")
 # 不要在這裡加預設值繞過去。
 SECRET_KEY = os.environ["JWT_SECRET_KEY"]
 ALGORITHM = "HS256"
+
+# 服務間驗證用的共用密鑰。三個 report 端點（crawler / nlp / ai_result）只給機器打，
+# 人不會經過它們，所以不走 JWT，改用一組固定的 token。
+#
+# 一樣沒設就爆掉，而且空字串也不行——hmac.compare_digest("", "") 會回 True，
+# 等於 .env 漏了一行就靜靜地退回「完全無驗證」，比一開始就沒做還危險。
+INTERNAL_API_TOKEN = os.environ["INTERNAL_API_TOKEN"]
+if len(INTERNAL_API_TOKEN) < 16:
+    raise RuntimeError(
+        "INTERNAL_API_TOKEN 沒設或太短（至少 16 字元）。"
+        "請在 .env 產一組：openssl rand -hex 24"
+    )
 
 def get_db():
     session = Session(bind=database.engine)
@@ -69,3 +82,31 @@ def verify_super_admin(current_user: database.User = Depends(verify_admin)):
     if current_user.account != "super_admin":
         raise HTTPException(status_code=403, detail="權限不足：此操作僅限「總管理員」執行！")
     return current_user
+
+def verify_internal_token(
+    x_internal_token: str = Header(None),
+    authorization: str = Header(None),
+):
+    """
+    機器對機器端點的驗證。兩種帶法都收：
+
+        X-Internal-Token: <token>
+        Authorization: Bearer <token>
+
+    收兩種是因為爬蟲模組本來就是用 Bearer 送的（webhook_helper.py 的重試與
+    死信邏輯都繞著那個 header 寫），為了統一名稱去改它不划算。
+
+    比對一定要用 hmac.compare_digest：`==` 會在第一個不同的位元組就回傳，
+    可以從回應時間一個字元一個字元把 token 猜出來。
+    """
+    supplied = x_internal_token
+    if not supplied and authorization:
+        scheme, _, value = authorization.partition(" ")
+        if scheme.lower() == "bearer":
+            supplied = value.strip()
+
+    # 「沒帶」跟「帶錯」回一樣的訊息。分開講等於告訴對方 header 名稱猜對了。
+    if not supplied or not hmac.compare_digest(supplied, INTERNAL_API_TOKEN):
+        raise HTTPException(status_code=401, detail="內部服務驗證失敗")
+
+    return True

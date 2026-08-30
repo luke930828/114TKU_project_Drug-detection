@@ -6,16 +6,19 @@ pytestmark = pytest.mark.security
 
 
 @known_vuln("SEC-16")
-def test_oversized_payload_rejected(anon, unique_url):
+def test_oversized_payload_rejected(internal, unique_url):
     """
-    html_content 是 LONGTEXT，nginx 放行 50MB，而端點無驗證。
-    等於任何人都能一直灌資料把磁碟塞爆。
+    html_content 是 LONGTEXT，nginx 放行 50MB。
+
+    SEC-01 修好之後外人已經灌不進來了，但這裡仍然要驗——內部服務被打下來
+    （或 token 外洩）時，欄位大小還是最後一道防線。所以刻意用 internal 打，
+    用 anon 的話會停在 401，看起來過了其實沒驗到。
     """
     big = "A" * (3 * 1024 * 1024)      # 3MB
-    r = anon.post("/api/crawler/report/", auth=False, json={
+    r = internal.post("/api/crawler/report/", json={
         "task_type": "flood", "url": unique_url, "text_content": big,
         "keywords": [], "product_images_b64": []})
-    assert r.status_code in (400, 401, 403, 413, 422), (
+    assert r.status_code in (400, 413, 422), (
         f"3MB 的內容被照單全收（HTTP {r.status_code}）"
     )
 
@@ -38,12 +41,12 @@ def test_negative_page_handled(admin, page):
 
 
 @known_vuln("SEC-16")
-def test_long_task_type_does_not_crash(anon, unique_url):
+def test_long_task_type_does_not_crash(internal, unique_url):
     """
     BUG-07：suspect_websites.title 是 String(100)，
     但由不受限的 task_type 組成，長輸入會觸發 MySQL DataError → 500。
     """
-    r = anon.post("/api/crawler/report/", auth=False, json={
+    r = internal.post("/api/crawler/report/", json={
         "task_type": "X" * 500, "url": unique_url, "text_content": "x",
         "keywords": [], "product_images_b64": []})
     assert r.status_code != 500, (
