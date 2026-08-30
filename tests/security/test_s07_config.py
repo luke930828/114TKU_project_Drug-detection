@@ -33,7 +33,7 @@ def test_cors_origins_env_is_used():
 
 
 @known_vuln("SEC-11")
-def test_errors_do_not_leak_internals(anon, unique_url):
+def test_errors_do_not_leak_internals(internal, unique_url):
     """
     crawler.py:115 把 str(e) 直接放進回應。
 
@@ -44,7 +44,9 @@ def test_errors_do_not_leak_internals(anon, unique_url):
     （不要用「掃描不存在的主機」來觸發——那條路徑會先被歷史紀錄短路掉，
     測不到真正的錯誤處理。）
     """
-    r = anon.post("/api/crawler/report/", auth=False, json={
+    # 用 internal 而不是 anon：SEC-01 修好之後 anon 會停在 401，
+    # 根本走不到錯誤處理那段，測試會變成綠的但什麼也沒驗到。
+    r = internal.post("/api/crawler/report/", json={
         "task_type": "X" * 500, "url": unique_url, "text_content": "x",
         "keywords": [], "product_images_b64": []})
 
@@ -103,5 +105,36 @@ def test_ci_runs_tests():
     """沒有任何 workflow 會跑測試——修好的東西可能默默退回去。"""
     wf = REPO / ".github/workflows"
     files = list(wf.glob("*.yml")) + list(wf.glob("*.yaml")) if wf.exists() else []
-    runs_tests = any("pytest" in f.read_text(encoding="utf-8") for f in files)
+
+    # 不要只認 "pytest" 這個字串。workflow 是透過 make 呼叫測試的，
+    # 因為怎麼跑測試的知識該只留在 Makefile 一份，不該在 CI 再抄一遍
+    # （抄一遍就是下一個「兩套標準」的來源，BUG-01 就是這樣來的）。
+    entrypoints = ("pytest", "make test-integration", "make test-security", "make test ")
+    runs_tests = any(
+        any(e in f.read_text(encoding="utf-8") for e in entrypoints) for f in files
+    )
     assert runs_tests, "CI 沒有任何跑測試的 workflow"
+
+
+@known_vuln("SEC-21")
+def test_app_does_not_run_as_db_root(db):
+    """
+    應用程式用的資料庫帳號不該是 root。
+
+    刻意在跑起來的系統上驗，而不是去比對 compose 檔裡的字串——
+    設定檔寫 DB_USER=drugapp、實際 .env 還是給 root，這種情況只有
+    連上去問 CURRENT_USER() 才看得出來。db fixture 用的就是後端那組憑證。
+    """
+    with db.cursor() as c:
+        c.execute("SELECT CURRENT_USER() AS u")
+        who = c.fetchone()["u"]
+        c.execute("SHOW GRANTS")
+        grants = [list(row.values())[0] for row in c.fetchall()]
+
+    assert not who.startswith("root@"), f"應用程式直接用 MySQL root 連線（{who}）"
+
+    too_much = [g for g in grants
+                if "ALL PRIVILEGES ON *.*" in g.upper() or "WITH GRANT OPTION" in g.upper()]
+    assert not too_much, (
+        f"{who} 拿到了全域權限，跟 root 沒有差別：{too_much}"
+    )

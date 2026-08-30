@@ -26,8 +26,11 @@ jobs:
           # .env.local 裡是真的密碼，不會進版控。CI 自己產一份用完就丟的，
           # 每次都不一樣，避免有人把 CI 的值誤當成可用的憑證。
           cat > .env.ci <<CONF
-          DB_USER=root
+          # 應用程式用權限受限的帳號，root 密碼另外一組——CI 要跟正式環境
+          # 一樣的權限模型，不然 SEC-21 的測試在 CI 上等於沒驗。
+          DB_USER=drugapp
           DB_PASSWORD=$(openssl rand -hex 16)
+          DB_ROOT_PASSWORD=$(openssl rand -hex 16)
           DB_NAME=drug_prevention_db
           JWT_SECRET_KEY=$(openssl rand -hex 32)
           INTERNAL_API_TOKEN=$(openssl rand -hex 16)
