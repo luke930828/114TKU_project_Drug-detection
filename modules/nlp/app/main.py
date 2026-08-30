@@ -60,8 +60,59 @@ class PredictResponse(BaseModel):
 
 
 # ── 關鍵字提取（透過 Attention 權重）────────────────────────────────────────────
+# 這個模型是 XLM-RoBERTa，用 SentencePiece 切詞，一個「字」常常被切成好幾片：
+#   dispensary → ▁di + spen + sa + ry
+# 舊版直接把單一 token decode 出來當關鍵字，所以畫面上會出現 ana、pensa、ed、BU
+# 這種看不懂的碎片——實測 58% 的關鍵字長度 ≤3 個字元。
+# ▁ 是 SentencePiece 的「字首」標記，要靠它把碎片組回完整的字。
+WORD_START = "\u2581"
+
+# CLS 的 attention 天生會集中在功能詞上（attention sink），沒有這張表的話
+# 前五名經常被 the / and / of 佔滿——實測停用詞佔 29%。
+# 刻意寫死在這裡而不是用 nltk/spacy：那兩個都要在啟動時下載語料，
+# 容器沒網路就起不來，為了一張停用詞表不值得。
+STOPWORDS = frozenset("""
+a an the this that these those there here
+and or but nor so yet if then else than as
+is am are was were be been being do does did done
+have has had having will would shall should can could may might must
+i you he she it we they me him her us them my your his its our their
+of in on at to for from by with about into over under between through during
+no not only own same too very just also more most other some such
+what which who whom whose when where why how all any both each few
+s t don now use used using get got make made take taken
+com www http https html org net
+的 了 是 在 我 有 和 就 不 人 都 一 上 也 很 到 說 要 去 你 會 著 沒有 看 好 自己 這
+""".split())
+
+
+def _merge_subwords(tokens, scores):
+    """把 SentencePiece 的碎片組回完整的字，分數取該字所有碎片的平均。"""
+    words = []
+    for tok, score in zip(tokens, scores):
+        if tok in tokenizer.all_special_tokens:
+            continue
+        if tok.startswith(WORD_START):
+            words.append([tok[len(WORD_START):], score, 1])
+        elif words:
+            words[-1][0] += tok
+            words[-1][1] += score
+            words[-1][2] += 1
+        else:
+            # 句首沒有 ▁ 的情況，當成新的字起頭
+            words.append([tok, score, 1])
+    return [(text, total / n) for text, total, n in words if text]
+
+
+def _is_meaningful(word: str) -> bool:
+    if len(word) < 2 or word.lower() in STOPWORDS:
+        return False
+    # 純標點或純數字不是關鍵字（實測佔 9%）
+    return any(ch.isalpha() for ch in word)
+
+
 def extract_keywords(text: str, top_k: int = 5) -> List[str]:
-    """用 CLS token 的 Attention 找出模型最依賴的詞"""
+    """用 CLS token 的 Attention 找出模型最依賴的詞。"""
     encoding = tokenizer(
         text, return_tensors="pt", truncation=True, padding=True, max_length=256
     )
@@ -71,26 +122,26 @@ def extract_keywords(text: str, top_k: int = 5) -> List[str]:
     with torch.no_grad():
         outputs = model(**inputs, output_attentions=True)
 
-    # (layers, 1, heads, seq, seq) → 取 CLS 行，對層數和 head 取平均 → (seq_len,)
+    # (layers, 1, heads, seq, seq) → 取 CLS 那一行，對 head 取平均 → (seq_len,)
+    #
+    # 只取最後四層。前面幾層的 attention 幾乎是均勻分布的（還在做位置與語法），
+    # 全部層一起平均等於拿一堆雜訊去稀釋真正有鑑別力的後段。
     attentions = torch.stack(outputs.attentions)
-    cls_attn = attentions[:, 0, :, 0, :].mean(dim=(0, 1)).cpu().tolist()
+    n_layers = attentions.shape[0]
+    cls_attn = attentions[-min(4, n_layers):, 0, :, 0, :].mean(dim=(0, 1)).cpu().tolist()
 
-    special_ids = {0, 1, 2}  # <s>, </s>, <pad>
-    scored = []
-    for token_id, attn_score in zip(input_ids, cls_attn):
-        if token_id in special_ids:
-            continue
-        token_text = tokenizer.decode([token_id]).strip().lstrip("▁")
-        if len(token_text) > 1:
-            scored.append((attn_score, token_text))
+    tokens = tokenizer.convert_ids_to_tokens(input_ids)
+    words = _merge_subwords(tokens, cls_attn)
 
-    scored.sort(reverse=True)
+    words.sort(key=lambda kv: kv[1], reverse=True)
     seen: set = set()
     keywords: List[str] = []
-    for _, token in scored:
-        if token.lower() not in seen:
-            seen.add(token.lower())
-            keywords.append(token)
+    for word, _score in words:
+        word = word.strip(".,;:!?()[]{}\"'\u3001\u3002\uff0c")
+        if not _is_meaningful(word) or word.lower() in seen:
+            continue
+        seen.add(word.lower())
+        keywords.append(word)
         if len(keywords) >= top_k:
             break
 
