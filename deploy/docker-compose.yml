@@ -9,6 +9,7 @@ services:
     image: mysql:8.0
     restart: unless-stopped
     environment:
+      TZ: Asia/Taipei
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-${DB_PASSWORD}}
       MYSQL_DATABASE: ${DB_NAME:-drug_prevention_db}
       # 應用程式專用帳號，權限只到這一個資料庫。
@@ -22,6 +23,7 @@ services:
     command: >
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
+      --default-time-zone=+08:00
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
@@ -49,6 +51,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
+      TZ: Asia/Taipei
       DB_HOST: mysql
       DB_PORT: "3306"
       DB_USER: ${DB_USER:-root}
@@ -91,6 +94,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
+      TZ: Asia/Taipei
       #  這幾個目前這個模組還沒真的讀，位址是寫在 app/config.json 的
       # webhook_settings.backend_url，換環境要手動改那個檔案
       BACKEND_BASE_URL: http://backend:8000
@@ -117,6 +121,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
+      TZ: Asia/Taipei
       MODEL_ID: ${MODEL_ID:-matt0513/drug-detection-xlm-roberta}
       BACKEND_BASE_URL: http://backend:8000
       INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
@@ -140,6 +145,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     environment:
+      TZ: Asia/Taipei
       BACKEND_BASE_URL: http://backend:8000
       MODEL_PATH: /models/best.pt
       INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
@@ -165,6 +171,8 @@ services:
 
   # ---------------- 前端 ----------------
   frontend:
+    environment:
+      TZ: Asia/Taipei      # nginx 的 access log 也用本機時間
     build:
       context: ../modules/frontend
       dockerfile: Dockerfile

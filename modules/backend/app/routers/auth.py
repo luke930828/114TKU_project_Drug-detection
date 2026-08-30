@@ -34,7 +34,11 @@ def _recent_failures(db: Session, user_id: str) -> int:
     直接查 audit_logs 而不是另開一張表——失敗紀錄本來就要寫進去
     （SEC-17 補的），這裡順便拿來用，少一張表要維護。
     """
-    since = datetime.utcnow() - timedelta(minutes=LOCKOUT_MINUTES)
+    # 舊寫法（勿用）：datetime.utcnow() - timedelta(...)
+    # 這裡是拿 Python 的時間去比對資料庫裡的 action_timestamp。
+    # action_timestamp 現在由 MySQL NOW() 寫入（本機時區），這邊也必須用
+    # 本機時間，否則兩者差 8 小時，鎖定機制會整個失效。
+    since = datetime.now() - timedelta(minutes=LOCKOUT_MINUTES)
     last_ok = (
         db.query(database.AuditLog.action_timestamp)
         .filter(database.AuditLog.user_id == user_id,

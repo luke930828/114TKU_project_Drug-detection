@@ -30,7 +30,11 @@ class User(Base):
     password_hash = Column(String(255), nullable=False) 
     role = Column(String(20), nullable=False) 
     department = Column(String(50))
-    created_at = Column(DateTime, default=datetime.utcnow)
+    # 舊寫法（勿用）：default=datetime.utcnow
+    # 其他四張表用的是 func.now()（MySQL NOW()），只有這兩處用 Python 的 utcnow。
+    # 容器時區改成 Asia/Taipei 之後 func.now() 會跟著變、utcnow 不會，
+    # 兩者會差 8 小時——同一個系統裡有兩套時間比沒有時區設定更難查。
+    created_at = Column(DateTime, default=func.now())
     is_active = Column(Boolean, default=True)
     is_deleted = Column(Boolean, default=False)
     audit_logs = relationship("AuditLog", back_populates="user")
@@ -47,7 +51,8 @@ class AuditLog(Base):
     
     action_type = Column(String(100), nullable=False)
     
-    action_timestamp = Column(DateTime, default=datetime.utcnow) 
+    # 舊寫法（勿用）：default=datetime.utcnow
+    action_timestamp = Column(DateTime, default=func.now())
     
     details = Column(String(500), nullable=True)
     
