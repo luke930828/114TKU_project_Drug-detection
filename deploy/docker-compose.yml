@@ -9,8 +9,15 @@ services:
     image: mysql:8.0
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-${DB_PASSWORD}}
       MYSQL_DATABASE: ${DB_NAME:-drug_prevention_db}
+      # 應用程式專用帳號，權限只到這一個資料庫。
+      # 以前 backend 直接用 root——連線資訊一旦外洩，整個 MySQL 實例
+      # （含其他資料庫、mysql.user）都跟著暴露。
+      # ⚠️ MYSQL_USER/PASSWORD 只在「資料庫第一次建立」時生效。
+      #    既有安裝要自己建，見 README-docker.md。
+      MYSQL_USER: ${DB_USER:-drugapp}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     # 中文標題、關鍵字都靠這兩個參數，漏掉會變亂碼
     command: >
       --character-set-server=utf8mb4
@@ -18,7 +25,11 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_PASSWORD}"]
+      # 用 TCP 檢查而不是 socket。MySQL 初始化時會先跑一個 --skip-networking
+      # 的暫時伺服器，那時 socket 通了但 TCP 還沒開——healthcheck 過了，
+      # backend 卻連不上。要檢查的是「客戶端真正會用的那條路」。
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--protocol=TCP",
+             "-u", "root", "-p${DB_ROOT_PASSWORD:-${DB_PASSWORD}}"]
       interval: 10s
       timeout: 5s
       retries: 10

@@ -107,7 +107,8 @@ test-up: ## 起測試環境（獨立測試資料庫 + stub 頂替 NLP/YOLO/爬�
 	@set -a; . ./$(ENV_FILE); set +a; \
 	  $(TEST_COMPOSE) exec -T mysql sh -c 'exec mysql -h 127.0.0.1 --protocol=TCP --default-character-set=utf8mb4 \
 	    -uroot -p"$$MYSQL_ROOT_PASSWORD" \
-	    -e "CREATE DATABASE IF NOT EXISTS $(TEST_DB) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"' \
+	    -e "CREATE DATABASE IF NOT EXISTS $(TEST_DB) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; \
+	        GRANT ALL PRIVILEGES ON $(TEST_DB).* TO \"$$MYSQL_USER\"@\"%\"; FLUSH PRIVILEGES;"' \
 	  && echo "  ✅ 測試資料庫 $(TEST_DB) 就緒"
 	$(TEST_COMPOSE) --env-file $(ENV_FILE) up -d --build
 	@echo ""

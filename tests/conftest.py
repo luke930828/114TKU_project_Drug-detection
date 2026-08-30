@@ -256,7 +256,16 @@ def db(stack_ready):
             autocommit=True,
         )
     except Exception as e:
-        pytest.skip(f"連不上測試資料庫：{e}")
+        # 刻意用 fail 而不是 skip。靜默跳過比失敗更危險——依賴 db 的測試
+        # 不會跑，報告就把已經修好的項目顯示成「待修」或「測試異常」，
+        # 而畫面上只是多幾個 s，沒有人會注意到。
+        # （實際發生過：少了 cryptography 這個相依，14 個測試靜靜跳過，
+        #   SEC-02 與 SEC-17 從已修復退回待修。）
+        pytest.fail(
+            f"連不上測試資料庫：{e}\n"
+            f"  資料庫是驗證「資料真的落庫」的唯一手段，連不上就不該當作通過。\n"
+            f"  檢查：make test-up 有沒有跑完、tests/requirements-test.txt 是否都裝了。"
+        )
     yield conn
     conn.close()
 
