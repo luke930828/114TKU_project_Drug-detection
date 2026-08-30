@@ -52,7 +52,8 @@ def scan_target_url(request_data: FrontendScanRequest, db: Session = Depends(get
             print(f"發現未完成的歷史紀錄 ({target_url})，可能上次有 AI 引擎離線，系統自動重新派發任務...")
 
     # 3. 呼叫爬蟲 (不管是全新網址，還是要修復半殘紀錄，都會走到這裡)
-    CRAWLER_API_URL = os.getenv("CRAWLER_API_URL", "http://100.122.162.47:8000/api/v1/crawl")
+    # 同 utils.py：沒設就爆掉，不要靜靜連到某台特定機器
+    CRAWLER_API_URL = os.environ["CRAWLER_API_URL"]
     try:
         payload = {
             "url": target_url,

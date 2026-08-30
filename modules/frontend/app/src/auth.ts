@@ -1,7 +1,7 @@
 // 呼叫端一律傳 "/api/..."，交給 nginx.conf 的 /api proxy_pass 轉給 backend。
 // 這樣前端完全不用知道 backend 在哪台機器，local/tailscale 切換不用重 build。
-// （原本寫死 http://100.123.184.43:8002，那是舊架構裡「前端自己」的位址，不是
-// backend 的，而且這個 port 早就不用了）
+// （舊版曾經寫死一個 tailnet 位址，那其實是「前端自己」的位址、不是 backend 的，
+// 而且那個 port 早就不用了。不在註解裡留下實際 IP，免得 make check 誤判成設定值）
 export const API_BASE_URL = "";
 export const TOKEN_STORAGE_KEY = "my_jwt_token";
 export const AUTH_UNAUTHORIZED_EVENT = "auth:unauthorized";

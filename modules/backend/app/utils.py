@@ -55,8 +55,11 @@ def dispatch_to_ai_engines(url: str, html_content: str, images: list):
     背景任務：將資料派發給 NLP 與 YOLO 引擎
     """
     # 讀取環境變數網址 (預設值為單機開發測試用)
-    NLP_PREDICT_URL = os.getenv("NLP_PREDICT_URL", "http://100.69.185.94:8000/predict")
-    YOLO_API_URL = os.getenv("YOLO_API_URL", "http://100.101.167.105:5000/api/v1/predict/trigger")
+    # 不給預設值。以前這裡寫死了某台機器的 tailnet IP，環境變數沒設時
+    # 會靜靜地把蒐證資料送到那台機器去——那比啟動失敗嚴重得多。
+    # 跟 DB_PASSWORD / JWT_SECRET_KEY 一樣，沒設就直接爆掉。
+    NLP_PREDICT_URL = os.environ["NLP_PREDICT_URL"]
+    YOLO_API_URL = os.environ["YOLO_API_URL"]
     BACKEND_NLP_REPORT_URL = os.getenv("BACKEND_NLP_REPORT_URL", "http://127.0.0.1:8000/api/nlp/report/")
     
     generated_task_id = str(uuid.uuid4())[:8]

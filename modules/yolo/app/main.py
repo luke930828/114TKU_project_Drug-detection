@@ -36,7 +36,9 @@ except Exception as e:
 
 # 後端同學的接收網址 —— 用環境變數 BACKEND_BASE_URL 覆寫，方便單機測試/跨機測試/未來 docker-compose 切換，
 # 沒有設定環境變數時預設用目前的 Tailscale 位址，行為不變
-BACKEND_BASE_URL = os.getenv("BACKEND_BASE_URL", "http://100.122.59.16:8000")
+# 沒設就爆掉。以前預設值是某台機器的 tailnet IP，
+# 換環境忘了設就會把分析結果送到別人的機器上。
+BACKEND_BASE_URL = os.environ["BACKEND_BASE_URL"]
 BACKEND_REPORT_URL = f"{BACKEND_BASE_URL}/api/ai_result/report/"
 
 # 3. 前端展示用的信心度門檻，跟算分用的 conf=0.1 刻意分開：
