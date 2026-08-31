@@ -78,9 +78,62 @@ async def setup_resource_routes(page, block_fonts: bool = False, lightweight: bo
     await page.route(pattern, lambda route: route.abort())
 
 
+# 年齡閘優先點這些（不要放 No，以免拒絕進入）
+AGE_GATE_CLICK_LABELS = (
+    "Yes",
+    "YES",
+    "I am 21",
+    "I am 18",
+    "I'm 21",
+    "I'm 18",
+    "I am 21+",
+    "I am over 21",
+    "I am over 18",
+    "21+",
+    "18+",
+    "Enter Site",
+    "Enter",
+    "Confirm Age",
+    "Verify Age",
+    "I Agree",
+    "Agree & Enter",
+    "是",
+    "我已滿21歲",
+    "我已滿18歲",
+    "已滿21歲",
+    "已滿18歲",
+    "進入網站",
+    "進入",
+)
+
+
+async def _click_first_visible_label(page, labels, *, timeout_ms: int = 1200) -> bool:
+    """依序嘗試點可見按鈕／連結；成功點到一個就回 True。"""
+    for kw in labels:
+        try:
+            selector = (
+                f"button:has-text('{kw}'), a:has-text('{kw}'), "
+                f"[role='button']:has-text('{kw}'), input[type='button'][value*='{kw}' i], "
+                f"input[type='submit'][value*='{kw}' i]"
+            )
+            btn = page.locator(selector).first
+            if await btn.is_visible(timeout=timeout_ms):
+                await btn.click(timeout=2500)
+                await asyncio.sleep(0.4)
+                return True
+        except Exception:
+            continue
+    return False
+
+
 async def dismiss_overlays(page, light: bool = False) -> bool:
     """處理彈窗；回傳是否疑似登入牆（供 early_exit 使用）。"""
     is_login_required = False
+
+    # 1) 先處理年齡閘（Yes / 21+ / 18+），light／完整模式都做
+    age_timeout = 900 if light else 1500
+    await _click_first_visible_label(page, AGE_GATE_CLICK_LABELS, timeout_ms=age_timeout)
+
     dismiss_keywords = (
         ["Accept", "Agree", "OK", "同意", "接受"]
         if light
@@ -88,7 +141,7 @@ async def dismiss_overlays(page, light: bool = False) -> bool:
             "Accept All", "Accept all cookies", "Accept Cookies",
             "Allow All", "I Accept", "I Agree", "Agree & Proceed",
             "Got it", "OK", "Okay", "Close",
-            "I am 21", "I am 18", "Enter Site", "Confirm Age",
+            "I am 21", "I am 18", "Enter Site", "Confirm Age", "Yes",
             "No thanks", "Skip", "Dismiss", "Not now", "Continue",
             "Accept", "Agree", "同意", "接受", "Allow all",
         ]
@@ -119,7 +172,7 @@ async def dismiss_overlays(page, light: bool = False) -> bool:
                 const selectors = [
                     '[class*="cookie"]', '[class*="consent"]', '[class*="gdpr"]',
                     '[class*="overlay"]', '[class*="modal"]', '[class*="popup"]',
-                    '[class*="banner"]', '[class*="age-gate"]',
+                    '[class*="banner"]',
                     '#onetrust-banner-sdk', '#cookiebanner', '.fc-dialog-container'
                 ];
                 selectors.forEach(sel =>

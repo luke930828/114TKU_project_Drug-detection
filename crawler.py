@@ -294,9 +294,16 @@ class AntiDetectionCrawler:
         return
 
     async def _dismiss_popups(self, page) -> None:
-        labels = (
+        # 年齡閘優先（Yes / 21+ / 18+），不要點 No
+        age_labels = (
+            "Yes", "YES", "I am 21", "I am 18", "I'm 21", "I'm 18",
+            "I am 21+", "I am over 21", "I am over 18", "21+", "18+",
+            "Enter Site", "Enter", "Confirm Age", "Verify Age",
+            "是", "我已滿21歲", "我已滿18歲", "已滿21歲", "已滿18歲", "進入網站", "進入",
+        )
+        labels = age_labels + (
             "OK", "Ok", "Accept", "Accept all", "I agree", "Agree", "Continue",
-            "Enter", "Got it", "Allow all", "Allow", "Close", "Dismiss",
+            "Got it", "Allow all", "Allow", "Close", "Dismiss",
             "同意", "接受", "確定", "關閉",
         )
         for label in labels:
@@ -305,6 +312,18 @@ class AntiDetectionCrawler:
                 if await btn.is_visible(timeout=400):
                     await btn.click(timeout=2000)
                     logging.info(f"   [POPUP] 已自動點擊: '{label}'")
+                    if label in age_labels or label in ("Yes", "YES", "Enter", "Enter Site"):
+                        break
+            except Exception:
+                pass
+        # 再試連結型年齡按鈕
+        for label in ("Yes", "I am 21", "I am 18", "Enter Site", "進入"):
+            try:
+                link = page.get_by_role("link", name=label, exact=False).first
+                if await link.is_visible(timeout=300):
+                    await link.click(timeout=2000)
+                    logging.info(f"   [POPUP] 已自動點擊連結: '{label}'")
+                    break
             except Exception:
                 pass
         try:
