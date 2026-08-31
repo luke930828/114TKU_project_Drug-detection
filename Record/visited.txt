@@ -59597,3 +59597,309 @@
 [2026-08-17 14:45:57] source=24H tier=HIGH score=1355 | https://blog.accessbankplc.com/what-is-otp-in-banking/?replytocom=196001
 [2026-08-17 14:46:10] source=24H tier=HIGH score=1355 | https://blog.accessbankplc.com/what-is-otp-in-banking/?replytocom=98650
 [2026-08-17 14:46:15] source=24H tier=HIGH score=1355 | https://blog.accessbankplc.com/what-is-otp-in-banking/?replytocom=71085
+[2026-08-21 15:06:53] source=24H tier=SKIP score=0 status=skip | https://dtradeempire.com/product/liquid-meth-liquid-methamphetamine/
+[2026-08-21 15:06:54] source=24H tier=SKIP score=0 status=skip | https://altrachemshop.com/
+[2026-08-21 15:06:55] source=24H tier=SKIP score=0 status=skip | https://legalbolivianshop.com/product/buy-methamphetamine-online/
+[2026-08-21 15:06:55] source=24H tier=SKIP score=0 status=skip | https://www.csis.org/analysis/are-chinese-ports-latin-america-preferred-organized-crime
+[2026-08-21 15:06:55] source=24H tier=SKIP score=15 status=skip | https://www.afp.gov.au/news-centre/media-release/international-operation-foils-afghan-methamphetamine-importation-destined
+[2026-08-21 15:06:57] source=24H tier=SKIP score=15 status=skip | https://www.justice.gov/usao-dc/pr/us-seizes-300000-kilos-meth-precursor-chemicals-sent-china-destined-mexicos-sinaloa-drug
+[2026-08-21 15:06:57] source=24H tier=SKIP score=15 status=skip | https://www.cbp.gov/newsroom/local-media-release/philadelphia-cbp-officers-seize-nearly-7-pounds-methamphetamine
+[2026-08-21 15:07:02] source=24H tier=SKIP score=0 status=skip | https://www.sciencedirect.com/science/article/pii/S2589238X20300632
+[2026-08-21 15:07:23] source=24H tier=SKIP score=0 status=skip | https://www.nature.com/articles/s41598-023-35788-z
+[2026-08-21 15:07:26] source=24H tier=SKIP score=15 status=skip | https://syntegralsgs.com/category/fashion/
+[2026-08-21 15:07:37] source=24H tier=SKIP score=15 status=skip | https://www.medsci.org/v22p0482.htm
+[2026-08-21 15:07:37] source=24H tier=SKIP score=15 status=skip | https://www.fbi.gov/news/stories/california-man-sentenced-for-running-drug-trafficking-and-gambling-organization-050318
+[2026-08-21 15:07:40] source=24H tier=SKIP score=0 status=skip | https://www.heart.org/en/news/2019/08/21/meth-and-heart-disease-a-deadly-crisis-we-dont-fully-fathom-report-says
+[2026-08-21 15:08:08] source=24H tier=SKIP score=15 status=skip | https://www.ncbi.nlm.nih.gov/books/NBK535356/
+[2026-08-21 15:08:10] source=24H tier=SKIP score=15 status=skip | https://syntegralsgs.com/category/tech/
+[2026-08-21 15:08:17] source=24H tier=HIGH score=195 | https://syntegralsgs.com/five-easy-tasks-to-make-2021-run-more-smoothly/2/
+[2026-08-21 15:08:20] source=24H tier=SKIP score=0 status=skip | https://syntegralsgs.com/home-internal/
+[2026-08-21 15:08:30] source=24H tier=SKIP score=15 status=skip | https://rcmp.ca/en/news/2025/12/4348388
+[2026-08-21 15:09:15] source=24H tier=HIGH score=955 | https://syntegralsgs.com/etiam-bibendum-elit-eget-erat/
+[2026-08-21 15:09:41] source=24H tier=SKIP score=0 status=skip | https://syntegralsgs.com/category/blog/
+[2026-08-21 15:09:51] source=24H tier=SKIP score=15 status=skip | https://syntegralsgs.com/category/gadgets/
+[2026-08-21 15:09:58] source=24H tier=SKIP score=0 status=skip | https://syntegralsgs.com/
+[2026-08-21 15:10:10] source=24H tier=SKIP score=15 status=skip | https://syntegralsgs.com/tag/2021/
+[2026-08-21 15:10:29] source=24H tier=HIGH score=535 | https://syntegralsgs.com/hellen-keller/
+[2026-08-21 15:10:51] source=24H tier=HIGH score=595 | https://syntegralsgs.com/how-do-you-turn-old-gear-into-true-fashion/
+[2026-08-21 15:11:01] source=24H tier=SKIP score=15 status=skip | https://syntegralsgs.com/category/lifestyle/
+[2026-08-21 15:11:09] source=24H tier=HIGH score=775 | https://syntegralsgs.com/cum-sociis-natoque-penatibus-et-magnis/
+[2026-08-21 15:11:17] source=24H tier=SKIP score=15 status=skip | https://syntegralsgs.com/tag/it/
+[2026-08-21 15:11:20] source=24H tier=SKIP score=15 status=skip | https://syntegralsgs.com/tag/phone/
+[2026-08-21 15:11:27] source=24H tier=SKIP score=0 status=skip | https://syntegralsgs.com/2021-will-be-the-year-open-source-projects-overcome-their-diversity-problems/url
+[2026-08-21 15:11:38] source=24H tier=HIGH score=575 | https://syntegralsgs.com/apple-may-release-an-iphone-mini-and-that-is-a-good-thing/2/
+[2026-08-21 15:11:39] source=24H tier=SKIP score=15 status=skip | https://syntegralsgs.com/tag/technology/
+[2026-08-21 15:11:44] source=24H tier=SKIP score=0 status=skip | https://syntegralsgs.com/2021-will-be-the-year-open-source-projects-overcome-their-diversity-problems/%D0%BC%D1%81%D0%BA.%D1%82%D0%BE%D1%87%D0%BA%D0%B0%D0%B2%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D1%8F.%D1%80%D1%84
+[2026-08-21 15:11:48] source=24H tier=SKIP score=15 status=skip | https://www.justice.gov/usao-cdca/pr/hollywood-based-craigslist-drug-dealer-named-federal-criminal-case-alleging-fentanyl
+[2026-08-21 15:11:50] source=24H tier=SKIP score=0 status=skip | https://streetfarma.com/product/fentanyl/
+[2026-08-21 15:12:12] source=24H tier=SKIP score=0 status=skip | https://adamsbroomfieldda.org/Fentanyl-Fact-Sheet
+[2026-08-21 15:12:12] source=24H tier=SKIP score=15 status=skip | https://english.elpais.com/international/2023-06-13/cryptocurrencies-chemicals-and-drugs-the-menu-of-international-fentanyl-trafficking.html
+[2026-08-21 15:12:19] source=24H tier=SKIP score=15 status=skip | https://www.theguardian.com/society/2018/aug/27/fentanyl-for-sale-to-uk-users-through-chinese-websites
+[2026-08-21 15:12:19] source=24H tier=SKIP score=15 status=skip | https://www.whitehouse.gov/fact-sheets/2025/11/fact-sheet-president-donald-j-trump-strikes-deal-on-economic-and-trade-relations-with-china/
+[2026-08-21 15:12:20] source=24H tier=SKIP score=0 status=skip | https://www.talksubstance.org/drug-spotlights/fentanyl/
+[2026-08-21 15:12:29] source=24H tier=SKIP score=0 status=skip | https://medicalxpress.com/news/2016-11-deadly-drugs-china-easy.html
+[2026-08-21 15:12:35] source=24H tier=SKIP score=15 status=skip | https://www.elliptic.co/blog/how-fentanyl-dealers-are-bypassing-dark-web-restrictions-to-sell-deadly-precursors-online
+[2026-08-21 15:12:36] source=24H tier=SKIP score=0 status=skip | https://requestatest.com/testing/fentanyl-urine-drug-test/mississippi/corinth
+[2026-08-21 15:12:51] source=24H tier=SKIP score=0 status=skip | https://syntegralsgs.com/2021-will-be-the-year-open-source-projects-overcome-their-diversity-problems/2/
+[2026-08-21 15:13:05] source=24H tier=SKIP score=0 status=skip | https://www.publicsource.org/fentanyl-analogs-allegheny-county-opioid-epidemic-overdose-deaths/
+[2026-08-21 15:13:14] source=24H tier=SKIP score=0 status=skip | https://www.csmonitor.com/World/Europe/2013/1016/Why-is-China-White-killing-Estonia-s-Russian-speakers
+[2026-08-21 15:13:19] source=24H tier=SKIP score=0 status=skip | https://www.thinkchina.sg/politics/beyond-blame-game-why-us-china-scientific-cooperation-fentanyl-crucial
+[2026-08-21 15:13:19] source=24H tier=SKIP score=0 status=skip | https://www.ebsco.com/research-starters/health-and-medicine/china-white
+[2026-08-21 15:13:36] source=24H tier=SKIP score=15 status=skip | https://www.science.org/content/article/underground-labs-china-are-devising-potent-new-opiates-faster-authorities-can-respond
+[2026-08-21 15:14:16] source=24H tier=SKIP score=15 status=skip | https://lataco.com/fentanyl-is-everywhere-china-white-sales-flourish-on-craigslist-l-a
+[2026-08-21 15:14:17] source=24H tier=SKIP score=0 status=skip | https://visaliarecoverycenter.com/china-white-epidemic/
+[2026-08-21 15:14:24] source=24H tier=SKIP score=0 status=skip | https://pmc.ncbi.nlm.nih.gov/articles/PMC10065983/
+[2026-08-21 15:14:40] source=24H tier=SKIP score=0 status=skip | https://harmreduction.org/issues/fentanyl/first-responders-safety-guide/stimulants-containing-fentanyl/
+[2026-08-21 15:14:52] source=24H tier=SKIP score=0 status=skip | https://fentanylapotheke.com/
+[2026-08-21 15:14:59] source=24H tier=SKIP score=0 status=skip | https://home.treasury.gov/news/press-releases/jy1779
+[2026-08-21 15:15:01] source=24H tier=SKIP score=0 status=skip | https://www.dea.gov/factsheets/fentanyl
+[2026-08-21 15:15:03] source=24H tier=SKIP score=0 status=skip | https://www.drugrehab.com/addiction/drugs/heroin/china-white/
+[2026-08-21 15:15:05] source=24H tier=SKIP score=15 status=skip | https://www.kharon.com/brief/china-fentanyl-precursors-production
+[2026-08-21 15:15:18] source=24H tier=SKIP score=15 status=skip | https://www.cbsnews.com/news/deadly-fentanyl-bought-online-from-china-being-shipped-through-the-mail-60-minutes-2019-09-15/
+[2026-08-21 15:15:18] source=24H tier=SKIP score=0 status=skip | https://buyshrooms.net/privacy-policy/
+[2026-08-21 15:15:19] source=24H tier=SKIP score=0 status=skip | https://www.cdc.gov/niosh/ershdb/emergencyresponsecard_29750022.html
+[2026-08-21 15:15:38] source=24H tier=SKIP score=15 status=skip | https://www.govinfo.gov/content/pkg/CHRG-115hhrg25507/html/CHRG-115hhrg25507.htm
+[2026-08-21 15:15:39] source=24H tier=SKIP score=15 status=skip | https://www.nbcnews.com/storyline/americas-heroin-epidemic/fentanyl-crisis-deadly-drug-easily-available-online-purchase-n791311
+[2026-08-21 15:15:41] source=24H tier=SKIP score=15 status=skip | https://www.whitehouse.gov/fact-sheets/2025/02/fact-sheet-president-donald-j-trump-imposes-tariffs-on-imports-from-canada-mexico-and-china/
+[2026-08-21 15:15:53] source=24H tier=HIGH score=340 | https://www.medicaldisposables.us/fentanyl-drug-test-card-p/dfn-114.htm
+[2026-08-21 15:16:18] source=24H tier=SKIP score=25 status=skip | https://buyshrooms.net/product-category/shrooms/
+[2026-08-21 15:16:18] source=24H tier=SKIP score=0 status=skip | https://buyshrooms.net/terms-of-service/
+[2026-08-21 15:16:38] source=24H tier=MEDIUM score=140 | https://sporebuddies.com/product/wholesale-2lb-inject-forget-mushroom-grow-bags/
+[2026-08-21 15:16:55] source=24H tier=MEDIUM score=115 | https://sporebuddies.com/growing-lions-mane-mushrooms-at-home-uk/
+[2026-08-21 15:17:01] source=24H tier=HIGH score=235 | https://sporebuddies.com/top-5-mushroom-strains-for-microdosing-complete-guide/
+[2026-08-21 15:17:05] source=24H tier=SKIP score=0 status=skip | https://x.com/share?url=https://buyshrooms.net/blog/
+[2026-08-21 15:17:09] source=24H tier=MEDIUM score=100 | https://buyshrooms.net/contact-us/
+[2026-08-21 15:17:23] source=24H tier=HIGH score=175 | https://buyshrooms.net/shop/
+[2026-08-21 15:17:23] source=24H tier=SKIP score=0 status=skip | https://buyshrooms.net/category/psychedelic-mushrooms-lifestyle/
+[2026-08-21 15:17:35] source=24H tier=HIGH score=175 | https://sporebuddies.com/bulk-substrate-recipe-for-mushrooms-ultimate-guide/
+[2026-08-21 15:17:39] source=24H tier=SKIP score=0 status=skip | https://telegram.me/share/url?url=https://buyshrooms.net/blog/
+[2026-08-21 15:17:47] source=24H tier=SKIP score=0 status=skip | https://buyshrooms.net/cart/
+[2026-08-21 15:17:50] source=24H tier=SKIP score=0 status=skip | https://buyshrooms.net/category/mushroom-strains/
+[2026-08-21 15:17:50] source=24H tier=SKIP score=0 status=skip | https://api.whatsapp.com/send?text=https%3A%2F%2Fbuyshrooms.net%2Fblog%2F
+[2026-08-21 15:18:00] source=24H tier=MEDIUM score=100 | https://sporebuddies.com/monotub-mushroom-kit-guide-25-l/
+[2026-08-21 15:18:12] source=24H tier=HIGH score=195 | https://buyshrooms.net/shrooms-in-your-system-psilocybin-drug-test-guide/
+[2026-08-21 15:18:31] source=24H tier=MEDIUM score=100 | https://sporebuddies.com/pasteurise-mushroom-substrate/
+[2026-08-21 15:18:50] source=24H tier=MEDIUM score=100 | https://sporebuddies.com/how-to-use-a-spore-print-on-agar-step-by-step-for-beginners/
+[2026-08-21 15:19:01] source=24H tier=HIGH score=200 | https://buyshrooms.net/category/psilocybin-mushroom-education/
+[2026-08-21 15:19:17] source=24H tier=HIGH score=160 | https://sporebuddies.com/understanding-mycelium/
+[2026-08-21 15:19:35] source=24H tier=HIGH score=160 | https://buyshrooms.net/the-ultimate-guide-to-psilocybin-mushrooms/
+[2026-08-21 15:19:47] source=24H tier=HIGH score=200 | https://buyshrooms.net/best-places-to-buy-magic-mushrooms-near-me-in-2025/
+[2026-08-21 15:19:56] source=24H tier=MEDIUM score=100 | https://sporebuddies.com/product-category/mycology-equipment/mycology-sterilisation-contamination-prevention/
+[2026-08-21 15:20:04] source=24H tier=MEDIUM score=140 | https://sporebuddies.com/product/wholesale-rye-grain-bags-1-5-kg/
+[2026-08-21 15:20:15] source=24H tier=MEDIUM score=100 | https://sporebuddies.com/product-category/mushroom-growing-equipment/
+[2026-08-21 15:20:16] source=24H tier=SKIP score=0 status=skip | https://talkspeaker.net/contact-us/
+[2026-08-21 15:20:17] source=24H tier=SKIP score=0 status=skip | https://talkspeaker.net/test123123/
+[2026-08-21 15:20:19] source=24H tier=SKIP score=0 status=skip | https://talkspeaker.net/author/caesar/
+[2026-08-21 15:20:23] source=24H tier=MEDIUM score=140 | https://sporebuddies.com/product/whole-sale-rye-grain-bags-2kg/
+[2026-08-21 15:20:28] source=24H tier=MEDIUM score=100 | https://sporebuddies.com/mistakes-to-avoid-when-growing/
+[2026-08-21 15:20:32] source=24H tier=MEDIUM score=100 | https://sporebuddies.com/product-category/mycology-hampers/
+[2026-08-21 15:20:41] source=24H tier=SKIP score=0 status=skip | https://talkspeaker.net/bruno-mars-height/
+[2026-08-21 15:20:42] source=24H tier=SKIP score=0 status=skip | https://talkspeaker.net/grammar/
+[2026-08-21 15:20:49] source=24H tier=SKIP score=0 status=skip | https://talkspeaker.net/
+[2026-08-21 15:20:51] source=24H tier=SKIP score=0 status=skip | https://talkspeaker.net/top-beauty-marketing-agencies-transforming-brands-in-2024/
+[2026-08-21 15:20:55] source=24H tier=SKIP score=0 status=skip | https://talkspeaker.net/about-us/
+[2026-08-21 15:20:55] source=24H tier=SKIP score=0 status=skip | https://talkspeaker.net/digital-marketing/
+[2026-08-21 15:20:55] source=24H tier=SKIP score=15 status=skip | https://talkspeaker.net/should-i-hire-an-attorney-after-a-car-accident-in-florida/
+[2026-08-21 15:20:57] source=24H tier=SKIP score=0 status=skip | https://talkspeaker.net/vocabulary/
+[2026-08-21 15:21:03] source=24H tier=SKIP score=0 status=skip | https://talkspeaker.net/test123123-2/
+[2026-08-21 15:21:03] source=24H tier=SKIP score=0 status=skip | https://www.facebook.com/sharer/sharer.php?u=https://buyshrooms.net/psychedelic-therapy/
+[2026-08-21 15:21:03] source=24H tier=SKIP score=0 status=skip | https://talkspeaker.net/what-are-the-key-skills-to-pass-the-oracle-1z0-996-22-exam-on-the-first-try/
+[2026-08-21 15:21:03] source=24H tier=SKIP score=0 status=skip | https://talkspeaker.net/betify-casino-en-ligne-jouez-sur-betify-avec-1000-eu/
+[2026-08-21 15:21:03] source=24H tier=SKIP score=0 status=skip | https://www.facebook.com/sharer/sharer.php?u=https://buyshrooms.net/engima-shrooms-explained/
+[2026-08-21 15:21:08] source=24H tier=SKIP score=0 status=skip | https://api.whatsapp.com/send?text=https%3A%2F%2Fbuyshrooms.net%2Fproduct%2Fblue-pulaski-mushroom%2F
+[2026-08-21 15:21:09] source=24H tier=SKIP score=0 status=skip | https://api.whatsapp.com/send?text=https%3A%2F%2Fbuyshrooms.net%2Fshrooms-dosage-guide%2F
+[2026-08-21 15:21:23] source=24H tier=HIGH score=180 | https://buyshrooms.net/product-category/edibles/
+[2026-08-21 15:21:55] source=24H tier=SKIP score=0 status=skip | https://telegram.me/share/url?url=https://buyshrooms.net/shrooms-dosage-guide/
+[2026-08-21 15:21:56] source=24H tier=SKIP score=0 status=skip | https://api.whatsapp.com/send?text=https%3A%2F%2Fbuyshrooms.net%2Fshroom-edibles-guide-what-to-know-about-chocolates-gummies-more%2F
+[2026-08-21 15:22:12] source=24H tier=SKIP score=0 status=skip | https://x.com/share?url=https://buyshrooms.net/psychedelic-therapy/
+[2026-08-21 15:22:14] source=24H tier=SKIP score=0 status=skip | https://x.com/share?url=https://buyshrooms.net/shroom-edibles-guide-what-to-know-about-chocolates-gummies-more/
+[2026-08-21 15:22:25] source=24H tier=HIGH score=200 | https://buyshrooms.net/tag/magic-mushrooms/
+[2026-08-21 15:22:30] source=24H tier=HIGH score=180 | https://buyshrooms.net/product-tag/psilocybin-mushrooms/
+[2026-08-21 15:22:36] source=24H tier=SKIP score=15 status=skip | https://psychedeliapulse.com/contact/
+[2026-08-21 15:22:44] source=24H tier=HIGH score=240 | https://buyshrooms.net/product/nutcracker-mushroom-strain/
+[2026-08-21 15:22:56] source=24H tier=HIGH score=200 | https://buyshrooms.net/tag/psilocybin-mushrooms-benefits/
+[2026-08-21 15:23:12] source=24H tier=HIGH score=495 | https://psychedeliapulse.com/product-category/buy-lsd-online/
+[2026-08-21 15:23:32] source=24H tier=HIGH score=580 | https://psychedeliapulse.com/product/golden-teacher-mushroom-strain/
+[2026-08-21 15:23:36] source=24H tier=HIGH score=540 | https://psychedeliapulse.com/product/albino-a-mushrooms/
+[2026-08-21 15:23:43] source=24H tier=SKIP score=0 status=skip | https://buyshrooms.net/refund-policy/
+[2026-08-21 15:23:51] source=24H tier=HIGH score=640 | https://psychedeliapulse.com/product/cambodian-gold-magic-mushrooms/
+[2026-08-21 15:24:00] source=24H tier=HIGH score=420 | https://psychedeliapulse.com/product/buy-brazilian-magic-mushroom-online/
+[2026-08-21 15:24:07] source=24H tier=SKIP score=15 status=skip | https://psychedeliapulse.com/lost-password/
+[2026-08-21 15:24:14] source=24H tier=HIGH score=480 | https://psychedeliapulse.com/product/buy-blue-meanie-mushroom-fast-delivery/
+[2026-08-21 15:24:21] source=24H tier=MEDIUM score=100 | https://buyshrooms.net/locations/
+[2026-08-21 15:24:51] source=24H tier=HIGH score=495 | https://psychedeliapulse.com/
+[2026-08-21 15:25:04] source=24H tier=HIGH score=415 | https://psychedeliapulse.com/product-category/buy-mdma-online/
+[2026-08-21 15:25:10] source=24H tier=HIGH score=540 | https://psychedeliapulse.com/product/buy-malabar-magic-mushroom/
+[2026-08-21 15:25:15] source=24H tier=HIGH score=480 | https://psychedeliapulse.com/product/buy-hawaiian-magic-mushrooms-online/
+[2026-08-21 15:25:26] source=24H tier=HIGH score=480 | https://psychedeliapulse.com/product/psilocybe-azurescens-mushrooms/
+[2026-08-21 15:25:34] source=24H tier=HIGH score=240 | https://buyshrooms.net/product/albino-penis-envy-mushroom-strain/
+[2026-08-21 15:25:45] source=24H tier=HIGH score=395 | https://psychedeliapulse.com/product-category/controlled-substances/
+[2026-08-21 15:25:45] source=24H tier=SKIP score=0 status=skip | https://buyshrooms.net/buy-shrooms-in-quebec/
+[2026-08-21 15:26:05] source=24H tier=SKIP score=0 status=skip | https://themagicmushroomdelivery.com/my-account/
+[2026-08-21 15:26:53] source=24H tier=SKIP score=0 status=skip | https://themagicmushroomdelivery.com/magic-mushroom-faqs
+[2026-08-21 15:26:56] source=24H tier=SKIP score=0 status=skip | https://themagicmushroomdelivery.com/terms-and-conditions
+[2026-08-21 15:26:56] source=24H tier=SKIP score=0 status=skip | https://themagicmushroomdelivery.com/contact
+[2026-08-21 15:27:08] source=24H tier=HIGH score=415 | https://themagicmushroomdelivery.com/how-to-hide-your-high/
+[2026-08-21 15:27:20] source=24H tier=HIGH score=240 | https://buyshrooms.net/product/harlequin-mushroom-strain/
+[2026-08-21 15:27:31] source=24H tier=HIGH score=240 | https://buyshrooms.net/product/bio-frost-mushroom-strain/
+[2026-08-21 15:28:37] source=24H tier=HIGH score=240 | https://buyshrooms.net/product/enigma-hazelnut-chocolate-bar/
+[2026-08-21 15:29:11] source=24H tier=SKIP score=40 status=skip | https://themagicmushroomdelivery.com/our-standards
+[2026-08-21 15:29:17] source=24H tier=HIGH score=275 | https://buyshrooms.net/buy-shrooms-in-new-brunswick/
+[2026-08-21 15:29:24] source=24H tier=HIGH score=295 | https://themagicmushroomdelivery.com/mushroom-farm-business/
+[2026-08-21 15:29:41] source=24H tier=HIGH score=180 | https://buyshrooms.net/product-tag/blue-meanies/
+[2026-08-21 15:29:53] source=24H tier=HIGH score=215 | https://themagicmushroomdelivery.com/magic-mushroom-extract/
+[2026-08-21 15:29:59] source=24H tier=HIGH score=215 | https://themagicmushroomdelivery.com/psilocybin-treatment-resistant-depression/
+[2026-08-21 15:30:09] source=24H tier=HIGH score=240 | https://buyshrooms.net/product/blue-meanies-mushroom-strain/?add-to-cart=15638
+[2026-08-21 15:30:31] source=24H tier=SKIP score=0 status=skip | https://telegram.me/share/url?url=https://buyshrooms.net/product/blue-meanies-mushroom-strain/
+[2026-08-21 15:30:48] source=24H tier=HIGH score=240 | https://buyshrooms.net/product/blue-meanies-mushroom-strain/?add-to-cart=15622
+[2026-08-21 15:30:55] source=24H tier=HIGH score=215 | https://themagicmushroomdelivery.com/psilocybin-dosage-guide/
+[2026-08-21 15:31:09] source=24H tier=NORMAL score=95 | https://themagicmushroomdelivery.com/shop-magic-mushroom-capsules/
+[2026-08-21 15:31:30] source=24H tier=MEDIUM score=115 | https://themagicmushroomdelivery.com/
+[2026-08-21 15:31:38] source=24H tier=NORMAL score=95 | https://themagicmushroomdelivery.com/shop-coffee/
+[2026-08-21 15:31:45] source=24H tier=HIGH score=255 | https://themagicmushroomdelivery.com/progressive-psytrance-artists/
+[2026-08-21 15:32:12] source=24H tier=HIGH score=215 | https://www.magicapproach.com/mushroom-dispensary-victoria/
+[2026-08-21 15:32:26] source=24H tier=HIGH score=215 | https://www.magicapproach.com/buy-magic-mushroom-quebec/
+[2026-08-21 15:32:48] source=24H tier=HIGH score=215 | https://www.magicapproach.com/product-category/magic-mushroom-gummies/blue-raspberry/
+[2026-08-21 15:32:59] source=24H tier=HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-manitoba/
+[2026-08-21 15:33:20] source=24H tier=HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-thompson/
+[2026-08-21 15:33:30] source=24H tier=HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-moncton-dieppe/
+[2026-08-21 15:33:34] source=24H tier=HIGH score=255 | https://www.magicapproach.com/product-category/microdose-mushrooms/
+[2026-08-21 15:33:40] source=24H tier=HIGH score=215 | https://www.magicapproach.com/product-category/magic-mushroom-capsules/
+[2026-08-21 15:33:46] source=24H tier=HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-montreal/
+[2026-08-21 15:34:02] source=24H tier=HIGH score=215 | https://www.magicapproach.com/?add_to_wishlist=4697&_wpnonce=31e4d5dd22
+[2026-08-21 15:34:32] source=24H tier=HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-ontario/
+[2026-08-21 15:36:02] source=24H tier=HIGH score=215 | https://www.magicapproach.com/?add_to_wishlist=2486&_wpnonce=31e4d5dd22
+[2026-08-21 15:37:09] source=24H tier=HIGH score=255 | https://www.magicapproach.com/product-category/magic-mushroom-gummies/cherry/
+[2026-08-21 15:37:31] source=24H tier=HIGH score=240 | https://www.magicapproach.com/product/alice-micro-dose-capsules-scooby-snacks-6000mg/
+[2026-08-21 15:37:44] source=24H tier=HIGH score=240 | https://www.magicapproach.com/product/alice-psilocybin-mushroom-gummies-variety-pack-2500mg/
+[2026-08-21 15:38:38] source=24H tier=HIGH score=215 | https://www.mindmend.co/product/flow-lsd-tincture-1d/
+[2026-08-21 15:39:11] source=24H tier=HIGH score=215 | https://www.mindmend.co/product/shroom-low-dose-gummies-250mg/
+[2026-08-21 15:39:52] source=24H tier=HIGH score=175 | https://www.mindmend.co/product/hawaiian-cubensis-mushrooms/
+[2026-08-21 15:41:49] source=24H tier=SKIP score=0 status=skip | https://www.mindmend.co/product/kanna-bliss/
+[2026-08-21 15:43:09] source=24H tier=SKIP score=0 status=skip | https://www.mindmend.co/product/aztec-god-mushrooms/
+[2026-08-21 15:44:42] source=24H tier=HIGH score=235 | https://www.mindmend.co/our-products/
+[2026-08-21 15:45:10] source=24H tier=MEDIUM score=115 | https://www.mindmend.co/product/treasure-coast-shrooms/
+[2026-08-21 15:45:17] source=24H tier=HIGH score=235 | https://www.mindmend.co/product/tidal-wave-mushrooms/
+[2026-08-21 15:45:19] source=24H tier=SKIP score=0 status=skip | https://lovemagicmushrooms.com/login/
+[2026-08-21 15:45:27] source=24H tier=MEDIUM score=115 | https://www.mindmend.co/product/calm-shrooms-capsules-75mg/
+[2026-08-21 15:45:39] source=24H tier=HIGH score=215 | https://www.mindmend.co/product/shroom-organic-mint-chocolate/
+[2026-08-21 15:46:25] source=24H tier=NORMAL score=80 | https://www.mindmend.co/contact-us/
+[2026-08-21 15:46:35] source=24H tier=MEDIUM score=115 | https://www.mindmend.co/product/focus-shrooms-capsules-100mg/
+[2026-08-21 15:46:40] source=24H tier=HIGH score=175 | https://www.mindmend.co/product/albino-rollercoaster-mushrooms/
+[2026-08-21 15:47:13] source=24H tier=HIGH score=215 | https://www.mindmend.co/product/methylene-blue-capsules/
+[2026-08-21 15:47:19] source=24H tier=NORMAL score=95 | https://lovemagicmushrooms.com/product-category/tea/
+[2026-08-21 15:47:20] source=24H tier=SKIP score=15 status=skip | https://lovemagicmushrooms.com/my-account/
+[2026-08-21 15:47:20] source=24H tier=SKIP score=15 status=skip | https://lovemagicmushrooms.com/register-2/
+[2026-08-21 15:47:31] source=24H tier=MEDIUM score=115 | https://www.mindmend.co/product/steel-magnolia-shrooms/
+[2026-08-21 15:47:44] source=24H tier=MEDIUM score=135 | https://lovemagicmushrooms.com/buy-psilocybin-mushrooms-with-credit-card/
+[2026-08-21 15:47:54] source=24H tier=HIGH score=215 | https://lovemagicmushrooms.com/where-to-buy-psilocybin-in-canada/
+[2026-08-21 15:48:17] source=24H tier=SKIP score=15 status=skip | https://lovemagicmushrooms.com/learn/
+[2026-08-21 15:48:25] source=24H tier=HIGH score=175 | http://lovemagicmushrooms.com/
+[2026-08-21 15:48:32] source=24H tier=NORMAL score=95 | https://lovemagicmushrooms.com/product-category/chocolate/
+[2026-08-21 15:48:40] source=24H tier=MEDIUM score=115 | https://lovemagicmushrooms.com/product-category/gummies/
+[2026-08-21 15:48:56] source=24H tier=NORMAL score=95 | https://lovemagicmushrooms.com/product-category/dried/
+[2026-08-21 15:49:08] source=24H tier=NORMAL score=95 | https://lovemagicmushrooms.com/product-category/concentrates/
+[2026-08-21 15:49:15] source=24H tier=MEDIUM score=115 | https://lovemagicmushrooms.com/product-category/capsules/
+[2026-08-21 15:49:26] source=24H tier=HIGH score=215 | https://lovemagicmushrooms.com/shop-psilocybin/
+[2026-08-21 15:49:46] source=24H tier=HIGH score=755 | https://thcbulksupplies.com/product-category/thc-edibles/delta-munchies/
+[2026-08-21 15:49:53] source=24H tier=HIGH score=755 | https://thcbulksupplies.com/product-category/thc-gummies/others/
+[2026-08-21 15:49:55] source=24H status=error | https://thcbulksupplies.com/product-category/thc-gummies/others/
+[2026-08-21 15:50:06] source=24H tier=HIGH score=755 | https://thcbulksupplies.com/product-category/thc-edibles/flav-gummies/
+[2026-08-21 15:50:27] source=24H tier=HIGH score=755 | https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/diamond-shruumz/
+[2026-08-21 15:50:40] source=24H tier=HIGH score=715 | https://thcbulksupplies.com/product-category/live-resin/
+[2026-08-21 15:50:47] source=24H tier=HIGH score=800 | https://thcbulksupplies.com/product/great-white-monster-mushroom/
+[2026-08-21 15:50:52] source=24H tier=HIGH score=755 | https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/polkadot-mushroom-chocolate/
+[2026-08-21 15:50:57] source=24H tier=HIGH score=180 | https://buyshrooms.net/product-tag/cuban-cubensis/
+[2026-08-21 15:51:11] source=24H tier=HIGH score=355 | https://hempyretx.com/product/1oz-thca-flower/
+[2026-08-21 15:51:22] source=24H tier=HIGH score=740 | https://thcbulksupplies.com/product/static-sift-cbd-hash-hemphash-33-cbd/
+[2026-08-21 15:51:27] source=24H tier=SKIP score=15 status=skip | https://www.shopzaza.com/collections/all-flower-excluding-bulk
+[2026-08-21 15:51:29] source=24H tier=SKIP score=0 status=skip | https://mood.com/blog/what-is-zaza-weed
+[2026-08-21 15:51:40] source=24H tier=HIGH score=740 | https://thcbulksupplies.com/product/cambodian-mushrooms/
+[2026-08-21 15:51:56] source=24H tier=HIGH score=395 | https://www.reddit.com/r/trees/comments/1ilepvx/any_try_zaza_delivery/
+[2026-08-21 15:52:06] source=24H tier=HIGH score=755 | https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/moon-mushroom-chocolate-bar/
+[2026-08-21 15:52:13] source=24H tier=HIGH score=755 | https://thcbulksupplies.com/product-category/pre-rolls/
+[2026-08-21 15:52:14] source=24H tier=SKIP score=0 status=skip | https://greensociety.cc/discreet-cannabis-shipping/
+[2026-08-21 15:52:40] source=24H tier=HIGH score=715 | https://thcbulksupplies.com/product-category/buy-marijuana-strains/hybrid-strains/
+[2026-08-21 15:52:44] source=24H tier=SKIP score=15 status=skip | https://shopzazadelivery.com/
+[2026-08-21 15:53:04] source=24H tier=HIGH score=740 | https://thcbulksupplies.com/product/beldia-cbd-cbg-hash-hemphash-21-cbd/
+[2026-08-21 15:53:10] source=24H tier=HIGH score=800 | https://thcbulksupplies.com/product/costa-rican-magic-mushrooms/
+[2026-08-21 15:53:15] source=24H tier=SKIP score=15 status=skip | https://www.shopzaza.com/store
+[2026-08-21 15:53:26] source=24H tier=SKIP score=0 status=skip | https://www.paradise-seeds.com/product/sunglasses/
+[2026-08-21 15:54:03] source=24H tier=HIGH score=740 | https://thcbulksupplies.com/product/albino-avery-mushroom/
+[2026-08-21 15:54:26] source=24H tier=HIGH score=315 | https://e266b7-41.myshopify.com/
+[2026-08-21 15:55:00] source=24H tier=SKIP score=15 status=skip | https://zazadistrict.com/shop-page/
+[2026-08-21 15:55:27] source=24H tier=HIGH score=575 | https://www.shopzaza.com/collections/wholesale
+[2026-08-21 15:56:14] source=24H tier=MEDIUM score=120 | https://photontek-lighting.com/shop/30w-uv-supplemental-light-led-bar/
+[2026-08-21 15:56:26] source=24H tier=HIGH score=675 | https://zazaclutch.com/
+[2026-08-21 15:56:27] source=24H tier=SKIP score=0 status=skip | https://www.zamnesia.com/content/13-shipping-information
+[2026-08-21 15:56:32] source=24H tier=SKIP score=0 status=skip | https://secretnature.com/blogs/cbd/washington-hemp-flower
+[2026-08-21 15:56:44] source=24H tier=MEDIUM score=120 | https://www.flowerboxco.co/products/50-pink-bouquet
+[2026-08-21 15:57:06] source=24H tier=HIGH score=560 | https://suzyseeds.com/cannabis-seeds/feminized
+[2026-08-21 15:57:41] source=24H tier=HIGH score=640 | https://buy420weeds.com/product/buy-zaza-strain/
+[2026-08-21 15:57:56] source=24H tier=SKIP score=0 status=skip | https://trynowadays.com/
+[2026-08-21 15:58:21] source=24H tier=SKIP score=15 status=skip | https://store.shopzaza.com/
+[2026-08-21 15:58:21] source=24H tier=SKIP score=15 status=skip | https://www.shopzaza.com/
+[2026-08-21 15:58:32] source=24H tier=HIGH score=160 | https://cultivatesupply.com/products/hgv-nutrients-flower
+[2026-08-21 15:58:49] source=24H tier=SKIP score=0 status=skip | https://cannabisbakehouse.com/product-categorie/headshop/rookaccessoires/vloei-en-tips/?_gl=1%2Am12utx%2A_ga%2AMTU1NjA5NTEzLjE3MDM3MjIzMjA.%2A_ga_V8H0MX7700%2AMTcwMzcyMjMyMC4xLjAuMTcwMzcyMjMyMC4wLjAuMA.
+[2026-08-21 15:59:54] source=24H tier=SKIP score=0 status=skip | https://enjoyfive.com/collections/quickhits-15mg-thc-gummies
+[2026-08-21 16:00:35] source=24H tier=SKIP score=0 status=skip | https://dutch-passion.us/cannabis-seeds/kingston-punch
+[2026-08-21 16:00:50] source=24H tier=HIGH score=480 | https://myfeelgoods.com/products/palms-white-coconut-pie-flower-mediums
+[2026-08-21 16:00:51] source=24H tier=SKIP score=0 status=skip | https://dutch-passion.us/cannabis-seeds/auto-duck
+[2026-08-21 16:00:52] source=24H tier=SKIP score=15 status=skip | https://www.shopzaza.com/collections/new-arrivals
+[2026-08-21 16:01:02] source=24H tier=HIGH score=475 | https://zaleaf.com/blogs/news/discreet-cannabis-shipping-your-worry-free-guide-to-private-deliveries
+[2026-08-21 16:01:08] source=24H tier=SKIP score=0 status=skip | https://dutch-passion.us/cannabis-seeds/auto-strawberry-soda
+[2026-08-21 16:02:02] source=24H tier=HIGH score=375 | https://zazacity420.com/
+[2026-08-21 16:02:21] source=24H tier=SKIP score=0 status=skip | https://www.reddit.com/r/trees/comments/1kk6vec/does_anyone_know_if_the_company_zazadeliverycom/
+[2026-08-21 16:02:39] source=24H tier=SKIP score=0 status=skip | https://www.paradise-seeds.com/product/logo-grinder/
+[2026-08-21 16:03:05] source=24H tier=SKIP score=0 status=skip | https://www.bakedbags.com/
+[2026-08-21 16:03:23] source=24H tier=SKIP score=15 status=skip | https://zazafun.com/pages/flower
+[2026-08-21 16:03:50] source=24H tier=HIGH score=175 | https://www.hydroexperts.com.au/Cyco-Platinum-Series-UpSize-1L-Flower-Hardner
+[2026-08-21 16:04:57] source=24H tier=HIGH score=475 | https://zaza-flower.com/
+[2026-08-21 16:06:14] source=24H tier=HIGH score=535 | https://psychedeliastore.com/product/magic-kingdom-chocolate-bars/
+[2026-08-21 16:06:58] source=24H tier=HIGH score=535 | https://psychedeliastore.com/product/pure-dmt-in-australia/
+[2026-08-21 16:07:17] source=24H tier=HIGH score=535 | https://psychedeliastore.com/?add-to-cart=1946
+[2026-08-21 16:07:28] source=24H tier=HIGH score=575 | https://psychedeliastore.com/shop-2/
+[2026-08-21 16:07:39] source=24H tier=HIGH score=535 | https://psychedeliastore.com/product/4-aco-dmt-in-usa/
+[2026-08-21 16:08:04] source=24H tier=HIGH score=535 | https://psychedeliastore.com/product/buy-penis-envy-mushroom/
+[2026-08-21 16:08:10] source=24H tier=SKIP score=15 status=skip | https://psychedeliastore.com/checkout-2/
+[2026-08-21 16:08:16] source=24H tier=HIGH score=535 | https://psychedeliastore.com/product/buy-vegan-dark-chocolate-psychedelic-chocolate-bar/
+[2026-08-21 16:09:36] source=24H tier=HIGH score=535 | https://psychedeliastore.com/product/jedi-mind-fuck-mushroom-in-canada/
+[2026-08-21 16:09:58] source=24H tier=HIGH score=575 | https://psychedeliastore.com/product/buy-suillus-granulatus-mushroom/
+[2026-08-21 16:10:05] source=24H tier=HIGH score=535 | https://psychedeliastore.com/?add-to-cart=2062
+[2026-08-21 16:10:07] source=24H tier=SKIP score=15 status=skip | https://www.reddit.com/user/PureCBDiol/
+[2026-08-21 16:10:46] source=24H tier=HIGH score=535 | https://psychedeliastore.com/product/dmt-powder-online-usa/
+[2026-08-21 16:10:53] source=24H tier=HIGH score=535 | https://psychedeliastore.com/product/dmt-powder-buy-raw-dmt-powder-1g/
+[2026-08-21 16:11:05] source=24H tier=HIGH score=535 | https://psychedeliastore.com/product/buy-golden-teachers-magic-mushrooms-online/
+[2026-08-21 16:11:36] source=24H tier=SKIP score=0 status=skip | https://www.mapquest.com/us/california/varda-428861839
+[2026-08-21 16:11:43] source=24H tier=HIGH score=235 | https://whatstrending.com/flying-horse-cart-what-consumers-should-know-before-choosing-a-flying-horse-vap/
+[2026-08-21 16:12:01] source=24H tier=SKIP score=0 status=skip | https://www.hempwholesaler.com/products/kandy-kush-thca-pre-roll-1-5g-60-count-display-blue-razz-indica
+[2026-08-21 16:12:03] source=24H tier=SKIP score=0 status=skip | https://www.csautoslalom.cz/autoklub-junior-slalom-akademie-prvni-krok-do-autoslalomu/
+[2026-08-21 16:12:11] source=24H tier=HIGH score=495 | https://redcircle.com/shows/blunt-business1131
+[2026-08-21 16:12:23] source=24H tier=HIGH score=200 | https://ukshroombros.co.uk/how-to-order/
+[2026-08-21 16:12:28] source=24H tier=SKIP score=0 status=skip | https://www.bulkbuddy.co/product/premium-tuna-kush-thca-diamonds/
+[2026-08-21 16:12:30] source=24H tier=SKIP score=0 status=skip | http://idb.uwu.ac.lk/news-detail/25
+[2026-08-21 16:12:36] source=24H tier=HIGH score=355 | https://ukshroombros.co.uk/shop/
+[2026-08-21 16:12:46] source=24H tier=SKIP score=0 status=skip | https://herbapproach.com/faq/
+[2026-08-21 16:13:05] source=24H tier=HIGH score=435 | https://ukshroombros.co.uk/product-category/microdose/
+[2026-08-21 16:14:11] source=24H tier=HIGH score=1175 | https://brokeassgourmet.com/articles/grilled-chicken-avocado-caprese-salad
+[2026-08-21 16:14:23] source=24H tier=HIGH score=735 | https://gorus.media/portfolio/orgshop-gmbh
+[2026-08-21 16:14:33] source=24H tier=HIGH score=320 | https://ukshroombros.co.uk/reviews/
+[2026-08-21 16:14:40] source=24H tier=HIGH score=415 | https://ukshroombros.co.uk/
+[2026-08-21 16:15:26] source=24H tier=SKIP score=0 status=skip | https://lost-thc.com/
+[2026-08-21 16:15:30] source=24H tier=SKIP score=0 status=skip | https://www.hempwholesaler.com/products/kandy-kush-thca-pre-roll-1-5g-60-count-display-sweet-watermelon-hybrid
+[2026-08-21 16:15:47] source=24H tier=HIGH score=360 | https://ukshroombros.co.uk/product/z-strain-magic-mushrooms/?add-to-cart=5109
+[2026-08-21 16:15:50] source=24H tier=SKIP score=0 status=skip | https://blog.diderot.art/2020/07/29/que-es-el-arte-contemporaneo/
+[2026-08-21 16:16:04] source=24H tier=HIGH score=200 | https://ukshroombros.co.uk/contact/
+[2026-08-21 16:16:49] source=24H tier=HIGH score=2035 | https://www.deliargentina.com/blog-delicatessen-argentina/delicatessen-argentina-llega-a-madrid
+[2026-08-21 16:17:27] source=24H tier=HIGH score=360 | https://ukshroombros.co.uk/product/z-strain-magic-mushrooms/?add-to-cart=5124
+[2026-08-21 16:17:40] source=24H tier=SKIP score=15 status=skip | https://www.quora.com/What-are-the-available-online-dispensaries-that-ship
+[2026-08-21 16:18:12] source=24H tier=HIGH score=655 | https://www.andrewwhitehead.net/blog/will-the-real-leslie-crowther
+[2026-08-21 16:18:56] source=24H tier=HIGH score=240 | https://ukshroombros.co.uk/locations/edinburgh/
+[2026-08-21 16:20:16] source=24H tier=HIGH score=360 | https://ukshroombros.co.uk/product/thai-koh-samui-magic-mushrooms/
+[2026-08-21 16:20:39] source=24H tier=SKIP score=0 status=skip | https://drugprevent.org.uk/ppp/category/research/youth/
+[2026-08-21 16:21:14] source=24H tier=HIGH score=435 | https://ukshroombros.co.uk/product-category/apparel/
+[2026-08-21 16:21:56] source=24H tier=HIGH score=360 | https://ukshroombros.co.uk/product/trans-envy-magic-mushrooms/
+[2026-08-21 16:23:09] source=24H tier=SKIP score=0 status=skip | https://www.canapuff.com/fr
+[2026-08-21 16:23:53] source=24H tier=HIGH score=335 | https://ukshroombros.co.uk/product-category/shrooms-edibles/polkadot-mushroom-chocolate/
+[2026-08-21 16:24:18] source=24H tier=HIGH score=200 | https://ukshroombros.co.uk/shipping/
+[2026-08-21 16:24:58] source=24H tier=HIGH score=335 | https://ukshroombros.co.uk/product-category/wonka-chocolate-bars/

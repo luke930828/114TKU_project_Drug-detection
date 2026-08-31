@@ -4338,3 +4338,1623 @@ playwright._impl._errors.TargetClosedError: Target page, context or browser has 
 2026-08-20 13:13:22,596 - INFO - [SHUTDOWN] 24H 背景監控引擎已關閉。
 2026-08-20 14:32:09,051 - INFO - [SEM] investigate=10 harvest=2 (workers=8)
 2026-08-20 14:32:52,960 - INFO - [SEM] investigate=10 harvest=2 (workers=8)
+2026-08-21 14:37:53,184 - INFO - [SEM] investigate=10 harvest=2 (workers=8)
+2026-08-21 14:38:03,059 - INFO - [STARTUP] 手動爬蟲 Browser 常駐池已就緒（reuse_browser=true）。
+2026-08-21 14:38:03,067 - INFO - API 伺服器啟動，系統初始化完成。
+2026-08-21 14:38:03,069 - INFO - [STARTUP] 24H 自動引擎已經在背景一併啟動運作中！
+2026-08-21 14:38:03,156 - INFO - [DB] 8 筆卡住的 in_progress 已標為 done
+2026-08-21 14:38:04,587 - INFO - V46.0 Investigate Browser ready (chrome).
+2026-08-21 14:38:05,189 - INFO - V46.0 Harvest Browser ready (chrome).
+2026-08-21 14:38:05,192 - INFO - V46.0 Fully Optimized Dual-Track Predator Engine Active (SQLite Mode). Workers: 8
+2026-08-21 14:38:05,201 - INFO - [TRACK A - v2] Harvester 啟動：執行多語義智能搜尋 (SQLite驅動)...
+2026-08-21 14:38:05,202 - INFO - [TRACK B - v2] Investigator 啟動：執行 8 軌非同步採集...
+2026-08-21 14:38:05,397 - INFO -    Investigating (Full) [Attempt 1]: https://www.twreporter.org/a/asia-pacific-transnational-drug-trafficking-chain-taiwan-role-english
+2026-08-21 14:38:05,417 - INFO -    Investigating (Full) [Attempt 1]: https://paxpods.com/shop/meth-methamphetamine/
+2026-08-21 14:38:05,487 - INFO -    Investigating (Full) [Attempt 1]: https://www.uscc.gov/research/meth-precursor-chemicals-china-implications-united-states
+2026-08-21 14:38:05,509 - INFO -    Investigating (Full) [Attempt 1]: https://crystalmethonlineshop.com/
+2026-08-21 14:38:05,535 - INFO -    Investigating (Full) [Attempt 1]: https://www.usatoday.com/story/news/world/2016/02/22/dealers-sell-meth-lsd-indias-version-amazon/80723756/
+2026-08-21 14:38:05,574 - INFO -    Investigating (Full) [Attempt 1]: https://www.ahajournals.org/doi/10.1161/ATVBAHA.119.312461
+2026-08-21 14:38:05,615 - INFO -    Investigating (Full) [Attempt 1]: https://pmc.ncbi.nlm.nih.gov/articles/PMC11076881/
+2026-08-21 14:38:05,652 - INFO -    Investigating (Full) [Attempt 1]: https://www.interpol.int/en/News-and-Events/News/2024/International-crackdown-nets-synthetic-drugs-worth-USD-1.05-billion
+2026-08-21 14:38:07,646 - INFO - [TRACK A] Harvester 停止...
+2026-08-21 14:38:07,675 - INFO - Shutting down workers...
+2026-08-21 15:06:25,834 - INFO - [SEM] investigate=10 harvest=2 (workers=8)
+2026-08-21 15:06:27,499 - INFO - [STARTUP] 手動爬蟲 Browser 常駐池已就緒（reuse_browser=true）。
+2026-08-21 15:06:27,501 - INFO - API 伺服器啟動，系統初始化完成。
+2026-08-21 15:06:27,502 - INFO - [STARTUP] 24H 自動引擎已經在背景一併啟動運作中！
+2026-08-21 15:06:27,551 - INFO - [DB] 8 筆卡住的 in_progress 已標為 done
+2026-08-21 15:06:28,697 - INFO - V46.0 Investigate Browser ready (chrome).
+2026-08-21 15:06:29,102 - INFO - V46.0 Harvest Browser ready (chrome).
+2026-08-21 15:06:29,128 - INFO - V46.0 Fully Optimized Dual-Track Predator Engine Active (SQLite Mode). Workers: 8
+2026-08-21 15:06:29,128 - INFO - [TRACK A - v2] Harvester 啟動：執行多語義智能搜尋 (SQLite驅動)...
+2026-08-21 15:06:29,134 - INFO - [TRACK B - v2] Investigator 啟動：執行 8 軌非同步採集...
+2026-08-21 15:06:29,213 - INFO -    Investigating (Full) [Attempt 1]: https://dtradeempire.com/product/liquid-meth-liquid-methamphetamine/
+2026-08-21 15:06:29,243 - INFO -    Investigating (Full) [Attempt 1]: https://www.sciencedirect.com/science/article/pii/S2589238X20300632
+2026-08-21 15:06:29,330 - INFO -    Investigating (Full) [Attempt 1]: https://www.justice.gov/usao-dc/pr/us-seizes-300000-kilos-meth-precursor-chemicals-sent-china-destined-mexicos-sinaloa-drug
+2026-08-21 15:06:29,348 - INFO -    Investigating (Full) [Attempt 1]: https://legalbolivianshop.com/product/buy-methamphetamine-online/
+2026-08-21 15:06:29,370 - INFO -    Investigating (Full) [Attempt 1]: https://altrachemshop.com/
+2026-08-21 15:06:29,408 - INFO -    Investigating (Full) [Attempt 1]: https://www.afp.gov.au/news-centre/media-release/international-operation-foils-afghan-methamphetamine-importation-destined
+2026-08-21 15:06:29,435 - INFO -    Investigating (Full) [Attempt 1]: https://www.csis.org/analysis/are-chinese-ports-latin-america-preferred-organized-crime
+2026-08-21 15:06:29,458 - INFO -    Investigating (Full) [Attempt 1]: https://www.cbp.gov/newsroom/local-media-release/philadelphia-cbp-officers-seize-nearly-7-pounds-methamphetamine
+2026-08-21 15:06:35,177 - INFO -    -> [HARVESTER:DuckDuckGo] 檢索: Sativa "add to cart" Worldwide Shipping...
+2026-08-21 15:06:35,485 - INFO -    -> [HARVESTER:Swisscows] 檢索: Sativa "add to cart" Worldwide Shipping...
+2026-08-21 15:06:38,022 - INFO -    [NAV] HTTP 403，短暫等待後仍嘗試解析: https://www.sciencedirect.com/science/article/pii/S2589238X20300632
+2026-08-21 15:06:39,780 - INFO -    [NAV] HTTP 403，短暫等待後仍嘗試解析: https://www.csis.org/analysis/are-chinese-ports-latin-america-preferred-organized-crime
+2026-08-21 15:06:44,209 - INFO -    -> [HARVESTER:Swisscows] 完成: 32 個連結
+2026-08-21 15:06:44,236 - INFO -    -> [HARVESTER:DuckDuckGo] 完成: 3 個連結
+2026-08-21 15:06:45,999 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:06:52,853 - INFO -    -> [HARVESTER:SearXNG] 檢索: Sativa "add to cart" Worldwide Shipping...
+2026-08-21 15:06:52,868 - INFO -    -> [HARVESTER:Yandex] 檢索: Sativa "add to cart" Worldwide Shipping...
+2026-08-21 15:06:53,656 - INFO -    [SCORE] SKIP score=0 | https://dtradeempire.com/product/liquid-meth-liquid-methamphetamine/
+2026-08-21 15:06:53,724 - INFO -    Investigating (Full) [Attempt 1]: https://www.fbi.gov/news/stories/california-man-sentenced-for-running-drug-trafficking-and-gambling-organization-050318
+2026-08-21 15:06:54,146 - INFO -    [SCORE] SKIP score=0 | https://altrachemshop.com/
+2026-08-21 15:06:54,413 - INFO -    [SCORE] SKIP score=0 | https://legalbolivianshop.com/product/buy-methamphetamine-online/
+2026-08-21 15:06:54,780 - INFO -    [SCORE] SKIP score=0 | https://www.csis.org/analysis/are-chinese-ports-latin-america-preferred-organized-crime
+2026-08-21 15:06:55,060 - INFO -    [SCORE] SKIP score=15 | https://www.afp.gov.au/news-centre/media-release/international-operation-foils-afghan-methamphetamine-importation-destined
+2026-08-21 15:06:55,129 - INFO -    Investigating (Full) [Attempt 1]: https://www.nature.com/articles/s41598-023-35788-z
+2026-08-21 15:06:55,165 - INFO -    Investigating (Full) [Attempt 1]: https://www.ncbi.nlm.nih.gov/books/NBK535356/
+2026-08-21 15:06:55,289 - INFO -    Investigating (Full) [Attempt 1]: https://www.heart.org/en/news/2019/08/21/meth-and-heart-disease-a-deadly-crisis-we-dont-fully-fathom-report-says
+2026-08-21 15:06:55,390 - INFO -    Investigating (Full) [Attempt 1]: https://www.medsci.org/v22p0482.htm
+2026-08-21 15:06:56,038 - INFO -    [SCORE] SKIP score=15 | https://www.justice.gov/usao-dc/pr/us-seizes-300000-kilos-meth-precursor-chemicals-sent-china-destined-mexicos-sinaloa-drug
+2026-08-21 15:06:56,345 - INFO -    [SCORE] SKIP score=15 | https://www.cbp.gov/newsroom/local-media-release/philadelphia-cbp-officers-seize-nearly-7-pounds-methamphetamine
+2026-08-21 15:06:57,519 - INFO -    Investigating (Full) [Attempt 1]: https://rcmp.ca/en/news/2025/12/4348388
+2026-08-21 15:06:57,836 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/etiam-bibendum-elit-eget-erat/
+2026-08-21 15:07:02,188 - INFO -    [SCORE] SKIP score=0 | https://www.sciencedirect.com/science/article/pii/S2589238X20300632
+2026-08-21 15:07:02,380 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/category/fashion/
+2026-08-21 15:07:08,829 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:07:09,257 - INFO -    [POPUP] 已自動點擊: 'Ok'
+2026-08-21 15:07:19,422 - INFO -    -> [HARVESTER:SearXNG] 完成: 2 個連結
+2026-08-21 15:07:20,367 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.fbi.gov/news/stories/california-man-sentenced-for-running-drug-trafficking-and-gambling-organization-050318
+2026-08-21 15:07:22,699 - INFO -    [SCORE] SKIP score=0 | https://www.nature.com/articles/s41598-023-35788-z
+2026-08-21 15:07:23,137 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/five-easy-tasks-to-make-2021-run-more-smoothly/2/
+2026-08-21 15:07:23,331 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://rcmp.ca/en/news/2025/12/4348388
+2026-08-21 15:07:24,184 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://syntegralsgs.com/etiam-bibendum-elit-eget-erat/
+2026-08-21 15:07:25,324 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.heart.org/en/news/2019/08/21/meth-and-heart-disease-a-deadly-crisis-we-dont-fully-fathom-report-says
+2026-08-21 15:07:25,998 - INFO -    [SCORE] SKIP score=15 | https://syntegralsgs.com/category/fashion/
+2026-08-21 15:07:26,215 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/how-do-you-turn-old-gear-into-true-fashion/
+2026-08-21 15:07:28,177 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.ncbi.nlm.nih.gov/books/NBK535356/
+2026-08-21 15:07:28,550 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:07:28,805 - INFO -    -> [HARVESTER:Yandex] 完成: 5 個連結
+2026-08-21 15:07:29,105 - INFO -    [POPUP] 已自動點擊: 'Ok'
+2026-08-21 15:07:37,719 - INFO -    [SCORE] SKIP score=15 | https://www.medsci.org/v22p0482.htm
+2026-08-21 15:07:37,747 - INFO -    [SCORE] SKIP score=15 | https://www.fbi.gov/news/stories/california-man-sentenced-for-running-drug-trafficking-and-gambling-organization-050318
+2026-08-21 15:07:37,916 - INFO -    -> [HARVESTER:Startpage] 檢索: Sativa "add to cart" Worldwide Shipping...
+2026-08-21 15:07:37,936 - INFO -    -> [HARVESTER:Brave] 檢索: Sativa "add to cart" Worldwide Shipping...
+2026-08-21 15:07:38,012 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/home-internal/
+2026-08-21 15:07:38,064 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/hellen-keller/
+2026-08-21 15:07:40,254 - INFO -    [SCORE] SKIP score=0 | https://www.heart.org/en/news/2019/08/21/meth-and-heart-disease-a-deadly-crisis-we-dont-fully-fathom-report-says
+2026-08-21 15:07:40,474 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/category/tech/
+2026-08-21 15:07:54,105 - INFO -    -> [HARVESTER:Brave] 完成: 49 個連結
+2026-08-21 15:07:55,520 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://syntegralsgs.com/how-do-you-turn-old-gear-into-true-fashion/
+2026-08-21 15:07:55,965 - INFO -    [SCORE] HIGH score=195 | https://syntegralsgs.com/five-easy-tasks-to-make-2021-run-more-smoothly/2/
+2026-08-21 15:08:01,218 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:08:01,285 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:08:01,689 - INFO -    [POPUP] 已自動點擊: 'Ok'
+2026-08-21 15:08:08,331 - INFO -    [SCORE] SKIP score=15 | https://www.ncbi.nlm.nih.gov/books/NBK535356/
+2026-08-21 15:08:08,537 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/category/blog/
+2026-08-21 15:08:09,682 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://syntegralsgs.com/hellen-keller/
+2026-08-21 15:08:10,154 - INFO -    [SCORE] SKIP score=15 | https://syntegralsgs.com/category/tech/
+2026-08-21 15:08:11,465 - INFO -    [SCORE] SKIP score=0 | https://syntegralsgs.com/home-internal/
+2026-08-21 15:08:11,554 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/category/gadgets/
+2026-08-21 15:08:17,773 - INFO - [TRACK B] 入庫+送封包 HIGH score=195 | https://syntegralsgs.com/five-easy-tasks-to-make-2021-run-more-smoothly/2/
+2026-08-21 15:08:20,563 - INFO -    -> [HARVESTER:Startpage] 完成: 1 個連結
+2026-08-21 15:08:20,824 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/cum-sociis-natoque-penatibus-et-magnis/
+2026-08-21 15:08:24,094 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/
+2026-08-21 15:08:26,940 - INFO -    [SCORE] SKIP score=15 | https://rcmp.ca/en/news/2025/12/4348388
+2026-08-21 15:08:30,118 - INFO -    [SCORE] HIGH score=955 | https://syntegralsgs.com/etiam-bibendum-elit-eget-erat/
+2026-08-21 15:08:30,835 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/tag/2021/
+2026-08-21 15:08:38,854 - INFO -    -> [HARVESTER:Qwant] 檢索: Sativa "add to cart" Worldwide Shipping...
+2026-08-21 15:08:38,990 - INFO -    -> [HARVESTER:Mojeek] 檢索: Sativa "add to cart" Worldwide Shipping...
+2026-08-21 15:08:40,639 - ERROR - [WEBHOOK] 連線錯誤: All connection attempts failed, 準備重試
+2026-08-21 15:08:47,355 - INFO -    -> [HARVESTER:Mojeek] 完成: 1 個連結
+2026-08-21 15:08:52,861 - INFO -    -> [HARVESTER:Qwant] 完成: 0 個連結
+2026-08-21 15:09:00,498 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://syntegralsgs.com/cum-sociis-natoque-penatibus-et-magnis/
+2026-08-21 15:09:01,321 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:09:05,080 - ERROR - [WEBHOOK] 連線錯誤: All connection attempts failed, 準備重試
+2026-08-21 15:09:15,540 - INFO - [TRACK B] 入庫+送封包 HIGH score=955 | https://syntegralsgs.com/etiam-bibendum-elit-eget-erat/
+2026-08-21 15:09:16,546 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:09:16,553 - INFO - [WEBHOOK] 資料傳送成功: https://syntegralsgs.com/five-easy-tasks-to-make-2021-run-more-smoothly/2/
+2026-08-21 15:09:17,755 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:09:23,049 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:09:23,310 - INFO - [WEBHOOK] 資料傳送成功: https://syntegralsgs.com/etiam-bibendum-elit-eget-erat/
+2026-08-21 15:09:24,847 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/category/lifestyle/
+2026-08-21 15:09:33,514 - INFO -    -> [HARVESTER:Gibiru] 檢索: Sativa "add to cart" Worldwide Shipping...
+2026-08-21 15:09:34,739 - INFO -    [SCORE] SKIP score=0 | https://syntegralsgs.com/category/blog/
+2026-08-21 15:09:36,113 - INFO -    -> [HARVESTER:CocCoc] 檢索: Sativa "add to cart" Worldwide Shipping...
+2026-08-21 15:09:41,927 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/apple-may-release-an-iphone-mini-and-that-is-a-good-thing/2/
+2026-08-21 15:09:43,790 - INFO -    [SCORE] HIGH score=535 | https://syntegralsgs.com/hellen-keller/
+2026-08-21 15:09:45,899 - INFO -    [SCORE] SKIP score=15 | https://syntegralsgs.com/category/gadgets/
+2026-08-21 15:09:48,100 - INFO -    -> [HARVESTER:Gibiru] 完成: 58 個連結
+2026-08-21 15:09:53,610 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/tag/phone/
+2026-08-21 15:09:57,541 - INFO -    [SCORE] SKIP score=0 | https://syntegralsgs.com/
+2026-08-21 15:09:58,897 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/tag/it/
+2026-08-21 15:10:00,972 - INFO -    [SCORE] HIGH score=595 | https://syntegralsgs.com/how-do-you-turn-old-gear-into-true-fashion/
+2026-08-21 15:10:05,967 - INFO -    [SCORE] SKIP score=15 | https://syntegralsgs.com/tag/2021/
+2026-08-21 15:10:10,729 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/2021-will-be-the-year-open-source-projects-overcome-their-diversity-problems/url
+2026-08-21 15:10:11,026 - INFO -    -> [HARVESTER:CocCoc] 完成: 0 個連結
+2026-08-21 15:10:12,049 - INFO -    -> [HARVESTER] 全引擎合併: 30 個有效 URL（共 10 個引擎）
+2026-08-21 15:10:29,039 - INFO - [TRACK B] 入庫+送封包 HIGH score=535 | https://syntegralsgs.com/hellen-keller/
+2026-08-21 15:10:36,189 - INFO -    [SCORE] HIGH score=775 | https://syntegralsgs.com/cum-sociis-natoque-penatibus-et-magnis/
+2026-08-21 15:10:36,232 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:10:36,239 - INFO - [WEBHOOK] 資料傳送成功: https://syntegralsgs.com/hellen-keller/
+2026-08-21 15:10:36,459 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/2021-will-be-the-year-open-source-projects-overcome-their-diversity-problems/2/
+2026-08-21 15:10:39,690 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://syntegralsgs.com/apple-may-release-an-iphone-mini-and-that-is-a-good-thing/2/
+2026-08-21 15:10:41,621 - INFO - [TRACK A] 搜尋完成。新發現: 26 筆。當前待爬隊列長度: 880
+2026-08-21 15:10:51,952 - INFO - [TRACK B] 入庫+送封包 HIGH score=595 | https://syntegralsgs.com/how-do-you-turn-old-gear-into-true-fashion/
+2026-08-21 15:10:56,807 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/tag/technology/
+2026-08-21 15:10:58,534 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:10:58,712 - INFO - [WEBHOOK] 資料傳送成功: https://syntegralsgs.com/how-do-you-turn-old-gear-into-true-fashion/
+2026-08-21 15:11:00,889 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:11:01,506 - INFO -    [SCORE] SKIP score=15 | https://syntegralsgs.com/category/lifestyle/
+2026-08-21 15:11:01,636 - INFO -    [POPUP] 已自動點擊: 'Ok'
+2026-08-21 15:11:02,231 - INFO -    Investigating (Full) [Attempt 1]: https://syntegralsgs.com/2021-will-be-the-year-open-source-projects-overcome-their-diversity-problems/%D0%BC%D1%81%D0%BA.%D1%82%D0%BE%D1%87%D0%BA%D0%B0%D0%B2%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D1%8F.%D1%80%D1%84
+2026-08-21 15:11:09,702 - INFO - [TRACK B] 入庫+送封包 HIGH score=775 | https://syntegralsgs.com/cum-sociis-natoque-penatibus-et-magnis/
+2026-08-21 15:11:10,865 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:11:11,283 - INFO -    [POPUP] 已自動點擊: 'Ok'
+2026-08-21 15:11:12,207 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:11:12,389 - INFO - [WEBHOOK] 資料傳送成功: https://syntegralsgs.com/cum-sociis-natoque-penatibus-et-magnis/
+2026-08-21 15:11:14,344 - INFO -    Investigating (Full) [Attempt 1]: https://www.justice.gov/usao-cdca/pr/hollywood-based-craigslist-drug-dealer-named-federal-criminal-case-alleging-fentanyl
+2026-08-21 15:11:17,537 - INFO -    [SCORE] SKIP score=15 | https://syntegralsgs.com/tag/it/
+2026-08-21 15:11:17,903 - INFO -    Investigating (Full) [Attempt 1]: https://streetfarma.com/product/fentanyl/
+2026-08-21 15:11:18,797 - INFO -    [SCORE] SKIP score=15 | https://syntegralsgs.com/tag/phone/
+2026-08-21 15:11:20,512 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:11:20,800 - INFO -    Investigating (Full) [Attempt 1]: https://english.elpais.com/international/2023-06-13/cryptocurrencies-chemicals-and-drugs-the-menu-of-international-fentanyl-trafficking.html
+2026-08-21 15:11:22,149 - INFO -    [SCORE] HIGH score=575 | https://syntegralsgs.com/apple-may-release-an-iphone-mini-and-that-is-a-good-thing/2/
+2026-08-21 15:11:24,774 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:11:26,649 - INFO -    [POPUP] 已自動點擊: 'Ok'
+2026-08-21 15:11:27,135 - INFO -    [SCORE] SKIP score=0 | https://syntegralsgs.com/2021-will-be-the-year-open-source-projects-overcome-their-diversity-problems/url
+2026-08-21 15:11:27,720 - INFO -    Investigating (Full) [Attempt 1]: https://adamsbroomfieldda.org/Fentanyl-Fact-Sheet
+2026-08-21 15:11:31,576 - INFO -    [SCORE] SKIP score=15 | https://syntegralsgs.com/tag/technology/
+2026-08-21 15:11:38,416 - INFO - [TRACK B] 入庫+送封包 HIGH score=575 | https://syntegralsgs.com/apple-may-release-an-iphone-mini-and-that-is-a-good-thing/2/
+2026-08-21 15:11:39,199 - INFO -    Investigating (Full) [Attempt 1]: https://www.talksubstance.org/drug-spotlights/fentanyl/
+2026-08-21 15:11:40,182 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:11:40,288 - INFO - [WEBHOOK] 資料傳送成功: https://syntegralsgs.com/apple-may-release-an-iphone-mini-and-that-is-a-good-thing/2/
+2026-08-21 15:11:40,635 - INFO -    Investigating (Full) [Attempt 1]: https://www.whitehouse.gov/fact-sheets/2025/11/fact-sheet-president-donald-j-trump-strikes-deal-on-economic-and-trade-relations-with-china/
+2026-08-21 15:11:42,471 - INFO -    [SCORE] SKIP score=0 | https://syntegralsgs.com/2021-will-be-the-year-open-source-projects-overcome-their-diversity-problems/%D0%BC%D1%81%D0%BA.%D1%82%D0%BE%D1%87%D0%BA%D0%B0%D0%B2%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D1%8F.%D1%80%D1%84
+2026-08-21 15:11:44,399 - INFO -    Investigating (Full) [Attempt 1]: https://www.theguardian.com/society/2018/aug/27/fentanyl-for-sale-to-uk-users-through-chinese-websites
+2026-08-21 15:11:47,747 - INFO -    [SCORE] SKIP score=15 | https://www.justice.gov/usao-cdca/pr/hollywood-based-craigslist-drug-dealer-named-federal-criminal-case-alleging-fentanyl
+2026-08-21 15:11:48,388 - INFO -    Investigating (Full) [Attempt 1]: https://medicalxpress.com/news/2016-11-deadly-drugs-china-easy.html
+2026-08-21 15:11:49,886 - INFO -    [SCORE] SKIP score=0 | https://streetfarma.com/product/fentanyl/
+2026-08-21 15:11:50,436 - ERROR -    [RETRY] 嘗試 1 失敗 https://syntegralsgs.com/2021-will-be-the-year-open-source-projects-overcome-their-diversity-problems/2/: Timeout 45000ms exceeded.
+2026-08-21 15:11:50,776 - INFO -    Investigating (Full) [Attempt 1]: https://www.elliptic.co/blog/how-fentanyl-dealers-are-bypassing-dark-web-restrictions-to-sell-deadly-precursors-online
+2026-08-21 15:11:50,846 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:11:52,420 - INFO -    Investigating (Full) [Attempt 2]: https://syntegralsgs.com/2021-will-be-the-year-open-source-projects-overcome-their-diversity-problems/2/
+2026-08-21 15:12:11,659 - INFO -    [NAV] HTTP 403，短暫等待後仍嘗試解析: https://medicalxpress.com/news/2016-11-deadly-drugs-china-easy.html
+2026-08-21 15:12:11,957 - INFO -    [SCORE] SKIP score=0 | https://adamsbroomfieldda.org/Fentanyl-Fact-Sheet
+2026-08-21 15:12:12,574 - INFO -    [SCORE] SKIP score=15 | https://english.elpais.com/international/2023-06-13/cryptocurrencies-chemicals-and-drugs-the-menu-of-international-fentanyl-trafficking.html
+2026-08-21 15:12:12,845 - INFO -    Investigating (Full) [Attempt 1]: https://www.publicsource.org/fentanyl-analogs-allegheny-county-opioid-epidemic-overdose-deaths/
+2026-08-21 15:12:12,967 - INFO -    Investigating (Full) [Attempt 1]: https://requestatest.com/testing/fentanyl-urine-drug-test/mississippi/corinth
+2026-08-21 15:12:13,909 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:12:18,883 - INFO -    [NAV] HTTP 403，短暫等待後仍嘗試解析: https://www.publicsource.org/fentanyl-analogs-allegheny-county-opioid-epidemic-overdose-deaths/
+2026-08-21 15:12:18,908 - INFO -    [NAV] HTTP 403，短暫等待後仍嘗試解析: https://requestatest.com/testing/fentanyl-urine-drug-test/mississippi/corinth
+2026-08-21 15:12:19,412 - INFO -    [SCORE] SKIP score=15 | https://www.theguardian.com/society/2018/aug/27/fentanyl-for-sale-to-uk-users-through-chinese-websites
+2026-08-21 15:12:19,458 - INFO -    [SCORE] SKIP score=15 | https://www.whitehouse.gov/fact-sheets/2025/11/fact-sheet-president-donald-j-trump-strikes-deal-on-economic-and-trade-relations-with-china/
+2026-08-21 15:12:19,808 - INFO -    [SCORE] SKIP score=0 | https://www.talksubstance.org/drug-spotlights/fentanyl/
+2026-08-21 15:12:19,838 - INFO -    Investigating (Full) [Attempt 1]: https://www.ebsco.com/research-starters/health-and-medicine/china-white
+2026-08-21 15:12:19,915 - INFO -    Investigating (Full) [Attempt 1]: https://www.csmonitor.com/World/Europe/2013/1016/Why-is-China-White-killing-Estonia-s-Russian-speakers
+2026-08-21 15:12:20,423 - INFO -    Investigating (Full) [Attempt 1]: https://www.thinkchina.sg/politics/beyond-blame-game-why-us-china-scientific-cooperation-fentanyl-crucial
+2026-08-21 15:12:25,235 - INFO -    [POPUP] 已自動點擊: 'Accept'
+2026-08-21 15:12:29,603 - INFO -    [SCORE] SKIP score=0 | https://medicalxpress.com/news/2016-11-deadly-drugs-china-easy.html
+2026-08-21 15:12:29,791 - INFO -    Investigating (Full) [Attempt 1]: https://www.science.org/content/article/underground-labs-china-are-devising-potent-new-opiates-faster-authorities-can-respond
+2026-08-21 15:12:32,601 - INFO -    [SCORE] SKIP score=15 | https://www.elliptic.co/blog/how-fentanyl-dealers-are-bypassing-dark-web-restrictions-to-sell-deadly-precursors-online
+2026-08-21 15:12:34,458 - INFO -    [SCORE] SKIP score=0 | https://requestatest.com/testing/fentanyl-urine-drug-test/mississippi/corinth
+2026-08-21 15:12:36,224 - INFO -    Investigating (Full) [Attempt 1]: https://lataco.com/fentanyl-is-everywhere-china-white-sales-flourish-on-craigslist-l-a
+2026-08-21 15:12:36,731 - INFO -    Investigating (Full) [Attempt 1]: https://visaliarecoverycenter.com/china-white-epidemic/
+2026-08-21 15:12:45,560 - ERROR -    [RETRY] 嘗試 2 失敗 https://syntegralsgs.com/2021-will-be-the-year-open-source-projects-overcome-their-diversity-problems/2/: Timeout 30000ms exceeded.
+2026-08-21 15:12:51,976 - INFO -    Investigating (Full) [Attempt 1]: https://pmc.ncbi.nlm.nih.gov/articles/PMC10065983/
+2026-08-21 15:13:03,988 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:13:04,341 - INFO -    [SCORE] SKIP score=0 | https://www.publicsource.org/fentanyl-analogs-allegheny-county-opioid-epidemic-overdose-deaths/
+2026-08-21 15:13:05,218 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:13:05,839 - INFO -    -> [HARVESTER:Swisscows] 檢索: Microdose Gummies for sale "buy now" XMR...
+2026-08-21 15:13:05,888 - INFO -    Investigating (Full) [Attempt 1]: https://harmreduction.org/issues/fentanyl/first-responders-safety-guide/stimulants-containing-fentanyl/
+2026-08-21 15:13:06,141 - INFO -    -> [HARVESTER:DuckDuckGo] 檢索: Microdose Gummies for sale "buy now" XMR...
+2026-08-21 15:13:07,331 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:13:11,031 - INFO -    [SCORE] SKIP score=0 | https://www.csmonitor.com/World/Europe/2013/1016/Why-is-China-White-killing-Estonia-s-Russian-speakers
+2026-08-21 15:13:12,786 - INFO -    -> [HARVESTER:DuckDuckGo] 完成: 7 個連結
+2026-08-21 15:13:13,446 - INFO -    -> [HARVESTER:Swisscows] 完成: 18 個連結
+2026-08-21 15:13:14,380 - INFO -    Investigating (Full) [Attempt 1]: https://www.dea.gov/factsheets/fentanyl
+2026-08-21 15:13:16,383 - INFO -    [SCORE] SKIP score=0 | https://www.thinkchina.sg/politics/beyond-blame-game-why-us-china-scientific-cooperation-fentanyl-crucial
+2026-08-21 15:13:17,706 - INFO -    [SCORE] SKIP score=0 | https://www.ebsco.com/research-starters/health-and-medicine/china-white
+2026-08-21 15:13:19,491 - INFO -    Investigating (Full) [Attempt 1]: https://www.kharon.com/brief/china-fentanyl-precursors-production
+2026-08-21 15:13:19,924 - INFO -    Investigating (Full) [Attempt 1]: https://home.treasury.gov/news/press-releases/jy1779
+2026-08-21 15:13:27,979 - INFO -    [SCORE] SKIP score=15 | https://www.science.org/content/article/underground-labs-china-are-devising-potent-new-opiates-faster-authorities-can-respond
+2026-08-21 15:13:36,696 - INFO -    Investigating (Full) [Attempt 1]: https://www.drugrehab.com/addiction/drugs/heroin/china-white/
+2026-08-21 15:13:40,249 - INFO -    -> [HARVESTER:SearXNG] 檢索: Microdose Gummies for sale "buy now" XMR...
+2026-08-21 15:13:40,417 - INFO -    -> [HARVESTER:Yandex] 檢索: Microdose Gummies for sale "buy now" XMR...
+2026-08-21 15:13:52,666 - INFO -    -> [HARVESTER:Yandex] 完成: 5 個連結
+2026-08-21 15:13:52,870 - INFO -    -> [HARVESTER:SearXNG] 完成: 2 個連結
+2026-08-21 15:14:08,517 - INFO -    -> [HARVESTER:Startpage] 檢索: Microdose Gummies for sale "buy now" XMR...
+2026-08-21 15:14:08,555 - INFO -    -> [HARVESTER:Brave] 檢索: Microdose Gummies for sale "buy now" XMR...
+2026-08-21 15:14:10,167 - INFO -    [POPUP] 已自動點擊: 'Accept'
+2026-08-21 15:14:15,449 - WARNING -    -> [HARVESTER:Startpage] 失敗: Execution context was destroyed, most likely because of a navigation
+2026-08-21 15:14:15,781 - INFO -    [SCORE] SKIP score=15 | https://lataco.com/fentanyl-is-everywhere-china-white-sales-flourish-on-craigslist-l-a
+2026-08-21 15:14:16,366 - INFO -    -> [HARVESTER:Brave] 完成: 71 個連結
+2026-08-21 15:14:16,621 - INFO -    Investigating (Full) [Attempt 1]: https://www.cbsnews.com/news/deadly-fentanyl-bought-online-from-china-being-shipped-through-the-mail-60-minutes-2019-09-15/
+2026-08-21 15:14:16,835 - INFO -    [SCORE] SKIP score=0 | https://visaliarecoverycenter.com/china-white-epidemic/
+2026-08-21 15:14:18,203 - INFO -    Investigating (Full) [Attempt 1]: https://www.cdc.gov/niosh/ershdb/emergencyresponsecard_29750022.html
+2026-08-21 15:14:21,493 - INFO -    [SCORE] SKIP score=0 | https://pmc.ncbi.nlm.nih.gov/articles/PMC10065983/
+2026-08-21 15:14:24,249 - INFO -    Investigating (Full) [Attempt 1]: https://fentanylapotheke.com/
+2026-08-21 15:14:38,821 - INFO -    -> [HARVESTER:Mojeek] 檢索: Microdose Gummies for sale "buy now" XMR...
+2026-08-21 15:14:38,946 - INFO -    -> [HARVESTER:Qwant] 檢索: Microdose Gummies for sale "buy now" XMR...
+2026-08-21 15:14:40,047 - INFO -    [SCORE] SKIP score=0 | https://harmreduction.org/issues/fentanyl/first-responders-safety-guide/stimulants-containing-fentanyl/
+2026-08-21 15:14:40,835 - INFO -    Investigating (Full) [Attempt 1]: https://www.medicaldisposables.us/fentanyl-drug-test-card-p/dfn-114.htm
+2026-08-21 15:14:47,166 - ERROR -    [RETRY] 嘗試 1 失敗 https://fentanylapotheke.com/: net::ERR_NAME_NOT_RESOLVED at https://fentanylapotheke.com/
+2026-08-21 15:14:50,430 - INFO -    -> [HARVESTER:Mojeek] 完成: 1 個連結
+2026-08-21 15:14:53,188 - INFO -    Investigating (Full) [Attempt 1]: https://www.nbcnews.com/storyline/americas-heroin-epidemic/fentanyl-crisis-deadly-drug-easily-available-online-purchase-n791311
+2026-08-21 15:14:53,480 - INFO -    -> [HARVESTER:Qwant] 完成: 0 個連結
+2026-08-21 15:14:57,528 - INFO -    [SCORE] SKIP score=0 | https://home.treasury.gov/news/press-releases/jy1779
+2026-08-21 15:14:59,856 - INFO -    Investigating (Full) [Attempt 1]: https://www.govinfo.gov/content/pkg/CHRG-115hhrg25507/html/CHRG-115hhrg25507.htm
+2026-08-21 15:15:00,439 - INFO -    [SCORE] SKIP score=0 | https://www.dea.gov/factsheets/fentanyl
+2026-08-21 15:15:01,546 - INFO -    Investigating (Full) [Attempt 1]: https://www.whitehouse.gov/fact-sheets/2025/02/fact-sheet-president-donald-j-trump-imposes-tariffs-on-imports-from-canada-mexico-and-china/
+2026-08-21 15:15:02,349 - INFO -    [SCORE] SKIP score=0 | https://www.drugrehab.com/addiction/drugs/heroin/china-white/
+2026-08-21 15:15:04,050 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/contact-us/
+2026-08-21 15:15:04,327 - INFO -    [SCORE] SKIP score=15 | https://www.kharon.com/brief/china-fentanyl-precursors-production
+2026-08-21 15:15:05,627 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/terms-of-service/
+2026-08-21 15:15:06,853 - INFO -    -> [HARVESTER:Gibiru] 檢索: Microdose Gummies for sale "buy now" XMR...
+2026-08-21 15:15:07,501 - INFO -    -> [HARVESTER:CocCoc] 檢索: Microdose Gummies for sale "buy now" XMR...
+2026-08-21 15:15:14,414 - INFO -    [SCORE] SKIP score=15 | https://www.cbsnews.com/news/deadly-fentanyl-bought-online-from-china-being-shipped-through-the-mail-60-minutes-2019-09-15/
+2026-08-21 15:15:14,448 - INFO -    -> [HARVESTER:Gibiru] 完成: 58 個連結
+2026-08-21 15:15:17,497 - INFO -    [SCORE] SKIP score=0 | https://www.cdc.gov/niosh/ershdb/emergencyresponsecard_29750022.html
+2026-08-21 15:15:18,949 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/product/wholesale-2lb-inject-forget-mushroom-grow-bags/
+2026-08-21 15:15:20,429 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/shop/
+2026-08-21 15:15:30,654 - INFO -    -> [HARVESTER:CocCoc] 完成: 0 個連結
+2026-08-21 15:15:31,113 - INFO -    -> [HARVESTER] 全引擎合併: 41 個有效 URL（共 10 個引擎）
+2026-08-21 15:15:37,011 - INFO - [TRACK A] 搜尋完成。新發現: 38 筆。當前待爬隊列長度: 881
+2026-08-21 15:15:37,541 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:15:37,567 - INFO -    [SCORE] HIGH score=340 | https://www.medicaldisposables.us/fentanyl-drug-test-card-p/dfn-114.htm
+2026-08-21 15:15:37,982 - INFO -    [SCORE] SKIP score=15 | https://www.govinfo.gov/content/pkg/CHRG-115hhrg25507/html/CHRG-115hhrg25507.htm
+2026-08-21 15:15:38,592 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/growing-lions-mane-mushrooms-at-home-uk/
+2026-08-21 15:15:38,856 - INFO -    [SCORE] SKIP score=15 | https://www.nbcnews.com/storyline/americas-heroin-epidemic/fentanyl-crisis-deadly-drug-easily-available-online-purchase-n791311
+2026-08-21 15:15:39,618 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/product-category/shrooms/
+2026-08-21 15:15:40,905 - INFO -    [SCORE] SKIP score=15 | https://www.whitehouse.gov/fact-sheets/2025/02/fact-sheet-president-donald-j-trump-imposes-tariffs-on-imports-from-canada-mexico-and-china/
+2026-08-21 15:15:41,514 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/top-5-mushroom-strains-for-microdosing-complete-guide/
+2026-08-21 15:15:53,823 - INFO - [TRACK B] 入庫+送封包 HIGH score=340 | https://www.medicaldisposables.us/fentanyl-drug-test-card-p/dfn-114.htm
+2026-08-21 15:15:55,257 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:15:55,363 - INFO - [WEBHOOK] 資料傳送成功: https://www.medicaldisposables.us/fentanyl-drug-test-card-p/dfn-114.htm
+2026-08-21 15:15:57,943 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/category/psychedelic-mushrooms-lifestyle/
+2026-08-21 15:16:10,819 - INFO -    [SCORE] MEDIUM score=140 | https://sporebuddies.com/product/wholesale-2lb-inject-forget-mushroom-grow-bags/
+2026-08-21 15:16:11,324 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:16:11,955 - INFO -    [POPUP] 已自動點擊: 'Accept'
+2026-08-21 15:16:16,047 - INFO -    [POPUP] 已自動點擊: 'Accept'
+2026-08-21 15:16:18,183 - INFO -    [SCORE] SKIP score=25 | https://buyshrooms.net/product-category/shrooms/
+2026-08-21 15:16:18,195 - INFO -    [SCORE] SKIP score=0 | https://buyshrooms.net/terms-of-service/
+2026-08-21 15:16:18,271 - INFO -    Investigating (Full) [Attempt 1]: https://x.com/share?url=https://buyshrooms.net/blog/
+2026-08-21 15:16:18,307 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/bulk-substrate-recipe-for-mushrooms-ultimate-guide/
+2026-08-21 15:16:19,883 - INFO -    [SCORE] MEDIUM score=115 | https://sporebuddies.com/growing-lions-mane-mushrooms-at-home-uk/
+2026-08-21 15:16:20,448 - INFO -    [SCORE] HIGH score=235 | https://sporebuddies.com/top-5-mushroom-strains-for-microdosing-complete-guide/
+2026-08-21 15:16:38,514 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=140 | https://sporebuddies.com/product/wholesale-2lb-inject-forget-mushroom-grow-bags/
+2026-08-21 15:16:39,578 - INFO -    [SCORE] MEDIUM score=100 | https://buyshrooms.net/contact-us/
+2026-08-21 15:16:40,070 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:16:40,278 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/product/wholesale-2lb-inject-forget-mushroom-grow-bags/
+2026-08-21 15:16:43,325 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/cart/
+2026-08-21 15:16:49,408 - INFO -    [POPUP] 已自動點擊: 'Accept all'
+2026-08-21 15:16:49,939 - INFO -    [POPUP] 已自動點擊: 'Continue'
+2026-08-21 15:16:51,464 - INFO -    [SCORE] HIGH score=175 | https://buyshrooms.net/shop/
+2026-08-21 15:16:55,736 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=115 | https://sporebuddies.com/growing-lions-mane-mushrooms-at-home-uk/
+2026-08-21 15:16:57,181 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:16:57,326 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/growing-lions-mane-mushrooms-at-home-uk/
+2026-08-21 15:17:01,236 - INFO - [TRACK B] 入庫+送封包 HIGH score=235 | https://sporebuddies.com/top-5-mushroom-strains-for-microdosing-complete-guide/
+2026-08-21 15:17:02,381 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/shrooms-in-your-system-psilocybin-drug-test-guide/
+2026-08-21 15:17:04,804 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/monotub-mushroom-kit-guide-25-l/
+2026-08-21 15:17:05,552 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:17:05,634 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/top-5-mushroom-strains-for-microdosing-complete-guide/
+2026-08-21 15:17:05,834 - INFO -    [SCORE] SKIP score=0 | https://x.com/share?url=https://buyshrooms.net/blog/
+2026-08-21 15:17:05,998 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/category/mushroom-strains/
+2026-08-21 15:17:09,573 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=100 | https://buyshrooms.net/contact-us/
+2026-08-21 15:17:11,517 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:17:11,595 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/contact-us/
+2026-08-21 15:17:11,917 - INFO -    Investigating (Full) [Attempt 1]: https://telegram.me/share/url?url=https://buyshrooms.net/blog/
+2026-08-21 15:17:14,902 - INFO -    [SCORE] HIGH score=175 | https://sporebuddies.com/bulk-substrate-recipe-for-mushrooms-ultimate-guide/
+2026-08-21 15:17:19,471 - INFO -    [SCORE] SKIP score=0 | https://buyshrooms.net/category/psychedelic-mushrooms-lifestyle/
+2026-08-21 15:17:23,385 - INFO - [TRACK B] 入庫+送封包 HIGH score=175 | https://buyshrooms.net/shop/
+2026-08-21 15:17:24,057 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/pasteurise-mushroom-substrate/
+2026-08-21 15:17:24,303 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:17:24,416 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/shop/
+2026-08-21 15:17:25,068 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/category/psilocybin-mushroom-education/
+2026-08-21 15:17:35,655 - INFO - [TRACK B] 入庫+送封包 HIGH score=175 | https://sporebuddies.com/bulk-substrate-recipe-for-mushrooms-ultimate-guide/
+2026-08-21 15:17:36,535 - INFO -    Investigating (Full) [Attempt 1]: https://api.whatsapp.com/send?text=https%3A%2F%2Fbuyshrooms.net%2Fblog%2F
+2026-08-21 15:17:36,895 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:17:37,050 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/bulk-substrate-recipe-for-mushrooms-ultimate-guide/
+2026-08-21 15:17:39,208 - INFO -    [SCORE] SKIP score=0 | https://telegram.me/share/url?url=https://buyshrooms.net/blog/
+2026-08-21 15:17:39,910 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/how-to-use-a-spore-print-on-agar-step-by-step-for-beginners/
+2026-08-21 15:17:40,056 - INFO -    [SCORE] MEDIUM score=100 | https://sporebuddies.com/monotub-mushroom-kit-guide-25-l/
+2026-08-21 15:17:47,619 - INFO -    -> [HARVESTER:Swisscows] 檢索: inurl:"/checkout/" (Bitcoin OR XMR) "THC...
+2026-08-21 15:17:47,632 - INFO -    -> [HARVESTER:DuckDuckGo] 檢索: inurl:"/checkout/" (Bitcoin OR XMR) "THC...
+2026-08-21 15:17:47,845 - INFO -    [SCORE] SKIP score=0 | https://buyshrooms.net/cart/
+2026-08-21 15:17:47,920 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/best-places-to-buy-magic-mushrooms-near-me-in-2025/
+2026-08-21 15:17:50,562 - INFO -    [SCORE] SKIP score=0 | https://buyshrooms.net/category/mushroom-strains/
+2026-08-21 15:17:50,633 - INFO -    [SCORE] SKIP score=0 | https://api.whatsapp.com/send?text=https%3A%2F%2Fbuyshrooms.net%2Fblog%2F
+2026-08-21 15:17:50,839 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/product-category/mycology-equipment/mycology-sterilisation-contamination-prevention/
+2026-08-21 15:17:50,878 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/the-ultimate-guide-to-psilocybin-mushrooms/
+2026-08-21 15:17:52,252 - INFO -    -> [HARVESTER:DuckDuckGo] 完成: 2 個連結
+2026-08-21 15:17:55,727 - INFO -    -> [HARVESTER:Swisscows] 完成: 18 個連結
+2026-08-21 15:17:55,769 - INFO -    [SCORE] MEDIUM score=100 | https://sporebuddies.com/pasteurise-mushroom-substrate/
+2026-08-21 15:18:00,972 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=100 | https://sporebuddies.com/monotub-mushroom-kit-guide-25-l/
+2026-08-21 15:18:02,264 - INFO -    [POPUP] 已自動點擊: 'Accept all'
+2026-08-21 15:18:02,436 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:18:02,510 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/monotub-mushroom-kit-guide-25-l/
+2026-08-21 15:18:02,516 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/understanding-mycelium/
+2026-08-21 15:18:05,252 - INFO -    [SCORE] HIGH score=195 | https://buyshrooms.net/shrooms-in-your-system-psilocybin-drug-test-guide/
+2026-08-21 15:18:07,652 - INFO -    -> [HARVESTER:Yandex] 檢索: inurl:"/checkout/" (Bitcoin OR XMR) "THC...
+2026-08-21 15:18:07,665 - INFO -    -> [HARVESTER:SearXNG] 檢索: inurl:"/checkout/" (Bitcoin OR XMR) "THC...
+2026-08-21 15:18:12,104 - INFO - [TRACK B] 入庫+送封包 HIGH score=195 | https://buyshrooms.net/shrooms-in-your-system-psilocybin-drug-test-guide/
+2026-08-21 15:18:13,654 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:18:13,808 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/shrooms-in-your-system-psilocybin-drug-test-guide/
+2026-08-21 15:18:14,445 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/product/wholesale-rye-grain-bags-1-5-kg/
+2026-08-21 15:18:15,746 - INFO -    [SCORE] MEDIUM score=100 | https://sporebuddies.com/how-to-use-a-spore-print-on-agar-step-by-step-for-beginners/
+2026-08-21 15:18:15,844 - INFO -    [SCORE] HIGH score=200 | https://buyshrooms.net/category/psilocybin-mushroom-education/
+2026-08-21 15:18:19,025 - INFO -    -> [HARVESTER:Yandex] 完成: 5 個連結
+2026-08-21 15:18:24,698 - INFO -    -> [HARVESTER:SearXNG] 完成: 2 個連結
+2026-08-21 15:18:31,323 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=100 | https://sporebuddies.com/pasteurise-mushroom-substrate/
+2026-08-21 15:18:32,541 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:18:32,628 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/pasteurise-mushroom-substrate/
+2026-08-21 15:18:32,883 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/product-category/mushroom-growing-equipment/
+2026-08-21 15:18:33,149 - INFO -    [POPUP] 已自動點擊: 'Accept all'
+2026-08-21 15:18:36,233 - INFO -    -> [HARVESTER:Startpage] 檢索: inurl:"/checkout/" (Bitcoin OR XMR) "THC...
+2026-08-21 15:18:36,373 - INFO -    -> [HARVESTER:Brave] 檢索: inurl:"/checkout/" (Bitcoin OR XMR) "THC...
+2026-08-21 15:18:46,093 - WARNING -    -> [HARVESTER:Startpage] 失敗: Execution context was destroyed, most likely because of a navigation
+2026-08-21 15:18:46,683 - INFO -    -> [HARVESTER:Brave] 完成: 4 個連結
+2026-08-21 15:18:50,090 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=100 | https://sporebuddies.com/how-to-use-a-spore-print-on-agar-step-by-step-for-beginners/
+2026-08-21 15:18:50,663 - INFO -    [SCORE] HIGH score=160 | https://sporebuddies.com/understanding-mycelium/
+2026-08-21 15:18:51,117 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/product-category/mycology-hampers/
+2026-08-21 15:18:51,252 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:18:51,359 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/how-to-use-a-spore-print-on-agar-step-by-step-for-beginners/
+2026-08-21 15:19:02,020 - INFO - [TRACK B] 入庫+送封包 HIGH score=200 | https://buyshrooms.net/category/psilocybin-mushroom-education/
+2026-08-21 15:19:03,209 - INFO -    [SCORE] HIGH score=200 | https://buyshrooms.net/best-places-to-buy-magic-mushrooms-near-me-in-2025/
+2026-08-21 15:19:03,646 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:19:03,767 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/category/psilocybin-mushroom-education/
+2026-08-21 15:19:04,819 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/product/whole-sale-rye-grain-bags-2kg/
+2026-08-21 15:19:05,150 - INFO -    [SCORE] MEDIUM score=100 | https://sporebuddies.com/product-category/mycology-equipment/mycology-sterilisation-contamination-prevention/
+2026-08-21 15:19:05,182 - INFO -    [SCORE] HIGH score=160 | https://buyshrooms.net/the-ultimate-guide-to-psilocybin-mushrooms/
+2026-08-21 15:19:07,199 - INFO -    -> [HARVESTER:Mojeek] 檢索: inurl:"/checkout/" (Bitcoin OR XMR) "THC...
+2026-08-21 15:19:07,405 - INFO -    -> [HARVESTER:Qwant] 檢索: inurl:"/checkout/" (Bitcoin OR XMR) "THC...
+2026-08-21 15:19:12,644 - INFO -    -> [HARVESTER:Mojeek] 完成: 1 個連結
+2026-08-21 15:19:17,765 - INFO - [TRACK B] 入庫+送封包 HIGH score=160 | https://sporebuddies.com/understanding-mycelium/
+2026-08-21 15:19:19,016 - INFO -    [SCORE] MEDIUM score=140 | https://sporebuddies.com/product/wholesale-rye-grain-bags-1-5-kg/
+2026-08-21 15:19:19,591 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:19:19,713 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/understanding-mycelium/
+2026-08-21 15:19:20,028 - INFO -    -> [HARVESTER:Qwant] 完成: 0 個連結
+2026-08-21 15:19:20,375 - INFO -    Investigating (Full) [Attempt 1]: https://sporebuddies.com/mistakes-to-avoid-when-growing/
+2026-08-21 15:19:28,666 - INFO -    [SCORE] MEDIUM score=100 | https://sporebuddies.com/product-category/mushroom-growing-equipment/
+2026-08-21 15:19:35,207 - INFO - [TRACK B] 入庫+送封包 HIGH score=160 | https://buyshrooms.net/the-ultimate-guide-to-psilocybin-mushrooms/
+2026-08-21 15:19:37,322 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:19:37,438 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/the-ultimate-guide-to-psilocybin-mushrooms/
+2026-08-21 15:19:37,896 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/contact-us/
+2026-08-21 15:19:39,747 - INFO -    -> [HARVESTER:Gibiru] 檢索: inurl:"/checkout/" (Bitcoin OR XMR) "THC...
+2026-08-21 15:19:39,776 - INFO -    -> [HARVESTER:CocCoc] 檢索: inurl:"/checkout/" (Bitcoin OR XMR) "THC...
+2026-08-21 15:19:47,344 - INFO - [TRACK B] 入庫+送封包 HIGH score=200 | https://buyshrooms.net/best-places-to-buy-magic-mushrooms-near-me-in-2025/
+2026-08-21 15:19:48,793 - INFO -    -> [HARVESTER:Gibiru] 完成: 58 個連結
+2026-08-21 15:19:49,047 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:19:49,178 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/best-places-to-buy-magic-mushrooms-near-me-in-2025/
+2026-08-21 15:19:49,298 - INFO -    [SCORE] MEDIUM score=100 | https://sporebuddies.com/product-category/mycology-hampers/
+2026-08-21 15:19:49,603 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/test123123/
+2026-08-21 15:19:52,071 - INFO -    [SCORE] MEDIUM score=140 | https://sporebuddies.com/product/whole-sale-rye-grain-bags-2kg/
+2026-08-21 15:19:56,965 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=100 | https://sporebuddies.com/product-category/mycology-equipment/mycology-sterilisation-contamination-prevention/
+2026-08-21 15:19:58,049 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:19:58,183 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/product-category/mycology-equipment/mycology-sterilisation-contamination-prevention/
+2026-08-21 15:19:58,589 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/author/caesar/
+2026-08-21 15:20:04,090 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=140 | https://sporebuddies.com/product/wholesale-rye-grain-bags-1-5-kg/
+2026-08-21 15:20:04,940 - INFO -    -> [HARVESTER:CocCoc] 完成: 0 個連結
+2026-08-21 15:20:05,188 - INFO -    -> [HARVESTER] 全引擎合併: 21 個有效 URL（共 10 個引擎）
+2026-08-21 15:20:05,745 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:20:05,861 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/product/wholesale-rye-grain-bags-1-5-kg/
+2026-08-21 15:20:06,226 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/bruno-mars-height/
+2026-08-21 15:20:06,307 - INFO - [TRACK A] 搜尋完成。新發現: 3 筆。當前待爬隊列長度: 901
+2026-08-21 15:20:10,529 - INFO -    [SCORE] MEDIUM score=100 | https://sporebuddies.com/mistakes-to-avoid-when-growing/
+2026-08-21 15:20:15,215 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=100 | https://sporebuddies.com/product-category/mushroom-growing-equipment/
+2026-08-21 15:20:16,116 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/grammar/
+2026-08-21 15:20:16,236 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:20:16,332 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/product-category/mushroom-growing-equipment/
+2026-08-21 15:20:16,846 - INFO -    [SCORE] SKIP score=0 | https://talkspeaker.net/contact-us/
+2026-08-21 15:20:16,929 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/
+2026-08-21 15:20:17,727 - INFO -    [SCORE] SKIP score=0 | https://talkspeaker.net/test123123/
+2026-08-21 15:20:17,834 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/top-beauty-marketing-agencies-transforming-brands-in-2024/
+2026-08-21 15:20:18,857 - INFO -    [SCORE] SKIP score=0 | https://talkspeaker.net/author/caesar/
+2026-08-21 15:20:19,558 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/about-us/
+2026-08-21 15:20:23,172 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=140 | https://sporebuddies.com/product/whole-sale-rye-grain-bags-2kg/
+2026-08-21 15:20:24,442 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:20:28,051 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=100 | https://sporebuddies.com/mistakes-to-avoid-when-growing/
+2026-08-21 15:20:28,630 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/product/whole-sale-rye-grain-bags-2kg/
+2026-08-21 15:20:32,520 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=100 | https://sporebuddies.com/product-category/mycology-hampers/
+2026-08-21 15:20:33,289 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:20:33,292 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/mistakes-to-avoid-when-growing/
+2026-08-21 15:20:33,360 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/vocabulary/
+2026-08-21 15:20:33,687 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/digital-marketing/
+2026-08-21 15:20:33,759 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/should-i-hire-an-attorney-after-a-car-accident-in-florida/
+2026-08-21 15:20:33,926 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:20:33,984 - INFO - [WEBHOOK] 資料傳送成功: https://sporebuddies.com/product-category/mycology-hampers/
+2026-08-21 15:20:41,288 - INFO -    [SCORE] SKIP score=0 | https://talkspeaker.net/bruno-mars-height/
+2026-08-21 15:20:41,515 - INFO -    [SCORE] SKIP score=0 | https://talkspeaker.net/grammar/
+2026-08-21 15:20:42,163 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/what-are-the-key-skills-to-pass-the-oracle-1z0-996-22-exam-on-the-first-try/
+2026-08-21 15:20:42,365 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/test123123-2/
+2026-08-21 15:20:49,313 - INFO -    [SCORE] SKIP score=0 | https://talkspeaker.net/
+2026-08-21 15:20:49,864 - INFO -    Investigating (Full) [Attempt 1]: https://talkspeaker.net/betify-casino-en-ligne-jouez-sur-betify-avec-1000-eu/
+2026-08-21 15:20:51,697 - INFO -    [SCORE] SKIP score=0 | https://talkspeaker.net/top-beauty-marketing-agencies-transforming-brands-in-2024/
+2026-08-21 15:20:52,275 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/product-tag/psilocybin-mushrooms/
+2026-08-21 15:20:54,199 - INFO -    [SCORE] SKIP score=0 | https://talkspeaker.net/about-us/
+2026-08-21 15:20:55,215 - INFO -    [SCORE] SKIP score=0 | https://talkspeaker.net/digital-marketing/
+2026-08-21 15:20:55,252 - INFO -    [SCORE] SKIP score=15 | https://talkspeaker.net/should-i-hire-an-attorney-after-a-car-accident-in-florida/
+2026-08-21 15:20:55,415 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/product/nutcracker-mushroom-strain/
+2026-08-21 15:20:55,801 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/product-category/edibles/
+2026-08-21 15:20:55,832 - INFO -    Investigating (Full) [Attempt 1]: https://api.whatsapp.com/send?text=https%3A%2F%2Fbuyshrooms.net%2Fproduct%2Fblue-pulaski-mushroom%2F
+2026-08-21 15:20:56,441 - INFO -    [SCORE] SKIP score=0 | https://talkspeaker.net/vocabulary/
+2026-08-21 15:20:57,316 - INFO -    Investigating (Full) [Attempt 1]: https://api.whatsapp.com/send?text=https%3A%2F%2Fbuyshrooms.net%2Fshrooms-dosage-guide%2F
+2026-08-21 15:21:02,889 - INFO -    [SCORE] SKIP score=0 | https://talkspeaker.net/test123123-2/
+2026-08-21 15:21:03,014 - INFO -    [SCORE] SKIP score=0 | https://talkspeaker.net/what-are-the-key-skills-to-pass-the-oracle-1z0-996-22-exam-on-the-first-try/
+2026-08-21 15:21:03,137 - INFO -    [SCORE] SKIP score=0 | https://talkspeaker.net/betify-casino-en-ligne-jouez-sur-betify-avec-1000-eu/
+2026-08-21 15:21:03,154 - INFO -    Investigating (Full) [Attempt 1]: https://telegram.me/share/url?url=https://buyshrooms.net/shrooms-dosage-guide/
+2026-08-21 15:21:03,193 - INFO -    Investigating (Full) [Attempt 1]: https://api.whatsapp.com/send?text=https%3A%2F%2Fbuyshrooms.net%2Fshroom-edibles-guide-what-to-know-about-chocolates-gummies-more%2F
+2026-08-21 15:21:03,341 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/tag/magic-mushrooms/
+2026-08-21 15:21:07,814 - INFO -    [SCORE] SKIP score=0 | https://api.whatsapp.com/send?text=https%3A%2F%2Fbuyshrooms.net%2Fproduct%2Fblue-pulaski-mushroom%2F
+2026-08-21 15:21:07,943 - INFO -    [SCORE] HIGH score=180 | https://buyshrooms.net/product-category/edibles/
+2026-08-21 15:21:08,000 - INFO -    [SCORE] SKIP score=0 | https://api.whatsapp.com/send?text=https%3A%2F%2Fbuyshrooms.net%2Fshrooms-dosage-guide%2F
+2026-08-21 15:21:08,541 - INFO -    Investigating (Full) [Attempt 1]: https://x.com/share?url=https://buyshrooms.net/psychedelic-therapy/
+2026-08-21 15:21:09,405 - INFO -    Investigating (Full) [Attempt 1]: https://x.com/share?url=https://buyshrooms.net/shroom-edibles-guide-what-to-know-about-chocolates-gummies-more/
+2026-08-21 15:21:23,571 - INFO - [TRACK B] 入庫+送封包 HIGH score=180 | https://buyshrooms.net/product-category/edibles/
+2026-08-21 15:21:25,531 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:21:25,549 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/product-category/edibles/
+2026-08-21 15:21:26,534 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/tag/psilocybin-mushrooms-benefits/
+2026-08-21 15:21:45,312 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:21:48,721 - INFO -    [SCORE] SKIP score=0 | https://telegram.me/share/url?url=https://buyshrooms.net/shrooms-dosage-guide/
+2026-08-21 15:21:52,905 - INFO -    [SCORE] SKIP score=0 | https://api.whatsapp.com/send?text=https%3A%2F%2Fbuyshrooms.net%2Fshroom-edibles-guide-what-to-know-about-chocolates-gummies-more%2F
+2026-08-21 15:21:55,240 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/product-category/buy-lsd-online/
+2026-08-21 15:21:56,430 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/contact/
+2026-08-21 15:22:01,612 - INFO -    [SCORE] HIGH score=200 | https://buyshrooms.net/tag/magic-mushrooms/
+2026-08-21 15:22:02,665 - INFO -    [SCORE] HIGH score=180 | https://buyshrooms.net/product-tag/psilocybin-mushrooms/
+2026-08-21 15:22:03,137 - INFO -    [SCORE] HIGH score=240 | https://buyshrooms.net/product/nutcracker-mushroom-strain/
+2026-08-21 15:22:03,459 - INFO -    [POPUP] 已自動點擊: 'Continue'
+2026-08-21 15:22:04,615 - INFO -    [POPUP] 已自動點擊: 'Continue'
+2026-08-21 15:22:09,181 - INFO -    [SCORE] SKIP score=0 | https://x.com/share?url=https://buyshrooms.net/psychedelic-therapy/
+2026-08-21 15:22:12,771 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/product/albino-a-mushrooms/
+2026-08-21 15:22:12,985 - INFO -    [SCORE] SKIP score=0 | https://x.com/share?url=https://buyshrooms.net/shroom-edibles-guide-what-to-know-about-chocolates-gummies-more/
+2026-08-21 15:22:14,881 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/product/golden-teacher-mushroom-strain/
+2026-08-21 15:22:25,055 - INFO - [TRACK B] 入庫+送封包 HIGH score=200 | https://buyshrooms.net/tag/magic-mushrooms/
+2026-08-21 15:22:26,215 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:22:26,313 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/tag/magic-mushrooms/
+2026-08-21 15:22:26,916 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/product/cambodian-gold-magic-mushrooms/
+2026-08-21 15:22:30,469 - INFO - [TRACK B] 入庫+送封包 HIGH score=180 | https://buyshrooms.net/product-tag/psilocybin-mushrooms/
+2026-08-21 15:22:31,598 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:22:31,768 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/product-tag/psilocybin-mushrooms/
+2026-08-21 15:22:32,320 - INFO -    [SCORE] HIGH score=200 | https://buyshrooms.net/tag/psilocybin-mushrooms-benefits/
+2026-08-21 15:22:32,667 - INFO -    [SCORE] HIGH score=495 | https://psychedeliapulse.com/product-category/buy-lsd-online/
+2026-08-21 15:22:33,839 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/locations/
+2026-08-21 15:22:34,617 - INFO -    [SCORE] SKIP score=15 | https://psychedeliapulse.com/contact/
+2026-08-21 15:22:34,727 - INFO -    -> [HARVESTER:DuckDuckGo] 檢索: stealth Special K worldwide delivery Men...
+2026-08-21 15:22:35,614 - INFO -    -> [HARVESTER:Swisscows] 檢索: stealth Special K worldwide delivery Men...
+2026-08-21 15:22:37,221 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/product/buy-brazilian-magic-mushroom-online/
+2026-08-21 15:22:40,541 - INFO -    -> [HARVESTER:DuckDuckGo] 完成: 43 個連結
+2026-08-21 15:22:44,277 - INFO - [TRACK B] 入庫+送封包 HIGH score=240 | https://buyshrooms.net/product/nutcracker-mushroom-strain/
+2026-08-21 15:22:45,090 - INFO -    -> [HARVESTER:Swisscows] 完成: 56 個連結
+2026-08-21 15:22:45,476 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:22:45,515 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/product/nutcracker-mushroom-strain/
+2026-08-21 15:22:48,007 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/refund-policy/
+2026-08-21 15:22:56,248 - INFO - [TRACK B] 入庫+送封包 HIGH score=200 | https://buyshrooms.net/tag/psilocybin-mushrooms-benefits/
+2026-08-21 15:22:58,521 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:22:58,828 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/tag/psilocybin-mushrooms-benefits/
+2026-08-21 15:22:59,644 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/product/buy-blue-meanie-mushroom-fast-delivery/
+2026-08-21 15:23:00,177 - INFO -    [SCORE] HIGH score=540 | https://psychedeliapulse.com/product/albino-a-mushrooms/
+2026-08-21 15:23:00,668 - INFO -    [SCORE] HIGH score=580 | https://psychedeliapulse.com/product/golden-teacher-mushroom-strain/
+2026-08-21 15:23:03,661 - INFO -    -> [HARVESTER:SearXNG] 檢索: stealth Special K worldwide delivery Men...
+2026-08-21 15:23:04,779 - INFO -    -> [HARVESTER:Yandex] 檢索: stealth Special K worldwide delivery Men...
+2026-08-21 15:23:12,094 - INFO - [TRACK B] 入庫+送封包 HIGH score=495 | https://psychedeliapulse.com/product-category/buy-lsd-online/
+2026-08-21 15:23:13,956 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:23:14,106 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliapulse.com/product-category/buy-lsd-online/
+2026-08-21 15:23:18,257 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/lost-password/
+2026-08-21 15:23:21,465 - INFO -    -> [HARVESTER:Yandex] 完成: 5 個連結
+2026-08-21 15:23:21,559 - INFO -    [SCORE] HIGH score=640 | https://psychedeliapulse.com/product/cambodian-gold-magic-mushrooms/
+2026-08-21 15:23:22,235 - INFO -    [SCORE] HIGH score=420 | https://psychedeliapulse.com/product/buy-brazilian-magic-mushroom-online/
+2026-08-21 15:23:26,214 - INFO -    -> [HARVESTER:SearXNG] 完成: 2 個連結
+2026-08-21 15:23:32,690 - INFO - [TRACK B] 入庫+送封包 HIGH score=580 | https://psychedeliapulse.com/product/golden-teacher-mushroom-strain/
+2026-08-21 15:23:36,955 - INFO - [TRACK B] 入庫+送封包 HIGH score=540 | https://psychedeliapulse.com/product/albino-a-mushrooms/
+2026-08-21 15:23:38,185 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:23:38,228 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:23:38,298 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliapulse.com/product/albino-a-mushrooms/
+2026-08-21 15:23:38,334 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliapulse.com/product/golden-teacher-mushroom-strain/
+2026-08-21 15:23:39,203 - INFO -    -> [HARVESTER:Startpage] 檢索: stealth Special K worldwide delivery Men...
+2026-08-21 15:23:39,216 - INFO -    -> [HARVESTER:Brave] 檢索: stealth Special K worldwide delivery Men...
+2026-08-21 15:23:40,132 - INFO -    [SCORE] HIGH score=480 | https://psychedeliapulse.com/product/buy-blue-meanie-mushroom-fast-delivery/
+2026-08-21 15:23:40,352 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/product/buy-malabar-magic-mushroom/
+2026-08-21 15:23:40,940 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/
+2026-08-21 15:23:42,492 - INFO -    [SCORE] SKIP score=0 | https://buyshrooms.net/refund-policy/
+2026-08-21 15:23:42,847 - INFO -    -> [HARVESTER:Brave] 完成: 5 個連結
+2026-08-21 15:23:43,982 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/product/buy-hawaiian-magic-mushrooms-online/
+2026-08-21 15:23:45,243 - INFO -    -> [HARVESTER:Startpage] 完成: 78 個連結
+2026-08-21 15:23:51,447 - INFO - [TRACK B] 入庫+送封包 HIGH score=640 | https://psychedeliapulse.com/product/cambodian-gold-magic-mushrooms/
+2026-08-21 15:23:52,997 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:23:53,045 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliapulse.com/product/cambodian-gold-magic-mushrooms/
+2026-08-21 15:24:00,243 - INFO - [TRACK B] 入庫+送封包 HIGH score=420 | https://psychedeliapulse.com/product/buy-brazilian-magic-mushroom-online/
+2026-08-21 15:24:00,984 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/product-category/buy-mdma-online/
+2026-08-21 15:24:01,243 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:24:01,380 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliapulse.com/product/buy-brazilian-magic-mushroom-online/
+2026-08-21 15:24:02,254 - INFO -    [SCORE] MEDIUM score=100 | https://buyshrooms.net/locations/
+2026-08-21 15:24:03,579 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/product/psilocybe-azurescens-mushrooms/
+2026-08-21 15:24:06,346 - INFO -    [SCORE] SKIP score=15 | https://psychedeliapulse.com/lost-password/
+2026-08-21 15:24:07,049 - INFO -    -> [HARVESTER:Mojeek] 檢索: stealth Special K worldwide delivery Men...
+2026-08-21 15:24:07,067 - INFO -    -> [HARVESTER:Qwant] 檢索: stealth Special K worldwide delivery Men...
+2026-08-21 15:24:07,370 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliapulse.com/product-category/controlled-substances/
+2026-08-21 15:24:14,562 - INFO - [TRACK B] 入庫+送封包 HIGH score=480 | https://psychedeliapulse.com/product/buy-blue-meanie-mushroom-fast-delivery/
+2026-08-21 15:24:16,106 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:24:16,192 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliapulse.com/product/buy-blue-meanie-mushroom-fast-delivery/
+2026-08-21 15:24:16,425 - INFO -    -> [HARVESTER:Mojeek] 完成: 31 個連結
+2026-08-21 15:24:18,085 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/product/albino-penis-envy-mushroom-strain/
+2026-08-21 15:24:21,948 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=100 | https://buyshrooms.net/locations/
+2026-08-21 15:24:23,199 - INFO -    -> [HARVESTER:Qwant] 完成: 0 個連結
+2026-08-21 15:24:23,276 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:24:23,386 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/locations/
+2026-08-21 15:24:25,747 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/buy-shrooms-in-quebec/
+2026-08-21 15:24:28,779 - INFO -    [SCORE] HIGH score=495 | https://psychedeliapulse.com/
+2026-08-21 15:24:31,099 - INFO -    [SCORE] HIGH score=540 | https://psychedeliapulse.com/product/buy-malabar-magic-mushroom/
+2026-08-21 15:24:32,802 - INFO -    [SCORE] HIGH score=415 | https://psychedeliapulse.com/product-category/buy-mdma-online/
+2026-08-21 15:24:33,105 - INFO -    [SCORE] HIGH score=480 | https://psychedeliapulse.com/product/buy-hawaiian-magic-mushrooms-online/
+2026-08-21 15:24:34,021 - INFO -    -> [HARVESTER:Gibiru] 檢索: stealth Special K worldwide delivery Men...
+2026-08-21 15:24:34,476 - INFO -    -> [HARVESTER:CocCoc] 檢索: stealth Special K worldwide delivery Men...
+2026-08-21 15:24:38,919 - INFO -    -> [HARVESTER:Gibiru] 完成: 58 個連結
+2026-08-21 15:24:41,528 - INFO -    [SCORE] HIGH score=480 | https://psychedeliapulse.com/product/psilocybe-azurescens-mushrooms/
+2026-08-21 15:24:42,564 - INFO -    [SCORE] HIGH score=395 | https://psychedeliapulse.com/product-category/controlled-substances/
+2026-08-21 15:24:43,226 - INFO -    [SCORE] HIGH score=240 | https://buyshrooms.net/product/albino-penis-envy-mushroom-strain/
+2026-08-21 15:24:51,372 - INFO - [TRACK B] 入庫+送封包 HIGH score=495 | https://psychedeliapulse.com/
+2026-08-21 15:24:54,051 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:24:54,143 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliapulse.com/
+2026-08-21 15:24:55,681 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/product/harlequin-mushroom-strain/
+2026-08-21 15:25:00,041 - WARNING -    -> [HARVESTER:CocCoc] 失敗: Execution context was destroyed, most likely because of a navigation
+2026-08-21 15:25:04,493 - INFO - [TRACK B] 入庫+送封包 HIGH score=415 | https://psychedeliapulse.com/product-category/buy-mdma-online/
+2026-08-21 15:25:05,485 - INFO -    -> [HARVESTER] 全引擎合併: 32 個有效 URL（共 10 個引擎）
+2026-08-21 15:25:05,945 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:25:06,056 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliapulse.com/product-category/buy-mdma-online/
+2026-08-21 15:25:10,992 - INFO - [TRACK B] 入庫+送封包 HIGH score=540 | https://psychedeliapulse.com/product/buy-malabar-magic-mushroom/
+2026-08-21 15:25:15,512 - INFO - [TRACK B] 入庫+送封包 HIGH score=480 | https://psychedeliapulse.com/product/buy-hawaiian-magic-mushrooms-online/
+2026-08-21 15:25:16,677 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:25:16,744 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:25:16,827 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliapulse.com/product/buy-malabar-magic-mushroom/
+2026-08-21 15:25:16,832 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliapulse.com/product/buy-hawaiian-magic-mushrooms-online/
+2026-08-21 15:25:16,861 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/product/bio-frost-mushroom-strain/
+2026-08-21 15:25:18,282 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/how-to-hide-your-high/
+2026-08-21 15:25:18,395 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/my-account/
+2026-08-21 15:25:18,752 - INFO - [TRACK A] 搜尋完成。新發現: 27 筆。當前待爬隊列長度: 937
+2026-08-21 15:25:26,662 - INFO - [TRACK B] 入庫+送封包 HIGH score=480 | https://psychedeliapulse.com/product/psilocybe-azurescens-mushrooms/
+2026-08-21 15:25:27,787 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:25:27,928 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliapulse.com/product/psilocybe-azurescens-mushrooms/
+2026-08-21 15:25:29,412 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/magic-mushroom-faqs
+2026-08-21 15:25:34,683 - INFO - [TRACK B] 入庫+送封包 HIGH score=240 | https://buyshrooms.net/product/albino-penis-envy-mushroom-strain/
+2026-08-21 15:25:35,780 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:25:36,057 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/product/albino-penis-envy-mushroom-strain/
+2026-08-21 15:25:36,906 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/product/enigma-hazelnut-chocolate-bar/
+2026-08-21 15:25:41,634 - INFO -    [SCORE] SKIP score=0 | https://buyshrooms.net/buy-shrooms-in-quebec/
+2026-08-21 15:25:45,357 - INFO - [TRACK B] 入庫+送封包 HIGH score=395 | https://psychedeliapulse.com/product-category/controlled-substances/
+2026-08-21 15:25:45,972 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/contact
+2026-08-21 15:25:46,380 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:25:46,555 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliapulse.com/product-category/controlled-substances/
+2026-08-21 15:25:47,514 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/terms-and-conditions
+2026-08-21 15:25:54,317 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:25:54,543 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:26:05,010 - INFO -    [SCORE] SKIP score=0 | https://themagicmushroomdelivery.com/my-account/
+2026-08-21 15:26:06,248 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/product/blue-meanies-mushroom-strain/?add-to-cart=15638
+2026-08-21 15:26:27,173 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://themagicmushroomdelivery.com/contact
+2026-08-21 15:26:32,141 - INFO -    [SCORE] HIGH score=240 | https://buyshrooms.net/product/harlequin-mushroom-strain/
+2026-08-21 15:26:32,331 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://themagicmushroomdelivery.com/terms-and-conditions
+2026-08-21 15:26:33,231 - INFO -    [SCORE] HIGH score=415 | https://themagicmushroomdelivery.com/how-to-hide-your-high/
+2026-08-21 15:26:46,911 - INFO -    [SCORE] HIGH score=240 | https://buyshrooms.net/product/bio-frost-mushroom-strain/
+2026-08-21 15:26:47,176 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:26:47,714 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:26:48,396 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:26:48,421 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:26:53,354 - INFO -    [SCORE] SKIP score=0 | https://themagicmushroomdelivery.com/magic-mushroom-faqs
+2026-08-21 15:26:53,461 - INFO -    [SCORE] HIGH score=240 | https://buyshrooms.net/product/enigma-hazelnut-chocolate-bar/
+2026-08-21 15:26:53,538 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/mushroom-farm-business/
+2026-08-21 15:26:55,793 - INFO -    [SCORE] SKIP score=0 | https://themagicmushroomdelivery.com/terms-and-conditions
+2026-08-21 15:26:55,956 - INFO -    [SCORE] SKIP score=0 | https://themagicmushroomdelivery.com/contact
+2026-08-21 15:26:56,544 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/product-tag/blue-meanies/
+2026-08-21 15:26:56,642 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/buy-shrooms-in-new-brunswick/
+2026-08-21 15:27:08,358 - INFO - [TRACK B] 入庫+送封包 HIGH score=415 | https://themagicmushroomdelivery.com/how-to-hide-your-high/
+2026-08-21 15:27:12,264 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:27:20,054 - INFO - [TRACK B] 入庫+送封包 HIGH score=240 | https://buyshrooms.net/product/harlequin-mushroom-strain/
+2026-08-21 15:27:21,761 - INFO - [WEBHOOK] 資料傳送成功: https://themagicmushroomdelivery.com/how-to-hide-your-high/
+2026-08-21 15:27:21,804 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/psilocybin-treatment-resistant-depression/
+2026-08-21 15:27:22,282 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:27:22,400 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/product/harlequin-mushroom-strain/
+2026-08-21 15:27:24,531 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/magic-mushroom-extract/
+2026-08-21 15:27:31,394 - INFO - [TRACK B] 入庫+送封包 HIGH score=240 | https://buyshrooms.net/product/bio-frost-mushroom-strain/
+2026-08-21 15:27:33,102 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:27:33,220 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/product/bio-frost-mushroom-strain/
+2026-08-21 15:27:36,730 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/our-standards
+2026-08-21 15:27:42,060 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://themagicmushroomdelivery.com/mushroom-farm-business/
+2026-08-21 15:27:52,747 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:27:54,438 - INFO -    -> [HARVESTER:Swisscows] 檢索: where to buy Percocet online shop Local ...
+2026-08-21 15:27:54,494 - INFO -    -> [HARVESTER:DuckDuckGo] 檢索: where to buy Percocet online shop Local ...
+2026-08-21 15:28:06,645 - INFO -    -> [HARVESTER:DuckDuckGo] 完成: 43 個連結
+2026-08-21 15:28:14,939 - INFO -    -> [HARVESTER:Swisscows] 完成: 46 個連結
+2026-08-21 15:28:15,095 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://themagicmushroomdelivery.com/psilocybin-treatment-resistant-depression/
+2026-08-21 15:28:18,760 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://themagicmushroomdelivery.com/magic-mushroom-extract/
+2026-08-21 15:28:25,852 - INFO -    [SCORE] HIGH score=295 | https://themagicmushroomdelivery.com/mushroom-farm-business/
+2026-08-21 15:28:37,317 - INFO - [TRACK B] 入庫+送封包 HIGH score=240 | https://buyshrooms.net/product/enigma-hazelnut-chocolate-bar/
+2026-08-21 15:28:38,877 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://themagicmushroomdelivery.com/our-standards
+2026-08-21 15:28:39,460 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:28:39,512 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/product/enigma-hazelnut-chocolate-bar/
+2026-08-21 15:28:40,334 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/product/blue-meanies-mushroom-strain/?add-to-cart=15622
+2026-08-21 15:29:00,344 - INFO -    [SCORE] HIGH score=240 | https://buyshrooms.net/product/blue-meanies-mushroom-strain/?add-to-cart=15638
+2026-08-21 15:29:01,123 - INFO -    -> [HARVESTER:Yandex] 檢索: where to buy Percocet online shop Local ...
+2026-08-21 15:29:01,133 - INFO -    -> [HARVESTER:SearXNG] 檢索: where to buy Percocet online shop Local ...
+2026-08-21 15:29:05,256 - INFO -    [SCORE] HIGH score=275 | https://buyshrooms.net/buy-shrooms-in-new-brunswick/
+2026-08-21 15:29:05,835 - INFO -    [SCORE] HIGH score=180 | https://buyshrooms.net/product-tag/blue-meanies/
+2026-08-21 15:29:07,373 - INFO -    [SCORE] HIGH score=215 | https://themagicmushroomdelivery.com/psilocybin-treatment-resistant-depression/
+2026-08-21 15:29:07,795 - INFO -    [SCORE] HIGH score=215 | https://themagicmushroomdelivery.com/magic-mushroom-extract/
+2026-08-21 15:29:09,618 - INFO -    -> [HARVESTER:Yandex] 完成: 5 個連結
+2026-08-21 15:29:10,717 - INFO -    [SCORE] SKIP score=40 | https://themagicmushroomdelivery.com/our-standards
+2026-08-21 15:29:11,387 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/psilocybin-dosage-guide/
+2026-08-21 15:29:17,841 - INFO - [TRACK B] 入庫+送封包 HIGH score=275 | https://buyshrooms.net/buy-shrooms-in-new-brunswick/
+2026-08-21 15:29:18,938 - INFO -    -> [HARVESTER:SearXNG] 完成: 2 個連結
+2026-08-21 15:29:19,147 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:29:19,196 - INFO -    Investigating (Full) [Attempt 1]: https://telegram.me/share/url?url=https://buyshrooms.net/product/blue-meanies-mushroom-strain/
+2026-08-21 15:29:19,253 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/buy-shrooms-in-new-brunswick/
+2026-08-21 15:29:24,985 - INFO - [TRACK B] 入庫+送封包 HIGH score=295 | https://themagicmushroomdelivery.com/mushroom-farm-business/
+2026-08-21 15:29:26,621 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/shop-magic-mushroom-capsules/
+2026-08-21 15:29:26,874 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:29:27,004 - INFO - [WEBHOOK] 資料傳送成功: https://themagicmushroomdelivery.com/mushroom-farm-business/
+2026-08-21 15:29:32,077 - INFO -    -> [HARVESTER:Startpage] 檢索: where to buy Percocet online shop Local ...
+2026-08-21 15:29:32,251 - INFO -    -> [HARVESTER:Brave] 檢索: where to buy Percocet online shop Local ...
+2026-08-21 15:29:41,988 - INFO - [TRACK B] 入庫+送封包 HIGH score=180 | https://buyshrooms.net/product-tag/blue-meanies/
+2026-08-21 15:29:43,317 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:29:43,390 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/product-tag/blue-meanies/
+2026-08-21 15:29:45,258 - WARNING -    -> [HARVESTER:Startpage] 失敗: Execution context was destroyed, most likely because of a navigation
+2026-08-21 15:29:45,712 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/
+2026-08-21 15:29:47,300 - INFO -    -> [HARVESTER:Brave] 完成: 81 個連結
+2026-08-21 15:29:48,895 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:29:53,966 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://themagicmushroomdelivery.com/magic-mushroom-extract/
+2026-08-21 15:29:54,642 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:29:59,167 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://themagicmushroomdelivery.com/psilocybin-treatment-resistant-depression/
+2026-08-21 15:29:59,708 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:29:59,725 - INFO - [WEBHOOK] 資料傳送成功: https://themagicmushroomdelivery.com/magic-mushroom-extract/
+2026-08-21 15:30:00,407 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:30:00,519 - INFO - [WEBHOOK] 資料傳送成功: https://themagicmushroomdelivery.com/psilocybin-treatment-resistant-depression/
+2026-08-21 15:30:00,676 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/progressive-psytrance-artists/
+2026-08-21 15:30:00,886 - INFO -    Investigating (Full) [Attempt 1]: https://themagicmushroomdelivery.com/shop-coffee/
+2026-08-21 15:30:04,026 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://telegram.me/share/url?url=https://buyshrooms.net/product/blue-meanies-mushroom-strain/
+2026-08-21 15:30:04,723 - INFO -    [SCORE] HIGH score=240 | https://buyshrooms.net/product/blue-meanies-mushroom-strain/?add-to-cart=15622
+2026-08-21 15:30:09,432 - INFO - [TRACK B] 入庫+送封包 HIGH score=240 | https://buyshrooms.net/product/blue-meanies-mushroom-strain/?add-to-cart=15638
+2026-08-21 15:30:10,696 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:30:10,789 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/product/blue-meanies-mushroom-strain/?add-to-cart=15638
+2026-08-21 15:30:11,016 - INFO -    -> [HARVESTER:Mojeek] 檢索: where to buy Percocet online shop Local ...
+2026-08-21 15:30:11,037 - INFO -    -> [HARVESTER:Qwant] 檢索: where to buy Percocet online shop Local ...
+2026-08-21 15:30:11,868 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/buy-magic-mushroom-quebec/
+2026-08-21 15:30:14,153 - INFO -    [SCORE] HIGH score=215 | https://themagicmushroomdelivery.com/psilocybin-dosage-guide/
+2026-08-21 15:30:18,007 - INFO -    -> [HARVESTER:Mojeek] 完成: 31 個連結
+2026-08-21 15:30:20,358 - INFO -    -> [HARVESTER:Qwant] 完成: 0 個連結
+2026-08-21 15:30:23,689 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:30:29,839 - INFO -    [SCORE] SKIP score=0 | https://telegram.me/share/url?url=https://buyshrooms.net/product/blue-meanies-mushroom-strain/
+2026-08-21 15:30:31,541 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/mushroom-dispensary-victoria/
+2026-08-21 15:30:31,710 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:30:34,512 - INFO -    [SCORE] NORMAL score=95 | https://themagicmushroomdelivery.com/shop-magic-mushroom-capsules/
+2026-08-21 15:30:36,026 - INFO -    -> [HARVESTER:CocCoc] 檢索: where to buy Percocet online shop Local ...
+2026-08-21 15:30:36,040 - INFO -    -> [HARVESTER:Gibiru] 檢索: where to buy Percocet online shop Local ...
+2026-08-21 15:30:38,535 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:30:40,974 - INFO -    [SCORE] MEDIUM score=115 | https://themagicmushroomdelivery.com/
+2026-08-21 15:30:42,189 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:30:42,561 - INFO -    -> [HARVESTER:Gibiru] 完成: 58 個連結
+2026-08-21 15:30:48,344 - INFO - [TRACK B] 入庫+送封包 HIGH score=240 | https://buyshrooms.net/product/blue-meanies-mushroom-strain/?add-to-cart=15622
+2026-08-21 15:30:55,471 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://themagicmushroomdelivery.com/psilocybin-dosage-guide/
+2026-08-21 15:30:56,168 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:30:56,176 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/product/blue-meanies-mushroom-strain/?add-to-cart=15622
+2026-08-21 15:30:57,059 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:30:57,081 - INFO - [WEBHOOK] 資料傳送成功: https://themagicmushroomdelivery.com/psilocybin-dosage-guide/
+2026-08-21 15:30:57,198 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/product-category/magic-mushroom-gummies/blue-raspberry/
+2026-08-21 15:30:58,518 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/buy-magic-mushrooms-manitoba/
+2026-08-21 15:30:59,316 - INFO -    [SCORE] NORMAL score=95 | https://themagicmushroomdelivery.com/shop-coffee/
+2026-08-21 15:31:00,796 - INFO -    -> [HARVESTER:CocCoc] 完成: 0 個連結
+2026-08-21 15:31:01,340 - INFO -    -> [HARVESTER] 全引擎合併: 40 個有效 URL（共 10 個引擎）
+2026-08-21 15:31:01,619 - INFO -    [SCORE] HIGH score=255 | https://themagicmushroomdelivery.com/progressive-psytrance-artists/
+2026-08-21 15:31:09,734 - INFO - [TRACK B] 入庫+送封包 NORMAL score=95 | https://themagicmushroomdelivery.com/shop-magic-mushroom-capsules/
+2026-08-21 15:31:11,248 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:31:11,429 - INFO - [WEBHOOK] 資料傳送成功: https://themagicmushroomdelivery.com/shop-magic-mushroom-capsules/
+2026-08-21 15:31:12,684 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/product-category/magic-mushroom-capsules/
+2026-08-21 15:31:13,241 - INFO - [TRACK A] 搜尋完成。新發現: 35 筆。當前待爬隊列長度: 981
+2026-08-21 15:31:14,071 - INFO -    [SCORE] HIGH score=215 | https://www.magicapproach.com/buy-magic-mushroom-quebec/
+2026-08-21 15:31:19,607 - INFO -    [SCORE] HIGH score=215 | https://www.magicapproach.com/mushroom-dispensary-victoria/
+2026-08-21 15:31:30,776 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=115 | https://themagicmushroomdelivery.com/
+2026-08-21 15:31:32,680 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:31:32,828 - INFO - [WEBHOOK] 資料傳送成功: https://themagicmushroomdelivery.com/
+2026-08-21 15:31:33,894 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/buy-magic-mushrooms-thompson/
+2026-08-21 15:31:38,839 - INFO - [TRACK B] 入庫+送封包 NORMAL score=95 | https://themagicmushroomdelivery.com/shop-coffee/
+2026-08-21 15:31:39,913 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:31:40,115 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:31:40,423 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:31:40,538 - INFO - [WEBHOOK] 資料傳送成功: https://themagicmushroomdelivery.com/shop-coffee/
+2026-08-21 15:31:40,603 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/buy-magic-mushrooms-moncton-dieppe/
+2026-08-21 15:31:45,277 - INFO - [TRACK B] 入庫+送封包 HIGH score=255 | https://themagicmushroomdelivery.com/progressive-psytrance-artists/
+2026-08-21 15:31:46,717 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/buy-magic-mushrooms-montreal/
+2026-08-21 15:31:46,913 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:31:47,058 - INFO - [WEBHOOK] 資料傳送成功: https://themagicmushroomdelivery.com/progressive-psytrance-artists/
+2026-08-21 15:31:47,218 - INFO -    [SCORE] HIGH score=215 | https://www.magicapproach.com/product-category/magic-mushroom-gummies/blue-raspberry/
+2026-08-21 15:31:52,839 - INFO -    [SCORE] HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-manitoba/
+2026-08-21 15:32:12,488 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.magicapproach.com/mushroom-dispensary-victoria/
+2026-08-21 15:32:16,171 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/?add_to_wishlist=4697&_wpnonce=31e4d5dd22
+2026-08-21 15:32:17,326 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:32:17,503 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/mushroom-dispensary-victoria/
+2026-08-21 15:32:26,377 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.magicapproach.com/buy-magic-mushroom-quebec/
+2026-08-21 15:32:27,560 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:32:27,954 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:32:29,020 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/product-category/microdose-mushrooms/
+2026-08-21 15:32:32,301 - INFO -    [SCORE] HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-thompson/
+2026-08-21 15:32:32,653 - INFO -    [SCORE] HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-moncton-dieppe/
+2026-08-21 15:32:32,703 - INFO -    [SCORE] HIGH score=215 | https://www.magicapproach.com/product-category/magic-mushroom-capsules/
+2026-08-21 15:32:35,911 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:32:36,058 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/buy-magic-mushroom-quebec/
+2026-08-21 15:32:37,993 - INFO -    [SCORE] HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-montreal/
+2026-08-21 15:32:48,583 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.magicapproach.com/product-category/magic-mushroom-gummies/blue-raspberry/
+2026-08-21 15:32:51,425 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/?add_to_wishlist=2486&_wpnonce=31e4d5dd22
+2026-08-21 15:32:51,954 - INFO -    [SCORE] HIGH score=255 | https://www.magicapproach.com/product-category/microdose-mushrooms/
+2026-08-21 15:32:52,670 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:32:52,818 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/product-category/magic-mushroom-gummies/blue-raspberry/
+2026-08-21 15:32:59,521 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-manitoba/
+2026-08-21 15:33:01,167 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/buy-magic-mushrooms-ontario/
+2026-08-21 15:33:02,770 - INFO -    [SCORE] HIGH score=215 | https://www.magicapproach.com/?add_to_wishlist=4697&_wpnonce=31e4d5dd22
+2026-08-21 15:33:05,273 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:33:05,414 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/buy-magic-mushrooms-manitoba/
+2026-08-21 15:33:20,518 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-thompson/
+2026-08-21 15:33:22,158 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:33:22,278 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/buy-magic-mushrooms-thompson/
+2026-08-21 15:33:23,789 - INFO -    [SCORE] HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-ontario/
+2026-08-21 15:33:23,822 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/product-category/magic-mushroom-gummies/cherry/
+2026-08-21 15:33:30,493 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-moncton-dieppe/
+2026-08-21 15:33:34,856 - INFO - [TRACK B] 入庫+送封包 HIGH score=255 | https://www.magicapproach.com/product-category/microdose-mushrooms/
+2026-08-21 15:33:40,175 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.magicapproach.com/product-category/magic-mushroom-capsules/
+2026-08-21 15:33:40,677 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:33:40,679 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:33:40,681 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/buy-magic-mushrooms-moncton-dieppe/
+2026-08-21 15:33:40,682 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/product-category/microdose-mushrooms/
+2026-08-21 15:33:40,683 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/product/alice-micro-dose-capsules-scooby-snacks-6000mg/
+2026-08-21 15:33:40,781 - INFO -    Investigating (Full) [Attempt 1]: https://www.magicapproach.com/product/alice-psilocybin-mushroom-gummies-variety-pack-2500mg/
+2026-08-21 15:33:47,035 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-montreal/
+2026-08-21 15:33:48,072 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:33:48,087 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/product-category/magic-mushroom-capsules/
+2026-08-21 15:33:48,132 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/product/flow-lsd-tincture-1d/
+2026-08-21 15:33:49,287 - INFO -    -> [HARVESTER:DuckDuckGo] 檢索: WooCommerce "shipping worldwide" (cannab...
+2026-08-21 15:33:49,497 - INFO -    -> [HARVESTER:Swisscows] 檢索: WooCommerce "shipping worldwide" (cannab...
+2026-08-21 15:33:50,280 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/product/kanna-bliss/
+2026-08-21 15:33:53,644 - INFO -    -> [HARVESTER:DuckDuckGo] 完成: 2 個連結
+2026-08-21 15:33:54,163 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:33:54,293 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/buy-magic-mushrooms-montreal/
+2026-08-21 15:34:02,055 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.magicapproach.com/?add_to_wishlist=4697&_wpnonce=31e4d5dd22
+2026-08-21 15:34:05,820 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:34:05,965 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/?add_to_wishlist=4697&_wpnonce=31e4d5dd22
+2026-08-21 15:34:06,805 - INFO -    [SCORE] HIGH score=215 | https://www.magicapproach.com/?add_to_wishlist=2486&_wpnonce=31e4d5dd22
+2026-08-21 15:34:08,013 - INFO -    -> [HARVESTER:Swisscows] 完成: 48 個連結
+2026-08-21 15:34:08,111 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/product/shroom-low-dose-gummies-250mg/
+2026-08-21 15:34:32,497 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.magicapproach.com/buy-magic-mushrooms-ontario/
+2026-08-21 15:34:35,274 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:34:35,421 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/buy-magic-mushrooms-ontario/
+2026-08-21 15:34:35,624 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/product/hawaiian-cubensis-mushrooms/
+2026-08-21 15:34:49,735 - INFO -    -> [HARVESTER:SearXNG] 檢索: WooCommerce "shipping worldwide" (cannab...
+2026-08-21 15:34:51,356 - INFO -    -> [HARVESTER:Yandex] 檢索: WooCommerce "shipping worldwide" (cannab...
+2026-08-21 15:35:05,182 - INFO -    -> [HARVESTER:Yandex] 完成: 5 個連結
+2026-08-21 15:35:08,022 - INFO -    -> [HARVESTER:SearXNG] 完成: 2 個連結
+2026-08-21 15:35:27,545 - INFO -    [SCORE] HIGH score=255 | https://www.magicapproach.com/product-category/magic-mushroom-gummies/cherry/
+2026-08-21 15:35:35,843 - INFO -    [SCORE] HIGH score=240 | https://www.magicapproach.com/product/alice-micro-dose-capsules-scooby-snacks-6000mg/
+2026-08-21 15:35:35,910 - INFO -    [SCORE] HIGH score=240 | https://www.magicapproach.com/product/alice-psilocybin-mushroom-gummies-variety-pack-2500mg/
+2026-08-21 15:36:02,350 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.magicapproach.com/?add_to_wishlist=2486&_wpnonce=31e4d5dd22
+2026-08-21 15:36:05,067 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/product/hawaiian-cubensis-mushrooms/
+2026-08-21 15:36:06,054 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:36:10,036 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/?add_to_wishlist=2486&_wpnonce=31e4d5dd22
+2026-08-21 15:36:12,189 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/product/aztec-god-mushrooms/
+2026-08-21 15:36:23,252 - INFO -    [SCORE] HIGH score=215 | https://www.mindmend.co/product/flow-lsd-tincture-1d/
+2026-08-21 15:36:29,186 - INFO -    -> [HARVESTER:Startpage] 檢索: WooCommerce "shipping worldwide" (cannab...
+2026-08-21 15:36:29,254 - INFO -    -> [HARVESTER:Brave] 檢索: WooCommerce "shipping worldwide" (cannab...
+2026-08-21 15:36:36,791 - WARNING -    -> [HARVESTER:Startpage] 失敗: Execution context was destroyed, most likely because of a navigation
+2026-08-21 15:36:36,912 - INFO -    -> [HARVESTER:Brave] 完成: 5 個連結
+2026-08-21 15:36:37,561 - INFO -    [SCORE] HIGH score=155 | https://www.mindmend.co/product/kanna-bliss/
+2026-08-21 15:37:09,945 - INFO - [TRACK B] 入庫+送封包 HIGH score=255 | https://www.magicapproach.com/product-category/magic-mushroom-gummies/cherry/
+2026-08-21 15:37:11,883 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/product/aztec-god-mushrooms/
+2026-08-21 15:37:12,061 - INFO -    [SCORE] HIGH score=215 | https://www.mindmend.co/product/shroom-low-dose-gummies-250mg/
+2026-08-21 15:37:13,031 - ERROR -    [RETRY] 嘗試 1 失敗 https://www.mindmend.co/product/kanna-bliss/: Timeout 30000ms exceeded.
+2026-08-21 15:37:14,328 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:37:14,469 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/product-category/magic-mushroom-gummies/cherry/
+2026-08-21 15:37:15,432 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/product/treasure-coast-shrooms/
+2026-08-21 15:37:19,300 - INFO -    Investigating (Full) [Attempt 2]: https://www.mindmend.co/product/kanna-bliss/
+2026-08-21 15:37:19,695 - INFO -    [SCORE] HIGH score=175 | https://www.mindmend.co/product/hawaiian-cubensis-mushrooms/
+2026-08-21 15:37:31,718 - INFO - [TRACK B] 入庫+送封包 HIGH score=240 | https://www.magicapproach.com/product/alice-micro-dose-capsules-scooby-snacks-6000mg/
+2026-08-21 15:37:34,112 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:37:34,253 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/product/alice-micro-dose-capsules-scooby-snacks-6000mg/
+2026-08-21 15:37:35,056 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/product/shroom-organic-mint-chocolate/
+2026-08-21 15:37:44,948 - INFO - [TRACK B] 入庫+送封包 HIGH score=240 | https://www.magicapproach.com/product/alice-psilocybin-mushroom-gummies-variety-pack-2500mg/
+2026-08-21 15:37:47,110 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:37:47,241 - INFO -    -> [HARVESTER:Qwant] 檢索: WooCommerce "shipping worldwide" (cannab...
+2026-08-21 15:37:47,619 - INFO - [WEBHOOK] 資料傳送成功: https://www.magicapproach.com/product/alice-psilocybin-mushroom-gummies-variety-pack-2500mg/
+2026-08-21 15:37:48,130 - INFO -    -> [HARVESTER:Mojeek] 檢索: WooCommerce "shipping worldwide" (cannab...
+2026-08-21 15:37:48,852 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/product/tidal-wave-mushrooms/
+2026-08-21 15:37:56,184 - INFO -    -> [HARVESTER:Mojeek] 完成: 1 個連結
+2026-08-21 15:37:56,591 - INFO -    -> [HARVESTER:Qwant] 完成: 0 個連結
+2026-08-21 15:38:19,140 - INFO -    [SCORE] HIGH score=175 | https://www.mindmend.co/product/aztec-god-mushrooms/
+2026-08-21 15:38:27,515 - INFO -    -> [HARVESTER:Gibiru] 檢索: WooCommerce "shipping worldwide" (cannab...
+2026-08-21 15:38:27,531 - INFO -    -> [HARVESTER:CocCoc] 檢索: WooCommerce "shipping worldwide" (cannab...
+2026-08-21 15:38:38,799 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.mindmend.co/product/flow-lsd-tincture-1d/
+2026-08-21 15:38:43,388 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:38:43,724 - INFO - [WEBHOOK] 資料傳送成功: https://www.mindmend.co/product/flow-lsd-tincture-1d/
+2026-08-21 15:38:48,231 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/product/focus-shrooms-capsules-100mg/
+2026-08-21 15:38:55,920 - ERROR -    [RETRY] 嘗試 1 失敗 https://www.mindmend.co/product/aztec-god-mushrooms/: Timeout 30000ms exceeded.
+2026-08-21 15:38:56,619 - INFO -    -> [HARVESTER:Gibiru] 完成: 40 個連結
+2026-08-21 15:39:11,856 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.mindmend.co/product/shroom-low-dose-gummies-250mg/
+2026-08-21 15:39:15,302 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/product/tidal-wave-mushrooms/
+2026-08-21 15:39:16,098 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:39:16,385 - INFO - [WEBHOOK] 資料傳送成功: https://www.mindmend.co/product/shroom-low-dose-gummies-250mg/
+2026-08-21 15:39:17,494 - WARNING -    -> [HARVESTER:CocCoc] 失敗: Execution context was destroyed, most likely because of a navigation
+2026-08-21 15:39:17,630 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/product/albino-rollercoaster-mushrooms/
+2026-08-21 15:39:22,235 - INFO -    -> [HARVESTER] 全引擎合併: 22 個有效 URL（共 10 個引擎）
+2026-08-21 15:39:25,802 - INFO -    Investigating (Full) [Attempt 2]: https://www.mindmend.co/product/aztec-god-mushrooms/
+2026-08-21 15:39:27,200 - INFO - [TRACK A] 搜尋完成。新發現: 3 筆。當前待爬隊列長度: 1017
+2026-08-21 15:39:52,605 - INFO - [TRACK B] 入庫+送封包 HIGH score=175 | https://www.mindmend.co/product/hawaiian-cubensis-mushrooms/
+2026-08-21 15:39:57,021 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:39:57,303 - INFO - [WEBHOOK] 資料傳送成功: https://www.mindmend.co/product/hawaiian-cubensis-mushrooms/
+2026-08-21 15:39:58,640 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/our-products/
+2026-08-21 15:40:27,585 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/product/focus-shrooms-capsules-100mg/
+2026-08-21 15:40:27,738 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/product/aztec-god-mushrooms/
+2026-08-21 15:40:37,414 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/product/albino-rollercoaster-mushrooms/
+2026-08-21 15:40:44,043 - INFO -    [SCORE] MEDIUM score=115 | https://www.mindmend.co/product/treasure-coast-shrooms/
+2026-08-21 15:40:45,629 - INFO -    [SCORE] HIGH score=155 | https://www.mindmend.co/product/kanna-bliss/
+2026-08-21 15:40:49,354 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/our-products/
+2026-08-21 15:40:50,034 - INFO -    [SCORE] HIGH score=235 | https://www.mindmend.co/product/tidal-wave-mushrooms/
+2026-08-21 15:40:50,431 - INFO -    [SCORE] HIGH score=215 | https://www.mindmend.co/product/shroom-organic-mint-chocolate/
+2026-08-21 15:41:46,358 - ERROR -    [RETRY] 嘗試 1 失敗 https://www.mindmend.co/product/treasure-coast-shrooms/: Timeout 30000ms exceeded.
+2026-08-21 15:41:46,369 - ERROR -    [RETRY] 嘗試 2 失敗 https://www.mindmend.co/product/kanna-bliss/: Timeout 30000ms exceeded.
+2026-08-21 15:41:46,465 - ERROR -    [RETRY] 嘗試 1 失敗 https://www.mindmend.co/product/tidal-wave-mushrooms/: Timeout 30000ms exceeded.
+2026-08-21 15:41:46,470 - ERROR -    [RETRY] 嘗試 1 失敗 https://www.mindmend.co/product/shroom-organic-mint-chocolate/: Timeout 30000ms exceeded.
+2026-08-21 15:41:50,118 - INFO -    Investigating (Full) [Attempt 2]: https://www.mindmend.co/product/treasure-coast-shrooms/
+2026-08-21 15:41:50,202 - INFO -    Investigating (Full) [Attempt 2]: https://www.mindmend.co/product/tidal-wave-mushrooms/
+2026-08-21 15:41:50,536 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/product/calm-shrooms-capsules-75mg/
+2026-08-21 15:41:50,762 - INFO -    Investigating (Full) [Attempt 2]: https://www.mindmend.co/product/shroom-organic-mint-chocolate/
+2026-08-21 15:42:13,477 - INFO -    -> [HARVESTER:Swisscows] 檢索: Rosin for sale "buy now" Crypto discount...
+2026-08-21 15:42:13,527 - INFO -    -> [HARVESTER:DuckDuckGo] 檢索: Rosin for sale "buy now" Crypto discount...
+2026-08-21 15:42:15,754 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:42:22,571 - INFO -    [SCORE] HIGH score=175 | https://www.mindmend.co/product/aztec-god-mushrooms/
+2026-08-21 15:42:22,725 - INFO -    -> [HARVESTER:DuckDuckGo] 完成: 11 個連結
+2026-08-21 15:42:22,958 - INFO -    [SCORE] MEDIUM score=115 | https://www.mindmend.co/product/focus-shrooms-capsules-100mg/
+2026-08-21 15:42:23,101 - INFO -    [SCORE] HIGH score=175 | https://www.mindmend.co/product/albino-rollercoaster-mushrooms/
+2026-08-21 15:42:23,210 - INFO -    -> [HARVESTER:Swisscows] 完成: 18 個連結
+2026-08-21 15:42:51,386 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/product/treasure-coast-shrooms/
+2026-08-21 15:42:51,386 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/product/tidal-wave-mushrooms/
+2026-08-21 15:42:56,848 - ERROR -    [RETRY] 嘗試 2 失敗 https://www.mindmend.co/product/aztec-god-mushrooms/: Timeout 30000ms exceeded.
+2026-08-21 15:42:56,993 - ERROR -    [RETRY] 嘗試 1 失敗 https://www.mindmend.co/product/albino-rollercoaster-mushrooms/: Timeout 30000ms exceeded.
+2026-08-21 15:42:56,996 - ERROR -    [RETRY] 嘗試 1 失敗 https://www.mindmend.co/product/focus-shrooms-capsules-100mg/: Timeout 30000ms exceeded.
+2026-08-21 15:43:04,259 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/product/shroom-organic-mint-chocolate/
+2026-08-21 15:43:10,094 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/contact-us/
+2026-08-21 15:43:10,412 - INFO -    [SCORE] HIGH score=235 | https://www.mindmend.co/our-products/
+2026-08-21 15:43:12,031 - INFO -    Investigating (Full) [Attempt 2]: https://www.mindmend.co/product/focus-shrooms-capsules-100mg/
+2026-08-21 15:43:12,480 - INFO -    Investigating (Full) [Attempt 2]: https://www.mindmend.co/product/albino-rollercoaster-mushrooms/
+2026-08-21 15:43:27,548 - INFO -    -> [HARVESTER:SearXNG] 檢索: Rosin for sale "buy now" Crypto discount...
+2026-08-21 15:43:27,567 - INFO -    -> [HARVESTER:Yandex] 檢索: Rosin for sale "buy now" Crypto discount...
+2026-08-21 15:43:42,080 - INFO -    -> [HARVESTER:Yandex] 完成: 5 個連結
+2026-08-21 15:43:48,599 - INFO -    -> [HARVESTER:SearXNG] 完成: 2 個連結
+2026-08-21 15:44:01,831 - INFO -    -> [HARVESTER:Brave] 檢索: Rosin for sale "buy now" Crypto discount...
+2026-08-21 15:44:01,863 - INFO -    -> [HARVESTER:Startpage] 檢索: Rosin for sale "buy now" Crypto discount...
+2026-08-21 15:44:15,461 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/product/albino-rollercoaster-mushrooms/
+2026-08-21 15:44:15,461 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/product/focus-shrooms-capsules-100mg/
+2026-08-21 15:44:16,171 - INFO -    -> [HARVESTER:Brave] 完成: 0 個連結
+2026-08-21 15:44:16,525 - WARNING -    -> [HARVESTER:Startpage] 失敗: Execution context was destroyed, most likely because of a navigation
+2026-08-21 15:44:18,932 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/contact-us/
+2026-08-21 15:44:21,330 - INFO -    [SCORE] MEDIUM score=115 | https://www.mindmend.co/product/treasure-coast-shrooms/
+2026-08-21 15:44:21,369 - INFO -    [SCORE] HIGH score=215 | https://www.mindmend.co/product/shroom-organic-mint-chocolate/
+2026-08-21 15:44:22,015 - INFO -    [SCORE] HIGH score=235 | https://www.mindmend.co/product/tidal-wave-mushrooms/
+2026-08-21 15:44:25,024 - INFO -    [SCORE] MEDIUM score=115 | https://www.mindmend.co/product/calm-shrooms-capsules-75mg/
+2026-08-21 15:44:42,890 - INFO - [TRACK B] 入庫+送封包 HIGH score=235 | https://www.mindmend.co/our-products/
+2026-08-21 15:44:44,752 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:44:44,890 - INFO - [WEBHOOK] 資料傳送成功: https://www.mindmend.co/our-products/
+2026-08-21 15:44:45,597 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/product/methylene-blue-capsules/
+2026-08-21 15:44:47,463 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:44:47,945 - INFO -    -> [HARVESTER:Mojeek] 檢索: Rosin for sale "buy now" Crypto discount...
+2026-08-21 15:44:48,080 - INFO -    -> [HARVESTER:Qwant] 檢索: Rosin for sale "buy now" Crypto discount...
+2026-08-21 15:44:53,496 - INFO -    -> [HARVESTER:Mojeek] 完成: 1 個連結
+2026-08-21 15:44:57,349 - INFO -    [SCORE] NORMAL score=80 | https://www.mindmend.co/contact-us/
+2026-08-21 15:44:57,437 - INFO -    [SCORE] MEDIUM score=115 | https://www.mindmend.co/product/focus-shrooms-capsules-100mg/
+2026-08-21 15:44:57,506 - INFO -    [SCORE] HIGH score=175 | https://www.mindmend.co/product/albino-rollercoaster-mushrooms/
+2026-08-21 15:44:59,868 - INFO -    -> [HARVESTER:Qwant] 完成: 0 個連結
+2026-08-21 15:45:10,145 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=115 | https://www.mindmend.co/product/treasure-coast-shrooms/
+2026-08-21 15:45:11,683 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:45:11,817 - INFO - [WEBHOOK] 資料傳送成功: https://www.mindmend.co/product/treasure-coast-shrooms/
+2026-08-21 15:45:17,572 - INFO - [TRACK B] 入庫+送封包 HIGH score=235 | https://www.mindmend.co/product/tidal-wave-mushrooms/
+2026-08-21 15:45:18,649 - INFO -    Investigating (Full) [Attempt 1]: https://www.mindmend.co/product/steel-magnolia-shrooms/
+2026-08-21 15:45:18,857 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:45:18,957 - INFO - [WEBHOOK] 資料傳送成功: https://www.mindmend.co/product/tidal-wave-mushrooms/
+2026-08-21 15:45:20,888 - INFO -    Investigating (Full) [Attempt 1]: https://lovemagicmushrooms.com/product-category/tea/
+2026-08-21 15:45:27,682 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=115 | https://www.mindmend.co/product/calm-shrooms-capsules-75mg/
+2026-08-21 15:45:39,769 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.mindmend.co/product/shroom-organic-mint-chocolate/
+2026-08-21 15:45:40,938 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:45:41,036 - INFO - [WEBHOOK] 資料傳送成功: https://www.mindmend.co/product/calm-shrooms-capsules-75mg/
+2026-08-21 15:45:41,146 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:45:41,647 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:45:41,833 - INFO - [WEBHOOK] 資料傳送成功: https://www.mindmend.co/product/shroom-organic-mint-chocolate/
+2026-08-21 15:45:42,590 - INFO -    -> [HARVESTER:Gibiru] 檢索: Rosin for sale "buy now" Crypto discount...
+2026-08-21 15:45:42,733 - INFO -    -> [HARVESTER:CocCoc] 檢索: Rosin for sale "buy now" Crypto discount...
+2026-08-21 15:45:43,283 - INFO -    Investigating (Full) [Attempt 1]: http://lovemagicmushrooms.com/
+2026-08-21 15:45:43,488 - INFO -    Investigating (Full) [Attempt 1]: https://lovemagicmushrooms.com/my-account/
+2026-08-21 15:46:01,506 - INFO -    -> [HARVESTER:Gibiru] 完成: 58 個連結
+2026-08-21 15:46:04,792 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.mindmend.co/product/steel-magnolia-shrooms/
+2026-08-21 15:46:05,886 - INFO -    [SCORE] HIGH score=215 | https://www.mindmend.co/product/methylene-blue-capsules/
+2026-08-21 15:46:25,746 - INFO - [TRACK B] 入庫+送封包 NORMAL score=80 | https://www.mindmend.co/contact-us/
+2026-08-21 15:46:27,731 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:46:27,902 - INFO - [WEBHOOK] 資料傳送成功: https://www.mindmend.co/contact-us/
+2026-08-21 15:46:28,934 - INFO -    -> [HARVESTER:CocCoc] 完成: 0 個連結
+2026-08-21 15:46:29,829 - INFO -    Investigating (Full) [Attempt 1]: https://lovemagicmushrooms.com/register-2/
+2026-08-21 15:46:29,975 - INFO -    -> [HARVESTER] 全引擎合併: 19 個有效 URL（共 10 個引擎）
+2026-08-21 15:46:35,257 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=115 | https://www.mindmend.co/product/focus-shrooms-capsules-100mg/
+2026-08-21 15:46:40,710 - INFO - [TRACK B] 入庫+送封包 HIGH score=175 | https://www.mindmend.co/product/albino-rollercoaster-mushrooms/
+2026-08-21 15:46:41,288 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:46:41,296 - INFO - [WEBHOOK] 資料傳送成功: https://www.mindmend.co/product/focus-shrooms-capsules-100mg/
+2026-08-21 15:46:42,687 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:46:42,719 - INFO - [WEBHOOK] 資料傳送成功: https://www.mindmend.co/product/albino-rollercoaster-mushrooms/
+2026-08-21 15:46:43,149 - INFO -    Investigating (Full) [Attempt 1]: https://lovemagicmushrooms.com/buy-psilocybin-mushrooms-with-credit-card/
+2026-08-21 15:46:43,500 - INFO -    Investigating (Full) [Attempt 1]: https://lovemagicmushrooms.com/where-to-buy-psilocybin-in-canada/
+2026-08-21 15:46:45,776 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:46:46,421 - INFO - [TRACK A] 搜尋完成。新發現: 17 筆。當前待爬隊列長度: 1026
+2026-08-21 15:46:52,991 - INFO -    [SCORE] NORMAL score=95 | https://lovemagicmushrooms.com/product-category/tea/
+2026-08-21 15:46:55,699 - INFO -    [SCORE] MEDIUM score=115 | https://www.mindmend.co/product/steel-magnolia-shrooms/
+2026-08-21 15:47:03,350 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:47:03,390 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:47:13,060 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://www.mindmend.co/product/methylene-blue-capsules/
+2026-08-21 15:47:19,288 - INFO - [TRACK B] 入庫+送封包 NORMAL score=95 | https://lovemagicmushrooms.com/product-category/tea/
+2026-08-21 15:47:20,101 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:47:20,181 - INFO - [WEBHOOK] 資料傳送成功: https://www.mindmend.co/product/methylene-blue-capsules/
+2026-08-21 15:47:20,266 - INFO -    [SCORE] SKIP score=15 | https://lovemagicmushrooms.com/my-account/
+2026-08-21 15:47:20,283 - INFO -    [SCORE] SKIP score=15 | https://lovemagicmushrooms.com/register-2/
+2026-08-21 15:47:20,326 - INFO -    [SCORE] HIGH score=175 | http://lovemagicmushrooms.com/
+2026-08-21 15:47:20,588 - INFO -    Investigating (Full) [Attempt 1]: https://lovemagicmushrooms.com/product-category/gummies/
+2026-08-21 15:47:20,684 - INFO -    [SCORE] HIGH score=215 | https://lovemagicmushrooms.com/where-to-buy-psilocybin-in-canada/
+2026-08-21 15:47:20,710 - INFO -    Investigating (Full) [Attempt 1]: https://lovemagicmushrooms.com/product-category/dried/
+2026-08-21 15:47:20,753 - INFO -    [SCORE] MEDIUM score=135 | https://lovemagicmushrooms.com/buy-psilocybin-mushrooms-with-credit-card/
+2026-08-21 15:47:20,797 - INFO -    Investigating (Full) [Attempt 1]: https://lovemagicmushrooms.com/learn/
+2026-08-21 15:47:21,010 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:47:21,111 - INFO - [WEBHOOK] 資料傳送成功: https://lovemagicmushrooms.com/product-category/tea/
+2026-08-21 15:47:21,152 - INFO -    Investigating (Full) [Attempt 1]: https://lovemagicmushrooms.com/product-category/chocolate/
+2026-08-21 15:47:31,028 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=115 | https://www.mindmend.co/product/steel-magnolia-shrooms/
+2026-08-21 15:47:33,107 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:47:33,297 - INFO - [WEBHOOK] 資料傳送成功: https://www.mindmend.co/product/steel-magnolia-shrooms/
+2026-08-21 15:47:34,721 - INFO -    Investigating (Full) [Attempt 1]: https://lovemagicmushrooms.com/product-category/capsules/
+2026-08-21 15:47:44,737 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=135 | https://lovemagicmushrooms.com/buy-psilocybin-mushrooms-with-credit-card/
+2026-08-21 15:47:54,945 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://lovemagicmushrooms.com/where-to-buy-psilocybin-in-canada/
+2026-08-21 15:47:56,868 - INFO -    Investigating (Full) [Attempt 1]: https://lovemagicmushrooms.com/product-category/concentrates/
+2026-08-21 15:47:56,884 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:47:56,984 - INFO - [WEBHOOK] 資料傳送成功: https://lovemagicmushrooms.com/buy-psilocybin-mushrooms-with-credit-card/
+2026-08-21 15:47:57,120 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:47:57,246 - INFO - [WEBHOOK] 資料傳送成功: https://lovemagicmushrooms.com/where-to-buy-psilocybin-in-canada/
+2026-08-21 15:47:59,695 - INFO -    Investigating (Full) [Attempt 1]: https://lovemagicmushrooms.com/shop-psilocybin/
+2026-08-21 15:48:16,771 - INFO -    [SCORE] SKIP score=15 | https://lovemagicmushrooms.com/learn/
+2026-08-21 15:48:16,846 - INFO -    [SCORE] NORMAL score=95 | https://lovemagicmushrooms.com/product-category/chocolate/
+2026-08-21 15:48:16,879 - INFO -    [SCORE] MEDIUM score=115 | https://lovemagicmushrooms.com/product-category/gummies/
+2026-08-21 15:48:17,159 - INFO -    [SCORE] NORMAL score=95 | https://lovemagicmushrooms.com/product-category/dried/
+2026-08-21 15:48:17,696 - INFO -    Investigating (Full) [Attempt 1]: https://buyshrooms.net/product-tag/cuban-cubensis/
+2026-08-21 15:48:25,619 - INFO - [TRACK B] 入庫+送封包 HIGH score=175 | http://lovemagicmushrooms.com/
+2026-08-21 15:48:26,755 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product-category/thc-edibles/delta-munchies/
+2026-08-21 15:48:27,523 - INFO -    [SCORE] MEDIUM score=115 | https://lovemagicmushrooms.com/product-category/capsules/
+2026-08-21 15:48:32,649 - INFO - [TRACK B] 入庫+送封包 NORMAL score=95 | https://lovemagicmushrooms.com/product-category/chocolate/
+2026-08-21 15:48:33,176 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:48:33,221 - INFO - [WEBHOOK] 資料傳送成功: http://lovemagicmushrooms.com/
+2026-08-21 15:48:33,322 - INFO -    [SCORE] NORMAL score=95 | https://lovemagicmushrooms.com/product-category/concentrates/
+2026-08-21 15:48:33,496 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product-category/thc-gummies/others/
+2026-08-21 15:48:33,623 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:48:33,734 - INFO - [WEBHOOK] 資料傳送成功: https://lovemagicmushrooms.com/product-category/chocolate/
+2026-08-21 15:48:33,742 - INFO -    [SCORE] HIGH score=215 | https://lovemagicmushrooms.com/shop-psilocybin/
+2026-08-21 15:48:40,468 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=115 | https://lovemagicmushrooms.com/product-category/gummies/
+2026-08-21 15:48:41,941 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:48:43,195 - INFO - [WEBHOOK] 資料傳送成功: https://lovemagicmushrooms.com/product-category/gummies/
+2026-08-21 15:48:43,782 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product-category/thc-edibles/flav-gummies/
+2026-08-21 15:48:48,881 - ERROR -    [RETRY] 嘗試 1 失敗 https://buyshrooms.net/product-tag/cuban-cubensis/: Unable to retrieve content because the page is navigating and changing the content.
+2026-08-21 15:48:56,046 - INFO - [TRACK B] 入庫+送封包 NORMAL score=95 | https://lovemagicmushrooms.com/product-category/dried/
+2026-08-21 15:48:56,774 - INFO -    Investigating (Full) [Attempt 2]: https://buyshrooms.net/product-tag/cuban-cubensis/
+2026-08-21 15:48:56,914 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/diamond-shruumz/
+2026-08-21 15:48:59,601 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:48:59,712 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:48:59,801 - INFO - [WEBHOOK] 資料傳送成功: https://lovemagicmushrooms.com/product-category/dried/
+2026-08-21 15:49:00,093 - INFO -    [POPUP] 已自動點擊: 'Ok'
+2026-08-21 15:49:08,148 - INFO - [TRACK B] 入庫+送封包 NORMAL score=95 | https://lovemagicmushrooms.com/product-category/concentrates/
+2026-08-21 15:49:09,960 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:49:10,089 - INFO - [WEBHOOK] 資料傳送成功: https://lovemagicmushrooms.com/product-category/concentrates/
+2026-08-21 15:49:10,457 - INFO -    -> [HARVESTER:Swisscows] 檢索: stealth MDMA worldwide delivery Crypto d...
+2026-08-21 15:49:10,478 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/polkadot-mushroom-chocolate/
+2026-08-21 15:49:15,329 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=115 | https://lovemagicmushrooms.com/product-category/capsules/
+2026-08-21 15:49:15,885 - INFO -    -> [HARVESTER:DuckDuckGo] 檢索: stealth MDMA worldwide delivery Crypto d...
+2026-08-21 15:49:16,663 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:49:16,772 - INFO - [WEBHOOK] 資料傳送成功: https://lovemagicmushrooms.com/product-category/capsules/
+2026-08-21 15:49:18,639 - INFO -    [SCORE] HIGH score=755 | https://thcbulksupplies.com/product-category/thc-edibles/delta-munchies/
+2026-08-21 15:49:19,024 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product-category/live-resin/
+2026-08-21 15:49:19,482 - INFO -    [SCORE] HIGH score=755 | https://thcbulksupplies.com/product-category/thc-gummies/others/
+2026-08-21 15:49:20,872 - INFO -    -> [HARVESTER:Swisscows] 完成: 18 個連結
+2026-08-21 15:49:21,311 - INFO -    -> [HARVESTER:DuckDuckGo] 完成: 43 個連結
+2026-08-21 15:49:26,244 - INFO - [TRACK B] 入庫+送封包 HIGH score=215 | https://lovemagicmushrooms.com/shop-psilocybin/
+2026-08-21 15:49:27,496 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:49:27,608 - INFO - [WEBHOOK] 資料傳送成功: https://lovemagicmushrooms.com/shop-psilocybin/
+2026-08-21 15:49:28,838 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product/great-white-monster-mushroom/
+2026-08-21 15:49:28,905 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 15:49:29,628 - INFO -    [POPUP] 已自動點擊: 'Ok'
+2026-08-21 15:49:30,968 - INFO -    -> [HARVESTER:SearXNG] 檢索: stealth MDMA worldwide delivery Crypto d...
+2026-08-21 15:49:31,023 - INFO -    -> [HARVESTER:Yandex] 檢索: stealth MDMA worldwide delivery Crypto d...
+2026-08-21 15:49:34,272 - INFO -    [SCORE] HIGH score=755 | https://thcbulksupplies.com/product-category/thc-edibles/flav-gummies/
+2026-08-21 15:49:37,397 - INFO -    [SCORE] HIGH score=755 | https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/diamond-shruumz/
+2026-08-21 15:49:38,930 - INFO -    -> [HARVESTER:Yandex] 完成: 5 個連結
+2026-08-21 15:49:46,559 - INFO - [TRACK B] 入庫+送封包 HIGH score=755 | https://thcbulksupplies.com/product-category/thc-edibles/delta-munchies/
+2026-08-21 15:49:47,727 - INFO -    -> [HARVESTER:SearXNG] 完成: 2 個連結
+2026-08-21 15:49:48,080 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:49:48,155 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product-category/thc-edibles/delta-munchies/
+2026-08-21 15:49:53,694 - INFO - [TRACK B] 入庫+送封包 HIGH score=755 | https://thcbulksupplies.com/product-category/thc-gummies/others/
+2026-08-21 15:49:55,020 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:49:55,090 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product-category/thc-gummies/others/
+2026-08-21 15:49:55,265 - ERROR - [TRACK B] 處理失敗 https://thcbulksupplies.com/product-category/thc-gummies/others/: UNIQUE constraint failed: url_state.url
+2026-08-21 15:49:55,394 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product/static-sift-cbd-hash-hemphash-33-cbd/
+2026-08-21 15:49:55,496 - INFO -    Investigating (Full) [Attempt 1]: https://hempyretx.com/product/1oz-thca-flower/
+2026-08-21 15:49:58,965 - INFO -    [SCORE] HIGH score=755 | https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/polkadot-mushroom-chocolate/
+2026-08-21 15:50:00,678 - INFO -    -> [HARVESTER:Startpage] 檢索: stealth MDMA worldwide delivery Crypto d...
+2026-08-21 15:50:00,689 - INFO -    -> [HARVESTER:Brave] 檢索: stealth MDMA worldwide delivery Crypto d...
+2026-08-21 15:50:00,983 - INFO -    [SCORE] HIGH score=715 | https://thcbulksupplies.com/product-category/live-resin/
+2026-08-21 15:50:06,493 - INFO - [TRACK B] 入庫+送封包 HIGH score=755 | https://thcbulksupplies.com/product-category/thc-edibles/flav-gummies/
+2026-08-21 15:50:08,608 - INFO -    -> [HARVESTER:Brave] 完成: 0 個連結
+2026-08-21 15:50:08,646 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:50:08,734 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product-category/thc-edibles/flav-gummies/
+2026-08-21 15:50:08,946 - INFO -    [SCORE] HIGH score=800 | https://thcbulksupplies.com/product/great-white-monster-mushroom/
+2026-08-21 15:50:10,988 - INFO -    [SCORE] HIGH score=180 | https://buyshrooms.net/product-tag/cuban-cubensis/
+2026-08-21 15:50:12,022 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product/cambodian-mushrooms/
+2026-08-21 15:50:14,583 - WARNING -    -> [HARVESTER:Startpage] 失敗: Execution context was destroyed, most likely because of a navigation
+2026-08-21 15:50:27,420 - INFO - [TRACK B] 入庫+送封包 HIGH score=755 | https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/diamond-shruumz/
+2026-08-21 15:50:28,791 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:50:28,872 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/diamond-shruumz/
+2026-08-21 15:50:29,556 - INFO -    -> [HARVESTER:Mojeek] 檢索: stealth MDMA worldwide delivery Crypto d...
+2026-08-21 15:50:29,578 - INFO -    Investigating (Full) [Attempt 1]: https://www.shopzaza.com/collections/all-flower-excluding-bulk
+2026-08-21 15:50:29,591 - INFO -    -> [HARVESTER:Qwant] 檢索: stealth MDMA worldwide delivery Crypto d...
+2026-08-21 15:50:32,331 - INFO -    [SCORE] HIGH score=740 | https://thcbulksupplies.com/product/static-sift-cbd-hash-hemphash-33-cbd/
+2026-08-21 15:50:33,553 - INFO -    [SCORE] HIGH score=355 | https://hempyretx.com/product/1oz-thca-flower/
+2026-08-21 15:50:40,287 - INFO - [TRACK B] 入庫+送封包 HIGH score=715 | https://thcbulksupplies.com/product-category/live-resin/
+2026-08-21 15:50:41,262 - INFO -    -> [HARVESTER:Mojeek] 完成: 31 個連結
+2026-08-21 15:50:41,278 - INFO -    -> [HARVESTER:Qwant] 完成: 0 個連結
+2026-08-21 15:50:41,707 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:50:47,454 - INFO - [TRACK B] 入庫+送封包 HIGH score=800 | https://thcbulksupplies.com/product/great-white-monster-mushroom/
+2026-08-21 15:50:47,993 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product-category/live-resin/
+2026-08-21 15:50:48,453 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product-category/pre-rolls/
+2026-08-21 15:50:52,765 - INFO - [TRACK B] 入庫+送封包 HIGH score=755 | https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/polkadot-mushroom-chocolate/
+2026-08-21 15:50:53,286 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:50:53,322 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product/great-white-monster-mushroom/
+2026-08-21 15:50:57,379 - INFO - [TRACK B] 入庫+送封包 HIGH score=180 | https://buyshrooms.net/product-tag/cuban-cubensis/
+2026-08-21 15:50:58,424 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:50:58,497 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:50:58,518 - INFO - [WEBHOOK] 資料傳送成功: https://buyshrooms.net/product-tag/cuban-cubensis/
+2026-08-21 15:50:58,585 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/polkadot-mushroom-chocolate/
+2026-08-21 15:50:58,723 - INFO -    Investigating (Full) [Attempt 1]: https://mood.com/blog/what-is-zaza-weed
+2026-08-21 15:50:59,316 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/moon-mushroom-chocolate-bar/
+2026-08-21 15:51:00,288 - INFO -    Investigating (Full) [Attempt 1]: https://www.reddit.com/r/trees/comments/1ilepvx/any_try_zaza_delivery/
+2026-08-21 15:51:02,968 - INFO -    -> [HARVESTER:Gibiru] 檢索: stealth MDMA worldwide delivery Crypto d...
+2026-08-21 15:51:02,978 - INFO -    -> [HARVESTER:CocCoc] 檢索: stealth MDMA worldwide delivery Crypto d...
+2026-08-21 15:51:04,806 - INFO -    [SCORE] HIGH score=740 | https://thcbulksupplies.com/product/cambodian-mushrooms/
+2026-08-21 15:51:11,342 - INFO - [TRACK B] 入庫+送封包 HIGH score=355 | https://hempyretx.com/product/1oz-thca-flower/
+2026-08-21 15:51:12,538 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:51:12,632 - INFO - [WEBHOOK] 資料傳送成功: https://hempyretx.com/product/1oz-thca-flower/
+2026-08-21 15:51:13,015 - INFO -    -> [HARVESTER:Gibiru] 完成: 58 個連結
+2026-08-21 15:51:14,577 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product-category/buy-marijuana-strains/hybrid-strains/
+2026-08-21 15:51:22,919 - INFO - [TRACK B] 入庫+送封包 HIGH score=740 | https://thcbulksupplies.com/product/static-sift-cbd-hash-hemphash-33-cbd/
+2026-08-21 15:51:24,039 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:51:24,182 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product/static-sift-cbd-hash-hemphash-33-cbd/
+2026-08-21 15:51:25,466 - INFO -    Investigating (Full) [Attempt 1]: https://shopzazadelivery.com/
+2026-08-21 15:51:26,090 - INFO -    [SCORE] SKIP score=15 | https://www.shopzaza.com/collections/all-flower-excluding-bulk
+2026-08-21 15:51:27,693 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product/beldia-cbd-cbg-hash-hemphash-21-cbd/
+2026-08-21 15:51:27,790 - INFO -    [SCORE] SKIP score=0 | https://mood.com/blog/what-is-zaza-weed
+2026-08-21 15:51:30,699 - INFO -    [SCORE] HIGH score=395 | https://www.reddit.com/r/trees/comments/1ilepvx/any_try_zaza_delivery/
+2026-08-21 15:51:30,869 - INFO -    Investigating (Full) [Attempt 1]: https://greensociety.cc/discreet-cannabis-shipping/
+2026-08-21 15:51:34,027 - INFO -    -> [HARVESTER:CocCoc] 完成: 0 個連結
+2026-08-21 15:51:34,453 - INFO -    -> [HARVESTER] 全引擎合併: 18 個有效 URL（共 10 個引擎）
+2026-08-21 15:51:35,265 - INFO -    [SCORE] HIGH score=755 | https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/moon-mushroom-chocolate-bar/
+2026-08-21 15:51:40,742 - INFO - [TRACK B] 入庫+送封包 HIGH score=740 | https://thcbulksupplies.com/product/cambodian-mushrooms/
+2026-08-21 15:51:41,857 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:51:41,892 - INFO -    [SCORE] HIGH score=755 | https://thcbulksupplies.com/product-category/pre-rolls/
+2026-08-21 15:51:41,960 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product/cambodian-mushrooms/
+2026-08-21 15:51:42,909 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product/costa-rican-magic-mushrooms/
+2026-08-21 15:51:43,025 - INFO - [TRACK A] 搜尋完成。新發現: 13 筆。當前待爬隊列長度: 1086
+2026-08-21 15:51:46,886 - INFO -    [SCORE] HIGH score=715 | https://thcbulksupplies.com/product-category/buy-marijuana-strains/hybrid-strains/
+2026-08-21 15:51:56,036 - INFO - [TRACK B] 入庫+送封包 HIGH score=395 | https://www.reddit.com/r/trees/comments/1ilepvx/any_try_zaza_delivery/
+2026-08-21 15:51:57,720 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:51:57,854 - INFO - [WEBHOOK] 資料傳送成功: https://www.reddit.com/r/trees/comments/1ilepvx/any_try_zaza_delivery/
+2026-08-21 15:52:06,166 - INFO - [TRACK B] 入庫+送封包 HIGH score=755 | https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/moon-mushroom-chocolate-bar/
+2026-08-21 15:52:07,239 - INFO -    Investigating (Full) [Attempt 1]: https://e266b7-41.myshopify.com/
+2026-08-21 15:52:07,557 - INFO -    Investigating (Full) [Attempt 1]: https://thcbulksupplies.com/product/albino-avery-mushroom/
+2026-08-21 15:52:13,628 - INFO - [TRACK B] 入庫+送封包 HIGH score=755 | https://thcbulksupplies.com/product-category/pre-rolls/
+2026-08-21 15:52:14,190 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:52:14,238 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product-category/magic-mushroom-chocolate-bars/moon-mushroom-chocolate-bar/
+2026-08-21 15:52:14,496 - INFO -    [SCORE] SKIP score=0 | https://greensociety.cc/discreet-cannabis-shipping/
+2026-08-21 15:52:14,753 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:52:14,877 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product-category/pre-rolls/
+2026-08-21 15:52:14,933 - INFO -    Investigating (Full) [Attempt 1]: https://www.growisland.at/en/alpin-rocket-pre-grown-hemp-plant
+2026-08-21 15:52:15,020 - INFO -    [SCORE] HIGH score=740 | https://thcbulksupplies.com/product/beldia-cbd-cbg-hash-hemphash-21-cbd/
+2026-08-21 15:52:15,280 - INFO -    Investigating (Full) [Attempt 1]: https://www.shopzaza.com/store
+2026-08-21 15:52:17,058 - INFO -    [SCORE] HIGH score=800 | https://thcbulksupplies.com/product/costa-rican-magic-mushrooms/
+2026-08-21 15:52:27,183 - INFO -    [SCORE] SKIP score=15 | https://shopzazadelivery.com/
+2026-08-21 15:52:40,353 - INFO - [TRACK B] 入庫+送封包 HIGH score=715 | https://thcbulksupplies.com/product-category/buy-marijuana-strains/hybrid-strains/
+2026-08-21 15:52:41,382 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.shopzaza.com/store
+2026-08-21 15:52:41,397 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://thcbulksupplies.com/product/albino-avery-mushroom/
+2026-08-21 15:52:42,029 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:52:42,107 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product-category/buy-marijuana-strains/hybrid-strains/
+2026-08-21 15:52:42,271 - INFO -    Investigating (Full) [Attempt 1]: https://www.shopzaza.com/collections/wholesale
+2026-08-21 15:52:44,635 - INFO -    Investigating (Full) [Attempt 1]: https://www.paradise-seeds.com/product/sunglasses/
+2026-08-21 15:53:04,808 - INFO - [TRACK B] 入庫+送封包 HIGH score=740 | https://thcbulksupplies.com/product/beldia-cbd-cbg-hash-hemphash-21-cbd/
+2026-08-21 15:53:06,195 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:53:10,985 - INFO - [TRACK B] 入庫+送封包 HIGH score=800 | https://thcbulksupplies.com/product/costa-rican-magic-mushrooms/
+2026-08-21 15:53:11,496 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product/beldia-cbd-cbg-hash-hemphash-21-cbd/
+2026-08-21 15:53:12,030 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:53:12,102 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product/costa-rican-magic-mushrooms/
+2026-08-21 15:53:12,399 - INFO -    Investigating (Full) [Attempt 1]: https://zazadistrict.com/shop-page/
+2026-08-21 15:53:12,438 - INFO -    Investigating (Full) [Attempt 1]: https://photontek-lighting.com/shop/30w-uv-supplemental-light-led-bar/
+2026-08-21 15:53:14,567 - INFO -    [SCORE] SKIP score=15 | https://www.shopzaza.com/store
+2026-08-21 15:53:14,845 - INFO -    [SCORE] HIGH score=740 | https://thcbulksupplies.com/product/albino-avery-mushroom/
+2026-08-21 15:53:15,473 - INFO -    Investigating (Full) [Attempt 1]: https://zazaclutch.com/
+2026-08-21 15:53:17,315 - INFO -    [SCORE] HIGH score=315 | https://e266b7-41.myshopify.com/
+2026-08-21 15:53:18,568 - ERROR - Exception in callback AsyncIOEventEmitter._emit_run.<locals>.callback(<Task finishe...active page')>) at C:\Users\user\Desktop\demoapp\.venv\Lib\site-packages\pyee\asyncio.py:69
+handle: <Handle AsyncIOEventEmitter._emit_run.<locals>.callback(<Task finishe...active page')>) at C:\Users\user\Desktop\demoapp\.venv\Lib\site-packages\pyee\asyncio.py:69>
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\user\Desktop\demoapp\.venv\Lib\site-packages\pyee\asyncio.py", line 77, in callback
+    self.emit("error", exc)
+  File "C:\Users\user\Desktop\demoapp\.venv\Lib\site-packages\pyee\base.py", line 211, in emit
+    self._emit_handle_potential_error(event, args[0] if args else None)
+  File "C:\Users\user\Desktop\demoapp\.venv\Lib\site-packages\pyee\base.py", line 169, in _emit_handle_potential_error
+    raise error
+  File "C:\Users\user\Desktop\demoapp\.venv\Lib\site-packages\playwright\async_api\_generated.py", line 6744, in accept
+    await self._impl_obj.accept(promptText=prompt_text)
+  File "C:\Users\user\Desktop\demoapp\.venv\Lib\site-packages\playwright\_impl\_dialog.py", line 51, in accept
+    await self._channel.send("accept", locals_to_params(locals()))
+  File "C:\Users\user\Desktop\demoapp\.venv\Lib\site-packages\playwright\_impl\_connection.py", line 59, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Desktop\demoapp\.venv\Lib\site-packages\playwright\_impl\_connection.py", line 509, in wrap_api_call
+    return await cb()
+           ^^^^^^^^^^
+  File "C:\Users\user\Desktop\demoapp\.venv\Lib\site-packages\playwright\_impl\_connection.py", line 97, in inner_send
+    result = next(iter(done)).result()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+playwright._impl._errors.Error: Protocol error (Page.handleJavaScriptDialog): Not attached to an active page
+2026-08-21 15:53:26,473 - INFO -    [SCORE] SKIP score=0 | https://www.paradise-seeds.com/product/sunglasses/
+2026-08-21 15:53:27,006 - INFO -    Investigating (Full) [Attempt 1]: https://www.flowerboxco.co/products/50-pink-bouquet
+2026-08-21 15:53:39,693 - INFO -    [SCORE] HIGH score=575 | https://www.shopzaza.com/collections/wholesale
+2026-08-21 15:54:03,646 - INFO - [TRACK B] 入庫+送封包 HIGH score=740 | https://thcbulksupplies.com/product/albino-avery-mushroom/
+2026-08-21 15:54:06,341 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:54:06,439 - INFO - [WEBHOOK] 資料傳送成功: https://thcbulksupplies.com/product/albino-avery-mushroom/
+2026-08-21 15:54:08,690 - INFO -    Investigating (Full) [Attempt 1]: https://buy420weeds.com/product/buy-zaza-strain/
+2026-08-21 15:54:13,222 - INFO -    [POPUP] 已自動點擊: 'Close'
+2026-08-21 15:54:26,669 - INFO - [TRACK B] 入庫+送封包 HIGH score=315 | https://e266b7-41.myshopify.com/
+2026-08-21 15:54:29,443 - INFO -    [POPUP] 已自動點擊: 'Dismiss'
+2026-08-21 15:54:30,164 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:54:30,357 - INFO - [WEBHOOK] 資料傳送成功: https://e266b7-41.myshopify.com/
+2026-08-21 15:54:30,614 - INFO -    Investigating (Full) [Attempt 1]: https://suzyseeds.com/cannabis-seeds/feminized
+2026-08-21 15:54:43,269 - INFO -    -> [HARVESTER:DuckDuckGo] 檢索: buy Ketamine online "add to cart" In sto...
+2026-08-21 15:54:43,581 - INFO -    -> [HARVESTER:Swisscows] 檢索: buy Ketamine online "add to cart" In sto...
+2026-08-21 15:54:51,718 - INFO -    -> [HARVESTER:DuckDuckGo] 完成: 7 個連結
+2026-08-21 15:54:51,920 - INFO -    -> [HARVESTER:Swisscows] 完成: 24 個連結
+2026-08-21 15:54:52,166 - INFO -    [SCORE] MEDIUM score=120 | https://photontek-lighting.com/shop/30w-uv-supplemental-light-led-bar/
+2026-08-21 15:54:52,419 - INFO -    [SCORE] SKIP score=15 | https://zazadistrict.com/shop-page/
+2026-08-21 15:55:01,024 - INFO -    Investigating (Full) [Attempt 1]: https://www.zamnesia.com/content/13-shipping-information
+2026-08-21 15:55:10,928 - INFO -    [SCORE] HIGH score=675 | https://zazaclutch.com/
+2026-08-21 15:55:27,811 - INFO - [TRACK B] 入庫+送封包 HIGH score=575 | https://www.shopzaza.com/collections/wholesale
+2026-08-21 15:55:29,449 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://buy420weeds.com/product/buy-zaza-strain/
+2026-08-21 15:55:30,843 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:55:31,025 - INFO - [WEBHOOK] 資料傳送成功: https://www.shopzaza.com/collections/wholesale
+2026-08-21 15:55:36,990 - INFO -    Investigating (Full) [Attempt 1]: https://secretnature.com/blogs/cbd/washington-hemp-flower
+2026-08-21 15:55:39,950 - INFO -    -> [HARVESTER:SearXNG] 檢索: buy Ketamine online "add to cart" In sto...
+2026-08-21 15:55:40,088 - INFO -    [SCORE] MEDIUM score=120 | https://www.flowerboxco.co/products/50-pink-bouquet
+2026-08-21 15:55:40,196 - INFO -    -> [HARVESTER:Yandex] 檢索: buy Ketamine online "add to cart" In sto...
+2026-08-21 15:55:47,117 - INFO -    -> [HARVESTER:SearXNG] 完成: 2 個連結
+2026-08-21 15:55:50,492 - INFO -    -> [HARVESTER:Yandex] 完成: 5 個連結
+2026-08-21 15:55:59,741 - INFO -    [SCORE] HIGH score=640 | https://buy420weeds.com/product/buy-zaza-strain/
+2026-08-21 15:56:00,340 - INFO -    [SCORE] HIGH score=560 | https://suzyseeds.com/cannabis-seeds/feminized
+2026-08-21 15:56:01,483 - INFO -    -> [HARVESTER:Startpage] 檢索: buy Ketamine online "add to cart" In sto...
+2026-08-21 15:56:01,845 - INFO -    -> [HARVESTER:Brave] 檢索: buy Ketamine online "add to cart" In sto...
+2026-08-21 15:56:14,407 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=120 | https://photontek-lighting.com/shop/30w-uv-supplemental-light-led-bar/
+2026-08-21 15:56:17,771 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:56:17,957 - INFO - [WEBHOOK] 資料傳送成功: https://photontek-lighting.com/shop/30w-uv-supplemental-light-led-bar/
+2026-08-21 15:56:18,756 - INFO -    [SCORE] SKIP score=0 | https://www.zamnesia.com/content/13-shipping-information
+2026-08-21 15:56:26,579 - INFO - [TRACK B] 入庫+送封包 HIGH score=675 | https://zazaclutch.com/
+2026-08-21 15:56:27,372 - INFO -    -> [HARVESTER:Brave] 完成: 36 個連結
+2026-08-21 15:56:27,517 - INFO -    Investigating (Full) [Attempt 1]: https://trynowadays.com/
+2026-08-21 15:56:27,749 - INFO -    Investigating (Full) [Attempt 1]: https://cultivatesupply.com/products/hgv-nutrients-flower
+2026-08-21 15:56:27,837 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:56:27,974 - INFO - [WEBHOOK] 資料傳送成功: https://zazaclutch.com/
+2026-08-21 15:56:28,098 - WARNING -    -> [HARVESTER:Startpage] 失敗: Execution context was destroyed, most likely because of a navigation
+2026-08-21 15:56:29,841 - INFO -    Investigating (Full) [Attempt 1]: https://www.shopzaza.com/
+2026-08-21 15:56:32,102 - INFO -    [SCORE] SKIP score=0 | https://secretnature.com/blogs/cbd/washington-hemp-flower
+2026-08-21 15:56:33,063 - INFO -    Investigating (Full) [Attempt 1]: https://store.shopzaza.com/
+2026-08-21 15:56:35,033 - INFO -    -> [HARVESTER:Mojeek] 檢索: buy Ketamine online "add to cart" In sto...
+2026-08-21 15:56:35,079 - INFO -    -> [HARVESTER:Qwant] 檢索: buy Ketamine online "add to cart" In sto...
+2026-08-21 15:56:44,942 - INFO - [TRACK B] 入庫+送封包 MEDIUM score=120 | https://www.flowerboxco.co/products/50-pink-bouquet
+2026-08-21 15:56:46,372 - INFO -    Investigating (Full) [Attempt 1]: https://myfeelgoods.com/products/palms-white-coconut-pie-flower-mediums
+2026-08-21 15:56:54,970 - INFO -    -> [HARVESTER:Mojeek] 完成: 1 個連結
+2026-08-21 15:56:55,795 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:56:55,802 - INFO -    -> [HARVESTER:Qwant] 完成: 0 個連結
+2026-08-21 15:56:55,919 - INFO - [WEBHOOK] 資料傳送成功: https://www.flowerboxco.co/products/50-pink-bouquet
+2026-08-21 15:57:06,620 - INFO - [TRACK B] 入庫+送封包 HIGH score=560 | https://suzyseeds.com/cannabis-seeds/feminized
+2026-08-21 15:57:07,656 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.shopzaza.com/
+2026-08-21 15:57:08,398 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:57:08,593 - INFO - [WEBHOOK] 資料傳送成功: https://suzyseeds.com/cannabis-seeds/feminized
+2026-08-21 15:57:13,490 - INFO -    Investigating (Full) [Attempt 1]: https://cannabisbakehouse.com/product-categorie/headshop/rookaccessoires/vloei-en-tips/?_gl=1%2Am12utx%2A_ga%2AMTU1NjA5NTEzLjE3MDM3MjIzMjA.%2A_ga_V8H0MX7700%2AMTcwMzcyMjMyMC4xLjAuMTcwMzcyMjMyMC4wLjAuMA.
+2026-08-21 15:57:22,147 - INFO -    -> [HARVESTER:Gibiru] 檢索: buy Ketamine online "add to cart" In sto...
+2026-08-21 15:57:22,259 - INFO -    -> [HARVESTER:CocCoc] 檢索: buy Ketamine online "add to cart" In sto...
+2026-08-21 15:57:41,191 - INFO - [TRACK B] 入庫+送封包 HIGH score=640 | https://buy420weeds.com/product/buy-zaza-strain/
+2026-08-21 15:57:43,219 - INFO -    -> [HARVESTER:Gibiru] 完成: 58 個連結
+2026-08-21 15:57:43,549 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 15:57:43,556 - INFO - [WEBHOOK] 資料傳送成功: https://buy420weeds.com/product/buy-zaza-strain/
+2026-08-21 15:57:44,108 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://myfeelgoods.com/products/palms-white-coconut-pie-flower-mediums
+2026-08-21 15:57:48,708 - INFO -    [SCORE] SKIP score=0 | https://trynowadays.com/
+2026-08-21 15:57:48,894 - INFO -    Investigating (Full) [Attempt 1]: https://zaleaf.com/blogs/news/discreet-cannabis-shipping-your-worry-free-guide-to-private-deliveries
+2026-08-21 15:57:51,226 - INFO -    -> [HARVESTER:CocCoc] 完成: 0 個連結
+2026-08-21 15:57:53,057 - INFO -    -> [HARVESTER] 全引擎合併: 25 個有效 URL（共 10 個引擎）
+2026-08-21 15:57:56,855 - INFO -    Investigating (Full) [Attempt 1]: https://enjoyfive.com/collections/quickhits-15mg-thc-gummies
+2026-08-21 15:58:00,162 - INFO -    [SCORE] HIGH score=160 | https://cultivatesupply.com/products/hgv-nutrients-flower
+2026-08-21 15:58:06,768 - INFO - [TRACK A] 搜尋完成。新發現: 21 筆。當前待爬隊列長度: 1193
+2026-08-21 15:58:20,435 - INFO -    [SCORE] SKIP score=15 | https://store.shopzaza.com/
+2026-08-21 15:58:20,625 - INFO -    [SCORE] SKIP score=15 | https://www.shopzaza.com/
+2026-08-21 15:58:21,449 - INFO -    Investigating (Full) [Attempt 1]: https://dutch-passion.us/cannabis-seeds/kingston-punch
+2026-08-21 15:58:21,752 - INFO -    Investigating (Full) [Attempt 1]: https://zazacity420.com/
+2026-08-21 15:58:32,455 - INFO - [TRACK B] 入庫+送封包 HIGH score=160 | https://cultivatesupply.com/products/hgv-nutrients-flower
+2026-08-21 15:58:42,075 - INFO -    Investigating (Full) [Attempt 1]: https://www.shopzaza.com/collections/new-arrivals
+2026-08-21 15:58:43,357 - INFO -    [SCORE] SKIP score=0 | https://cannabisbakehouse.com/product-categorie/headshop/rookaccessoires/vloei-en-tips/?_gl=1%2Am12utx%2A_ga%2AMTU1NjA5NTEzLjE3MDM3MjIzMjA.%2A_ga_V8H0MX7700%2AMTcwMzcyMjMyMC4xLjAuMTcwMzcyMjMyMC4wLjAuMA.
+2026-08-21 15:58:50,847 - INFO -    Investigating (Full) [Attempt 1]: https://dutch-passion.us/cannabis-seeds/auto-duck
+2026-08-21 15:58:54,967 - ERROR - [WEBHOOK] 連線錯誤: All connection attempts failed, 準備重試
+2026-08-21 15:59:20,217 - ERROR - [WEBHOOK] 連線錯誤: All connection attempts failed, 準備重試
+2026-08-21 15:59:38,365 - INFO -    [SCORE] HIGH score=480 | https://myfeelgoods.com/products/palms-white-coconut-pie-flower-mediums
+2026-08-21 15:59:45,352 - ERROR - [WEBHOOK] 連線錯誤: All connection attempts failed, 準備重試
+2026-08-21 15:59:45,353 - ERROR - [WEBHOOK] 達到最大重試次數，資料傳送放棄: https://cultivatesupply.com/products/hgv-nutrients-flower
+2026-08-21 15:59:45,354 - WARNING - [WEBHOOK] 發送失敗已記錄: https://cultivatesupply.com/products/hgv-nutrients-flower | max_retries_exceeded
+2026-08-21 15:59:50,467 - INFO -    [SCORE] SKIP score=0 | https://enjoyfive.com/collections/quickhits-15mg-thc-gummies
+2026-08-21 15:59:54,453 - INFO -    Investigating (Full) [Attempt 1]: https://dutch-passion.us/cannabis-seeds/auto-strawberry-soda
+2026-08-21 16:00:00,561 - INFO -    [SCORE] HIGH score=475 | https://zaleaf.com/blogs/news/discreet-cannabis-shipping-your-worry-free-guide-to-private-deliveries
+2026-08-21 16:00:33,877 - INFO -    [SCORE] SKIP score=0 | https://dutch-passion.us/cannabis-seeds/kingston-punch
+2026-08-21 16:00:35,546 - INFO -    Investigating (Full) [Attempt 1]: https://www.reddit.com/r/trees/comments/1kk6vec/does_anyone_know_if_the_company_zazadeliverycom/
+2026-08-21 16:00:40,085 - INFO -    [SCORE] SKIP score=0 | https://dutch-passion.us/cannabis-seeds/auto-duck
+2026-08-21 16:00:40,279 - INFO -    [SCORE] HIGH score=375 | https://zazacity420.com/
+2026-08-21 16:00:50,437 - INFO - [TRACK B] 入庫+送封包 HIGH score=480 | https://myfeelgoods.com/products/palms-white-coconut-pie-flower-mediums
+2026-08-21 16:00:51,620 - INFO -    -> [HARVESTER:DuckDuckGo] 檢索: inurl:"/wp-content/plugins/header-footer...
+2026-08-21 16:00:51,772 - INFO -    Investigating (Full) [Attempt 1]: https://www.hydroexperts.com.au/Cyco-Platinum-Series-UpSize-1L-Flower-Hardner
+2026-08-21 16:00:51,907 - INFO -    -> [HARVESTER:Swisscows] 檢索: inurl:"/wp-content/plugins/header-footer...
+2026-08-21 16:00:51,983 - INFO -    [SCORE] SKIP score=15 | https://www.shopzaza.com/collections/new-arrivals
+2026-08-21 16:00:53,121 - INFO -    Investigating (Full) [Attempt 1]: https://www.paradise-seeds.com/product/logo-grinder/
+2026-08-21 16:00:54,916 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:00:54,993 - INFO - [WEBHOOK] 資料傳送成功: https://myfeelgoods.com/products/palms-white-coconut-pie-flower-mediums
+2026-08-21 16:00:55,808 - INFO -    Investigating (Full) [Attempt 1]: https://zaza-flower.com/
+2026-08-21 16:01:02,652 - INFO - [TRACK B] 入庫+送封包 HIGH score=475 | https://zaleaf.com/blogs/news/discreet-cannabis-shipping-your-worry-free-guide-to-private-deliveries
+2026-08-21 16:01:03,705 - INFO -    -> [HARVESTER:Swisscows] 完成: 18 個連結
+2026-08-21 16:01:03,762 - INFO -    -> [HARVESTER:DuckDuckGo] 完成: 3 個連結
+2026-08-21 16:01:07,019 - INFO -    [SCORE] SKIP score=0 | https://dutch-passion.us/cannabis-seeds/auto-strawberry-soda
+2026-08-21 16:01:07,947 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:01:07,951 - INFO - [WEBHOOK] 資料傳送成功: https://zaleaf.com/blogs/news/discreet-cannabis-shipping-your-worry-free-guide-to-private-deliveries
+2026-08-21 16:01:08,931 - INFO -    Investigating (Full) [Attempt 1]: https://zazafun.com/pages/flower
+2026-08-21 16:01:10,450 - INFO -    Investigating (Full) [Attempt 1]: https://www.bakedbags.com/
+2026-08-21 16:01:24,191 - INFO -    -> [HARVESTER:SearXNG] 檢索: inurl:"/wp-content/plugins/header-footer...
+2026-08-21 16:01:25,357 - INFO -    -> [HARVESTER:Yandex] 檢索: inurl:"/wp-content/plugins/header-footer...
+2026-08-21 16:01:41,650 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://zaza-flower.com/
+2026-08-21 16:01:43,983 - INFO -    -> [HARVESTER:SearXNG] 完成: 2 個連結
+2026-08-21 16:01:45,952 - INFO -    -> [HARVESTER:Yandex] 完成: 5 個連結
+2026-08-21 16:02:02,423 - INFO - [TRACK B] 入庫+送封包 HIGH score=375 | https://zazacity420.com/
+2026-08-21 16:02:10,090 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:02:10,324 - INFO - [WEBHOOK] 資料傳送成功: https://zazacity420.com/
+2026-08-21 16:02:11,095 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/product/4-aco-dmt-in-usa/
+2026-08-21 16:02:19,917 - INFO -    [SCORE] SKIP score=0 | https://www.reddit.com/r/trees/comments/1kk6vec/does_anyone_know_if_the_company_zazadeliverycom/
+2026-08-21 16:02:21,915 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/product/buy-penis-envy-mushroom/
+2026-08-21 16:02:35,242 - INFO -    [SCORE] SKIP score=0 | https://www.paradise-seeds.com/product/logo-grinder/
+2026-08-21 16:02:40,292 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/product/magic-kingdom-chocolate-bars/
+2026-08-21 16:02:42,239 - INFO -    -> [HARVESTER:Brave] 檢索: inurl:"/wp-content/plugins/header-footer...
+2026-08-21 16:02:42,384 - INFO -    -> [HARVESTER:Startpage] 檢索: inurl:"/wp-content/plugins/header-footer...
+2026-08-21 16:02:47,108 - INFO -    [SCORE] HIGH score=175 | https://www.hydroexperts.com.au/Cyco-Platinum-Series-UpSize-1L-Flower-Hardner
+2026-08-21 16:02:49,454 - INFO -    -> [HARVESTER:Brave] 完成: 4 個連結
+2026-08-21 16:02:52,340 - WARNING -    -> [HARVESTER:Startpage] 失敗: Execution context was destroyed, most likely because of a navigation
+2026-08-21 16:03:01,823 - INFO -    [SCORE] HIGH score=475 | https://zaza-flower.com/
+2026-08-21 16:03:05,624 - INFO -    [SCORE] SKIP score=0 | https://www.bakedbags.com/
+2026-08-21 16:03:06,090 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/product/pure-dmt-in-australia/
+2026-08-21 16:03:06,438 - INFO -    -> [HARVESTER:Qwant] 檢索: inurl:"/wp-content/plugins/header-footer...
+2026-08-21 16:03:07,135 - INFO -    -> [HARVESTER:Mojeek] 檢索: inurl:"/wp-content/plugins/header-footer...
+2026-08-21 16:03:19,156 - INFO -    [SCORE] SKIP score=15 | https://zazafun.com/pages/flower
+2026-08-21 16:03:20,282 - INFO -    -> [HARVESTER:Mojeek] 完成: 1 個連結
+2026-08-21 16:03:23,225 - INFO -    -> [HARVESTER:Qwant] 完成: 0 個連結
+2026-08-21 16:03:23,768 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/?add-to-cart=1946
+2026-08-21 16:03:34,031 - INFO -    [SCORE] HIGH score=575 | https://psychedeliastore.com/product/4-aco-dmt-in-usa/
+2026-08-21 16:03:50,696 - INFO - [TRACK B] 入庫+送封包 HIGH score=175 | https://www.hydroexperts.com.au/Cyco-Platinum-Series-UpSize-1L-Flower-Hardner
+2026-08-21 16:03:52,830 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:03:52,937 - INFO - [WEBHOOK] 資料傳送成功: https://www.hydroexperts.com.au/Cyco-Platinum-Series-UpSize-1L-Flower-Hardner
+2026-08-21 16:03:58,414 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/shop-2/
+2026-08-21 16:04:07,881 - ERROR -    [RETRY] 嘗試 1 失敗 https://psychedeliastore.com/product/4-aco-dmt-in-usa/: Timeout 30000ms exceeded.
+2026-08-21 16:04:08,063 - INFO -    -> [HARVESTER:Gibiru] 檢索: inurl:"/wp-content/plugins/header-footer...
+2026-08-21 16:04:12,702 - INFO -    -> [HARVESTER:CocCoc] 檢索: inurl:"/wp-content/plugins/header-footer...
+2026-08-21 16:04:19,772 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://psychedeliastore.com/product/pure-dmt-in-australia/
+2026-08-21 16:04:21,918 - INFO -    Investigating (Full) [Attempt 2]: https://psychedeliastore.com/product/4-aco-dmt-in-usa/
+2026-08-21 16:04:24,621 - INFO -    -> [HARVESTER:Gibiru] 完成: 7 個連結
+2026-08-21 16:04:33,694 - INFO -    [SCORE] HIGH score=535 | https://psychedeliastore.com/product/buy-penis-envy-mushroom/
+2026-08-21 16:04:40,010 - INFO -    [SCORE] HIGH score=535 | https://psychedeliastore.com/product/magic-kingdom-chocolate-bars/
+2026-08-21 16:04:57,518 - INFO - [TRACK B] 入庫+送封包 HIGH score=475 | https://zaza-flower.com/
+2026-08-21 16:05:06,881 - INFO -    -> [HARVESTER:CocCoc] 完成: 0 個連結
+2026-08-21 16:05:07,264 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/product/buy-vegan-dark-chocolate-psychedelic-chocolate-bar/
+2026-08-21 16:05:11,014 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:05:11,055 - INFO - [WEBHOOK] 資料傳送成功: https://zaza-flower.com/
+2026-08-21 16:05:11,281 - ERROR -    [RETRY] 嘗試 1 失敗 https://psychedeliastore.com/product/buy-penis-envy-mushroom/: Timeout 30000ms exceeded.
+2026-08-21 16:05:11,903 - INFO -    -> [HARVESTER] 全引擎合併: 1 個有效 URL（共 10 個引擎）
+2026-08-21 16:05:12,045 - INFO - [TRACK A] 搜尋完成。新發現: 0 筆。當前待爬隊列長度: 1257
+2026-08-21 16:05:14,199 - INFO -    Investigating (Full) [Attempt 2]: https://psychedeliastore.com/product/buy-penis-envy-mushroom/
+2026-08-21 16:05:42,751 - INFO -    [SCORE] HIGH score=535 | https://psychedeliastore.com/product/pure-dmt-in-australia/
+2026-08-21 16:05:57,609 - INFO -    [SCORE] HIGH score=535 | https://psychedeliastore.com/?add-to-cart=1946
+2026-08-21 16:06:14,628 - INFO - [TRACK B] 入庫+送封包 HIGH score=535 | https://psychedeliastore.com/product/magic-kingdom-chocolate-bars/
+2026-08-21 16:06:16,828 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:06:16,868 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliastore.com/product/magic-kingdom-chocolate-bars/
+2026-08-21 16:06:19,983 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/checkout-2/
+2026-08-21 16:06:27,742 - INFO -    [SCORE] HIGH score=575 | https://psychedeliastore.com/shop-2/
+2026-08-21 16:06:43,430 - INFO -    [SCORE] HIGH score=535 | https://psychedeliastore.com/product/4-aco-dmt-in-usa/
+2026-08-21 16:06:58,305 - INFO - [TRACK B] 入庫+送封包 HIGH score=535 | https://psychedeliastore.com/product/pure-dmt-in-australia/
+2026-08-21 16:07:00,085 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:07:00,213 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliastore.com/product/pure-dmt-in-australia/
+2026-08-21 16:07:00,568 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/product/jedi-mind-fuck-mushroom-in-canada/
+2026-08-21 16:07:04,569 - INFO -    [SCORE] HIGH score=535 | https://psychedeliastore.com/product/buy-penis-envy-mushroom/
+2026-08-21 16:07:05,940 - INFO -    [SCORE] HIGH score=535 | https://psychedeliastore.com/product/buy-vegan-dark-chocolate-psychedelic-chocolate-bar/
+2026-08-21 16:07:17,168 - INFO - [TRACK B] 入庫+送封包 HIGH score=535 | https://psychedeliastore.com/?add-to-cart=1946
+2026-08-21 16:07:18,314 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:07:18,414 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliastore.com/?add-to-cart=1946
+2026-08-21 16:07:18,892 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/product/buy-suillus-granulatus-mushroom/
+2026-08-21 16:07:28,529 - INFO - [TRACK B] 入庫+送封包 HIGH score=575 | https://psychedeliastore.com/shop-2/
+2026-08-21 16:07:30,099 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:07:30,279 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliastore.com/shop-2/
+2026-08-21 16:07:30,680 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/?add-to-cart=2062
+2026-08-21 16:07:39,622 - INFO - [TRACK B] 入庫+送封包 HIGH score=535 | https://psychedeliastore.com/product/4-aco-dmt-in-usa/
+2026-08-21 16:07:40,408 - INFO -    -> [HARVESTER:Swisscows] 檢索: shop Dance Fever Fentanyl fast delivery ...
+2026-08-21 16:07:40,469 - INFO -    -> [HARVESTER:DuckDuckGo] 檢索: shop Dance Fever Fentanyl fast delivery ...
+2026-08-21 16:07:40,749 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:07:40,825 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/product/dmt-powder-buy-raw-dmt-powder-1g/
+2026-08-21 16:07:40,836 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliastore.com/product/4-aco-dmt-in-usa/
+2026-08-21 16:07:49,568 - INFO -    [SCORE] SKIP score=15 | https://psychedeliastore.com/checkout-2/
+2026-08-21 16:07:49,924 - INFO -    -> [HARVESTER:DuckDuckGo] 完成: 43 個連結
+2026-08-21 16:08:04,495 - INFO - [TRACK B] 入庫+送封包 HIGH score=535 | https://psychedeliastore.com/product/buy-penis-envy-mushroom/
+2026-08-21 16:08:05,199 - INFO -    -> [HARVESTER:Swisscows] 完成: 47 個連結
+2026-08-21 16:08:05,613 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:08:05,693 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliastore.com/product/buy-penis-envy-mushroom/
+2026-08-21 16:08:05,819 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/product/dmt-powder-online-usa/
+2026-08-21 16:08:10,370 - INFO -    Investigating (Full) [Attempt 1]: https://psychedeliastore.com/product/buy-golden-teachers-magic-mushrooms-online/
+2026-08-21 16:08:16,082 - INFO - [TRACK B] 入庫+送封包 HIGH score=535 | https://psychedeliastore.com/product/buy-vegan-dark-chocolate-psychedelic-chocolate-bar/
+2026-08-21 16:08:17,269 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:08:17,389 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliastore.com/product/buy-vegan-dark-chocolate-psychedelic-chocolate-bar/
+2026-08-21 16:08:17,755 - INFO -    Investigating (Full) [Attempt 1]: https://www.reddit.com/user/PureCBDiol/
+2026-08-21 16:08:22,490 - INFO -    [SCORE] HIGH score=535 | https://psychedeliastore.com/product/jedi-mind-fuck-mushroom-in-canada/
+2026-08-21 16:08:24,917 - INFO -    -> [HARVESTER:SearXNG] 檢索: shop Dance Fever Fentanyl fast delivery ...
+2026-08-21 16:08:26,475 - INFO -    -> [HARVESTER:Yandex] 檢索: shop Dance Fever Fentanyl fast delivery ...
+2026-08-21 16:08:39,245 - INFO -    -> [HARVESTER:SearXNG] 完成: 2 個連結
+2026-08-21 16:08:44,826 - INFO -    [SCORE] HIGH score=575 | https://psychedeliastore.com/product/buy-suillus-granulatus-mushroom/
+2026-08-21 16:08:44,945 - INFO -    -> [HARVESTER:Yandex] 完成: 5 個連結
+2026-08-21 16:08:50,563 - INFO -    [SCORE] HIGH score=535 | https://psychedeliastore.com/?add-to-cart=2062
+2026-08-21 16:09:02,155 - INFO -    -> [HARVESTER:Startpage] 檢索: shop Dance Fever Fentanyl fast delivery ...
+2026-08-21 16:09:02,881 - INFO -    -> [HARVESTER:Brave] 檢索: shop Dance Fever Fentanyl fast delivery ...
+2026-08-21 16:09:12,497 - INFO -    -> [HARVESTER:Startpage] 完成: 1 個連結
+2026-08-21 16:09:12,855 - INFO -    -> [HARVESTER:Brave] 完成: 67 個連結
+2026-08-21 16:09:36,904 - INFO - [TRACK B] 入庫+送封包 HIGH score=535 | https://psychedeliastore.com/product/jedi-mind-fuck-mushroom-in-canada/
+2026-08-21 16:09:38,572 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:09:38,669 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliastore.com/product/jedi-mind-fuck-mushroom-in-canada/
+2026-08-21 16:09:39,157 - INFO -    Investigating (Full) [Attempt 1]: https://www.mapquest.com/us/california/varda-428861839
+2026-08-21 16:09:48,281 - INFO -    [SCORE] HIGH score=535 | https://psychedeliastore.com/product/dmt-powder-buy-raw-dmt-powder-1g/
+2026-08-21 16:09:49,650 - INFO -    [SCORE] HIGH score=535 | https://psychedeliastore.com/product/dmt-powder-online-usa/
+2026-08-21 16:09:59,032 - INFO - [TRACK B] 入庫+送封包 HIGH score=575 | https://psychedeliastore.com/product/buy-suillus-granulatus-mushroom/
+2026-08-21 16:10:05,641 - INFO - [TRACK B] 入庫+送封包 HIGH score=535 | https://psychedeliastore.com/?add-to-cart=2062
+2026-08-21 16:10:06,607 - INFO -    [SCORE] SKIP score=15 | https://www.reddit.com/user/PureCBDiol/
+2026-08-21 16:10:06,781 - INFO -    -> [HARVESTER:Mojeek] 檢索: shop Dance Fever Fentanyl fast delivery ...
+2026-08-21 16:10:06,794 - INFO -    -> [HARVESTER:Qwant] 檢索: shop Dance Fever Fentanyl fast delivery ...
+2026-08-21 16:10:06,958 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:10:07,068 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliastore.com/?add-to-cart=2062
+2026-08-21 16:10:07,115 - INFO -    [SCORE] HIGH score=535 | https://psychedeliastore.com/product/buy-golden-teachers-magic-mushrooms-online/
+2026-08-21 16:10:07,308 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:10:07,387 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliastore.com/product/buy-suillus-granulatus-mushroom/
+2026-08-21 16:10:07,520 - INFO -    Investigating (Full) [Attempt 1]: https://redcircle.com/shows/blunt-business1131
+2026-08-21 16:10:07,716 - INFO -    Investigating (Full) [Attempt 1]: https://www.csautoslalom.cz/autoklub-junior-slalom-akademie-prvni-krok-do-autoslalomu/
+2026-08-21 16:10:07,897 - INFO -    Investigating (Full) [Attempt 1]: https://whatstrending.com/flying-horse-cart-what-consumers-should-know-before-choosing-a-flying-horse-vap/
+2026-08-21 16:10:12,800 - INFO -    -> [HARVESTER:Mojeek] 完成: 31 個連結
+2026-08-21 16:10:18,607 - INFO -    -> [HARVESTER:Qwant] 完成: 0 個連結
+2026-08-21 16:10:46,502 - INFO - [TRACK B] 入庫+送封包 HIGH score=535 | https://psychedeliastore.com/product/dmt-powder-online-usa/
+2026-08-21 16:10:53,009 - INFO - [TRACK B] 入庫+送封包 HIGH score=535 | https://psychedeliastore.com/product/dmt-powder-buy-raw-dmt-powder-1g/
+2026-08-21 16:10:54,458 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:10:54,485 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:10:54,531 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliastore.com/product/dmt-powder-online-usa/
+2026-08-21 16:10:54,583 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliastore.com/product/dmt-powder-buy-raw-dmt-powder-1g/
+2026-08-21 16:10:55,006 - INFO -    Investigating (Full) [Attempt 1]: https://www.hempwholesaler.com/products/kandy-kush-thca-pre-roll-1-5g-60-count-display-blue-razz-indica
+2026-08-21 16:10:55,211 - INFO -    Investigating (Full) [Attempt 1]: https://gorus.media/portfolio/orgshop-gmbh
+2026-08-21 16:11:05,503 - INFO - [TRACK B] 入庫+送封包 HIGH score=535 | https://psychedeliastore.com/product/buy-golden-teachers-magic-mushrooms-online/
+2026-08-21 16:11:06,837 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:11:06,962 - INFO - [WEBHOOK] 資料傳送成功: https://psychedeliastore.com/product/buy-golden-teachers-magic-mushrooms-online/
+2026-08-21 16:11:07,422 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/how-to-order/
+2026-08-21 16:11:08,181 - INFO -    -> [HARVESTER:Gibiru] 檢索: shop Dance Fever Fentanyl fast delivery ...
+2026-08-21 16:11:08,837 - INFO -    -> [HARVESTER:CocCoc] 檢索: shop Dance Fever Fentanyl fast delivery ...
+2026-08-21 16:11:18,087 - INFO -    -> [HARVESTER:Gibiru] 完成: 58 個連結
+2026-08-21 16:11:33,868 - INFO -    [SCORE] HIGH score=235 | https://whatstrending.com/flying-horse-cart-what-consumers-should-know-before-choosing-a-flying-horse-vap/
+2026-08-21 16:11:34,971 - INFO -    [SCORE] SKIP score=0 | https://www.mapquest.com/us/california/varda-428861839
+2026-08-21 16:11:36,785 - WARNING -    -> [HARVESTER:CocCoc] 失敗: Execution context was destroyed, most likely because of a navigation
+2026-08-21 16:11:36,992 - INFO -    -> [HARVESTER] 全引擎合併: 34 個有效 URL（共 10 個引擎）
+2026-08-21 16:11:36,992 - WARNING -    商品圖擷取失敗: TypeError: Illegal invocation
+    at https://tagan.adlightning.com/sheknows/b-cf5bcc9-89ce51d0.js:1:81398
+    at eK (https://tagan.adlightning.com/sheknows/b-cf5bcc9-89ce51d0.js:1:24185)
+    at e.value (https://tagan.adlightning.com/sheknows/b-cf5bcc9-89ce51d0.js:1:81201)
+    at eval (eval at evaluate (:226:30), <anonymous>:4:48)
+    at new Promise (<anonymous>)
+    at eval (eval at evaluate (:226:30), <anonymous>:4:31)
+    at UtilityScript.evaluate (<anonymous>:233:19)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+2026-08-21 16:11:37,047 - INFO -    Investigating (Full) [Attempt 1]: http://idb.uwu.ac.lk/news-detail/25
+2026-08-21 16:11:43,298 - INFO - [TRACK B] 入庫+送封包 HIGH score=235 | https://whatstrending.com/flying-horse-cart-what-consumers-should-know-before-choosing-a-flying-horse-vap/
+2026-08-21 16:11:43,870 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/shop/
+2026-08-21 16:11:44,021 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:11:44,161 - INFO - [WEBHOOK] 資料傳送成功: https://whatstrending.com/flying-horse-cart-what-consumers-should-know-before-choosing-a-flying-horse-vap/
+2026-08-21 16:11:45,206 - INFO - [TRACK A] 搜尋完成。新發現: 27 筆。當前待爬隊列長度: 1281
+2026-08-21 16:11:47,436 - INFO -    [SCORE] HIGH score=495 | https://redcircle.com/shows/blunt-business1131
+2026-08-21 16:11:55,298 - INFO -    [SCORE] HIGH score=200 | https://ukshroombros.co.uk/how-to-order/
+2026-08-21 16:12:01,162 - INFO -    [SCORE] SKIP score=0 | https://www.hempwholesaler.com/products/kandy-kush-thca-pre-roll-1-5g-60-count-display-blue-razz-indica
+2026-08-21 16:12:01,423 - ERROR -    [RETRY] 嘗試 1 失敗 http://idb.uwu.ac.lk/news-detail/25: HTTP 500 empty body
+2026-08-21 16:12:01,861 - INFO -    [SCORE] SKIP score=0 | https://www.csautoslalom.cz/autoklub-junior-slalom-akademie-prvni-krok-do-autoslalomu/
+2026-08-21 16:12:01,874 - INFO -    [SCORE] HIGH score=355 | https://ukshroombros.co.uk/shop/
+2026-08-21 16:12:02,162 - INFO -    Investigating (Full) [Attempt 1]: https://brokeassgourmet.com/articles/grilled-chicken-avocado-caprese-salad
+2026-08-21 16:12:03,121 - INFO -    [POPUP] 已自動點擊: 'OK'
+2026-08-21 16:12:03,196 - INFO -    Investigating (Full) [Attempt 2]: http://idb.uwu.ac.lk/news-detail/25
+2026-08-21 16:12:03,296 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product-category/microdose/
+2026-08-21 16:12:11,150 - INFO - [TRACK B] 入庫+送封包 HIGH score=495 | https://redcircle.com/shows/blunt-business1131
+2026-08-21 16:12:11,947 - INFO -    [POPUP] 已自動點擊: 'Ok'
+2026-08-21 16:12:12,797 - INFO -    Investigating (Full) [Attempt 1]: https://www.bulkbuddy.co/product/premium-tuna-kush-thca-diamonds/
+2026-08-21 16:12:13,292 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:12:13,400 - INFO - [WEBHOOK] 資料傳送成功: https://redcircle.com/shows/blunt-business1131
+2026-08-21 16:12:17,307 - INFO -    [SCORE] HIGH score=735 | https://gorus.media/portfolio/orgshop-gmbh
+2026-08-21 16:12:23,577 - INFO - [TRACK B] 入庫+送封包 HIGH score=200 | https://ukshroombros.co.uk/how-to-order/
+2026-08-21 16:12:24,687 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:12:24,823 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/how-to-order/
+2026-08-21 16:12:25,811 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/
+2026-08-21 16:12:28,149 - INFO -    [SCORE] SKIP score=0 | https://www.bulkbuddy.co/product/premium-tuna-kush-thca-diamonds/
+2026-08-21 16:12:28,643 - INFO -    Investigating (Full) [Attempt 1]: https://www.deliargentina.com/blog-delicatessen-argentina/delicatessen-argentina-llega-a-madrid
+2026-08-21 16:12:29,225 - ERROR -    [RETRY] 嘗試 2 失敗 http://idb.uwu.ac.lk/news-detail/25: HTTP 500 empty body
+2026-08-21 16:12:29,335 - INFO -    [SCORE] HIGH score=435 | https://ukshroombros.co.uk/product-category/microdose/
+2026-08-21 16:12:30,331 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/reviews/
+2026-08-21 16:12:36,938 - INFO - [TRACK B] 入庫+送封包 HIGH score=355 | https://ukshroombros.co.uk/shop/
+2026-08-21 16:12:38,028 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:12:38,117 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/shop/
+2026-08-21 16:12:39,087 - INFO -    Investigating (Full) [Attempt 1]: https://herbapproach.com/faq/
+2026-08-21 16:12:41,534 - INFO -    [SCORE] HIGH score=1175 | https://brokeassgourmet.com/articles/grilled-chicken-avocado-caprese-salad
+2026-08-21 16:12:45,221 - INFO -    [SCORE] HIGH score=415 | https://ukshroombros.co.uk/
+2026-08-21 16:12:46,056 - INFO -    [SCORE] SKIP score=0 | https://herbapproach.com/faq/
+2026-08-21 16:12:46,137 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product/z-strain-magic-mushrooms/?add-to-cart=5109
+2026-08-21 16:12:46,702 - INFO -    [SCORE] HIGH score=320 | https://ukshroombros.co.uk/reviews/
+2026-08-21 16:13:05,319 - INFO - [TRACK B] 入庫+送封包 HIGH score=435 | https://ukshroombros.co.uk/product-category/microdose/
+2026-08-21 16:13:06,190 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://www.deliargentina.com/blog-delicatessen-argentina/delicatessen-argentina-llega-a-madrid
+2026-08-21 16:13:07,164 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:13:07,182 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/product-category/microdose/
+2026-08-21 16:13:08,120 - INFO -    Investigating (Full) [Attempt 1]: https://lost-thc.com/
+2026-08-21 16:14:00,875 - INFO -    -> [HARVESTER:Swisscows] 檢索: inurl:"/wp-content/plugins/google-analyt...
+2026-08-21 16:14:00,900 - INFO -    -> [HARVESTER:DuckDuckGo] 檢索: inurl:"/wp-content/plugins/google-analyt...
+2026-08-21 16:14:11,073 - INFO - [TRACK B] 入庫+送封包 HIGH score=1175 | https://brokeassgourmet.com/articles/grilled-chicken-avocado-caprese-salad
+2026-08-21 16:14:13,250 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:14:13,339 - INFO - [WEBHOOK] 資料傳送成功: https://brokeassgourmet.com/articles/grilled-chicken-avocado-caprese-salad
+2026-08-21 16:14:23,878 - INFO - [TRACK B] 入庫+送封包 HIGH score=735 | https://gorus.media/portfolio/orgshop-gmbh
+2026-08-21 16:14:25,393 - INFO -    -> [HARVESTER:DuckDuckGo] 完成: 3 個連結
+2026-08-21 16:14:25,427 - INFO -    -> [HARVESTER:Swisscows] 完成: 18 個連結
+2026-08-21 16:14:33,408 - INFO - [TRACK B] 入庫+送封包 HIGH score=320 | https://ukshroombros.co.uk/reviews/
+2026-08-21 16:14:33,967 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:14:33,983 - INFO - [WEBHOOK] 資料傳送成功: https://gorus.media/portfolio/orgshop-gmbh
+2026-08-21 16:14:34,618 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:14:34,860 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/reviews/
+2026-08-21 16:14:40,824 - INFO - [TRACK B] 入庫+送封包 HIGH score=415 | https://ukshroombros.co.uk/
+2026-08-21 16:14:41,347 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product/z-strain-magic-mushrooms/?add-to-cart=5124
+2026-08-21 16:14:41,534 - INFO -    Investigating (Full) [Attempt 1]: https://www.hempwholesaler.com/products/kandy-kush-thca-pre-roll-1-5g-60-count-display-sweet-watermelon-hybrid
+2026-08-21 16:14:41,733 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:14:41,823 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/
+2026-08-21 16:14:41,860 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/contact/
+2026-08-21 16:14:42,705 - INFO -    Investigating (Full) [Attempt 1]: https://blog.diderot.art/2020/07/29/que-es-el-arte-contemporaneo/
+2026-08-21 16:14:45,412 - INFO -    -> [HARVESTER:SearXNG] 檢索: inurl:"/wp-content/plugins/google-analyt...
+2026-08-21 16:14:45,658 - INFO -    -> [HARVESTER:Yandex] 檢索: inurl:"/wp-content/plugins/google-analyt...
+2026-08-21 16:14:54,090 - INFO -    -> [HARVESTER:SearXNG] 完成: 2 個連結
+2026-08-21 16:14:55,867 - INFO -    -> [HARVESTER:Yandex] 完成: 5 個連結
+2026-08-21 16:15:00,761 - INFO -    -> [HARVESTER:Brave] 檢索: inurl:"/wp-content/plugins/google-analyt...
+2026-08-21 16:15:00,776 - INFO -    -> [HARVESTER:Startpage] 檢索: inurl:"/wp-content/plugins/google-analyt...
+2026-08-21 16:15:09,018 - INFO -    [SCORE] HIGH score=2035 | https://www.deliargentina.com/blog-delicatessen-argentina/delicatessen-argentina-llega-a-madrid
+2026-08-21 16:15:09,374 - WARNING -    -> [HARVESTER:Startpage] 失敗: Execution context was destroyed, most likely because of a navigation
+2026-08-21 16:15:09,889 - INFO -    -> [HARVESTER:Brave] 完成: 4 個連結
+2026-08-21 16:15:14,222 - INFO -    [SCORE] HIGH score=360 | https://ukshroombros.co.uk/product/z-strain-magic-mushrooms/?add-to-cart=5109
+2026-08-21 16:15:25,389 - INFO -    [SCORE] SKIP score=0 | https://lost-thc.com/
+2026-08-21 16:15:26,317 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product-category/apparel/
+2026-08-21 16:15:29,151 - INFO -    -> [HARVESTER:Qwant] 檢索: inurl:"/wp-content/plugins/google-analyt...
+2026-08-21 16:15:29,194 - INFO -    -> [HARVESTER:Mojeek] 檢索: inurl:"/wp-content/plugins/google-analyt...
+2026-08-21 16:15:30,278 - INFO -    [SCORE] HIGH score=200 | https://ukshroombros.co.uk/contact/
+2026-08-21 16:15:30,483 - INFO -    [SCORE] SKIP score=0 | https://www.hempwholesaler.com/products/kandy-kush-thca-pre-roll-1-5g-60-count-display-sweet-watermelon-hybrid
+2026-08-21 16:15:30,561 - INFO -    Investigating (Full) [Attempt 1]: https://www.quora.com/What-are-the-available-online-dispensaries-that-ship
+2026-08-21 16:15:31,322 - INFO -    [SCORE] HIGH score=360 | https://ukshroombros.co.uk/product/z-strain-magic-mushrooms/?add-to-cart=5124
+2026-08-21 16:15:47,774 - INFO - [TRACK B] 入庫+送封包 HIGH score=360 | https://ukshroombros.co.uk/product/z-strain-magic-mushrooms/?add-to-cart=5109
+2026-08-21 16:15:49,611 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:15:49,712 - INFO -    -> [HARVESTER:Mojeek] 完成: 1 個連結
+2026-08-21 16:15:49,957 - INFO -    [SCORE] SKIP score=0 | https://blog.diderot.art/2020/07/29/que-es-el-arte-contemporaneo/
+2026-08-21 16:15:49,995 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/product/z-strain-magic-mushrooms/?add-to-cart=5109
+2026-08-21 16:15:50,287 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/locations/edinburgh/
+2026-08-21 16:15:50,749 - INFO -    Investigating (Full) [Attempt 1]: https://www.andrewwhitehead.net/blog/will-the-real-leslie-crowther
+2026-08-21 16:15:51,574 - INFO -    -> [HARVESTER:Qwant] 完成: 0 個連結
+2026-08-21 16:16:04,649 - INFO - [TRACK B] 入庫+送封包 HIGH score=200 | https://ukshroombros.co.uk/contact/
+2026-08-21 16:16:06,056 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:16:06,135 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/contact/
+2026-08-21 16:16:06,487 - INFO -    -> [HARVESTER:Gibiru] 檢索: inurl:"/wp-content/plugins/google-analyt...
+2026-08-21 16:16:06,570 - INFO -    -> [HARVESTER:CocCoc] 檢索: inurl:"/wp-content/plugins/google-analyt...
+2026-08-21 16:16:06,661 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product/thai-koh-samui-magic-mushrooms/
+2026-08-21 16:16:14,606 - INFO -    [SCORE] HIGH score=435 | https://ukshroombros.co.uk/product-category/apparel/
+2026-08-21 16:16:16,115 - INFO -    -> [HARVESTER:Gibiru] 完成: 58 個連結
+2026-08-21 16:16:49,622 - INFO - [TRACK B] 入庫+送封包 HIGH score=2035 | https://www.deliargentina.com/blog-delicatessen-argentina/delicatessen-argentina-llega-a-madrid
+2026-08-21 16:16:53,755 - ERROR -    [RETRY] 嘗試 1 失敗 https://ukshroombros.co.uk/product-category/apparel/: Timeout 30000ms exceeded.
+2026-08-21 16:16:54,947 - INFO -    -> [HARVESTER:CocCoc] 完成: 3 個連結
+2026-08-21 16:17:00,253 - INFO -    -> [HARVESTER] 全引擎合併: 20 個有效 URL（共 10 個引擎）
+2026-08-21 16:17:00,870 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:17:01,072 - INFO - [WEBHOOK] 資料傳送成功: https://www.deliargentina.com/blog-delicatessen-argentina/delicatessen-argentina-llega-a-madrid
+2026-08-21 16:17:02,382 - INFO -    Investigating (Full) [Attempt 2]: https://ukshroombros.co.uk/product-category/apparel/
+2026-08-21 16:17:03,927 - INFO -    Investigating (Full) [Attempt 1]: https://gruposanvicentegalapagos.com/que-es-galapagos/
+2026-08-21 16:17:11,605 - INFO - [TRACK A] 搜尋完成。新發現: 19 筆。當前待爬隊列長度: 1339
+2026-08-21 16:17:27,407 - INFO - [TRACK B] 入庫+送封包 HIGH score=360 | https://ukshroombros.co.uk/product/z-strain-magic-mushrooms/?add-to-cart=5124
+2026-08-21 16:17:29,149 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:17:29,229 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/product/z-strain-magic-mushrooms/?add-to-cart=5124
+2026-08-21 16:17:29,770 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product/trans-envy-magic-mushrooms/
+2026-08-21 16:17:40,312 - INFO -    [SCORE] SKIP score=15 | https://www.quora.com/What-are-the-available-online-dispensaries-that-ship
+2026-08-21 16:17:40,636 - INFO -    [SCORE] HIGH score=240 | https://ukshroombros.co.uk/locations/edinburgh/
+2026-08-21 16:17:40,902 - INFO -    Investigating (Full) [Attempt 1]: https://drugprevent.org.uk/ppp/category/research/youth/
+2026-08-21 16:17:47,244 - INFO -    [SCORE] HIGH score=655 | https://www.andrewwhitehead.net/blog/will-the-real-leslie-crowther
+2026-08-21 16:18:12,176 - INFO - [TRACK B] 入庫+送封包 HIGH score=655 | https://www.andrewwhitehead.net/blog/will-the-real-leslie-crowther
+2026-08-21 16:18:13,389 - INFO -    [NAV] DOM 未齊仍繼續讀內容: https://gruposanvicentegalapagos.com/que-es-galapagos/
+2026-08-21 16:18:14,483 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:18:14,599 - INFO - [WEBHOOK] 資料傳送成功: https://www.andrewwhitehead.net/blog/will-the-real-leslie-crowther
+2026-08-21 16:18:16,139 - INFO -    [SCORE] HIGH score=360 | https://ukshroombros.co.uk/product/thai-koh-samui-magic-mushrooms/
+2026-08-21 16:18:22,641 - INFO -    Investigating (Full) [Attempt 1]: https://www.canapuff.com/fr
+2026-08-21 16:18:22,958 - INFO -    [SCORE] HIGH score=435 | https://ukshroombros.co.uk/product-category/apparel/
+2026-08-21 16:18:56,189 - INFO - [TRACK B] 入庫+送封包 HIGH score=240 | https://ukshroombros.co.uk/locations/edinburgh/
+2026-08-21 16:19:01,305 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:19:01,545 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/locations/edinburgh/
+2026-08-21 16:19:01,724 - INFO -    [SCORE] HIGH score=360 | https://ukshroombros.co.uk/product/trans-envy-magic-mushrooms/
+2026-08-21 16:19:09,647 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product-category/shrooms-edibles/polkadot-mushroom-chocolate/
+2026-08-21 16:20:17,244 - INFO - [TRACK B] 入庫+送封包 HIGH score=360 | https://ukshroombros.co.uk/product/thai-koh-samui-magic-mushrooms/
+2026-08-21 16:20:29,523 - ERROR -    [RETRY] 嘗試 1 失敗 https://www.canapuff.com/fr: Timeout 45000ms exceeded.
+2026-08-21 16:20:29,972 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:20:30,207 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/product/thai-koh-samui-magic-mushrooms/
+2026-08-21 16:20:33,461 - INFO -    Investigating (Full) [Attempt 2]: https://www.canapuff.com/fr
+2026-08-21 16:20:34,747 - INFO -    [SCORE] SKIP score=0 | https://drugprevent.org.uk/ppp/category/research/youth/
+2026-08-21 16:20:41,158 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product-category/wonka-chocolate-bars/
+2026-08-21 16:21:14,498 - INFO - [TRACK B] 入庫+送封包 HIGH score=435 | https://ukshroombros.co.uk/product-category/apparel/
+2026-08-21 16:21:18,588 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:21:18,786 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/shipping/
+2026-08-21 16:21:19,082 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/product-category/apparel/
+2026-08-21 16:21:20,485 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product-category/mr-mushies-chocolate/
+2026-08-21 16:21:56,873 - INFO - [TRACK B] 入庫+送封包 HIGH score=360 | https://ukshroombros.co.uk/product/trans-envy-magic-mushrooms/
+2026-08-21 16:22:00,003 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:22:00,114 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/product/trans-envy-magic-mushrooms/
+2026-08-21 16:22:06,016 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product-category/shrooms-edibles/four-sigmatic/page/3/
+2026-08-21 16:22:09,078 - INFO -    -> [HARVESTER:DuckDuckGo] 檢索: cheap Crystal Meth real deal checkout Wo...
+2026-08-21 16:22:10,842 - INFO -    -> [HARVESTER:Swisscows] 檢索: cheap Crystal Meth real deal checkout Wo...
+2026-08-21 16:22:18,241 - INFO -    -> [HARVESTER:DuckDuckGo] 完成: 43 個連結
+2026-08-21 16:22:21,537 - INFO -    -> [HARVESTER:Swisscows] 完成: 16 個連結
+2026-08-21 16:22:57,917 - INFO -    [SCORE] HIGH score=335 | https://ukshroombros.co.uk/product-category/shrooms-edibles/polkadot-mushroom-chocolate/
+2026-08-21 16:23:07,512 - INFO -    [SCORE] SKIP score=0 | https://www.canapuff.com/fr
+2026-08-21 16:23:07,946 - INFO -    -> [HARVESTER:Yandex] 檢索: cheap Crystal Meth real deal checkout Wo...
+2026-08-21 16:23:08,028 - INFO -    -> [HARVESTER:SearXNG] 檢索: cheap Crystal Meth real deal checkout Wo...
+2026-08-21 16:23:09,105 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/blog/
+2026-08-21 16:23:19,218 - INFO -    -> [HARVESTER:Yandex] 完成: 5 個連結
+2026-08-21 16:23:19,412 - INFO -    [SCORE] HIGH score=335 | https://ukshroombros.co.uk/product-category/wonka-chocolate-bars/
+2026-08-21 16:23:19,853 - INFO -    [SCORE] HIGH score=200 | https://ukshroombros.co.uk/shipping/
+2026-08-21 16:23:21,254 - INFO -    [SCORE] HIGH score=335 | https://ukshroombros.co.uk/product-category/mr-mushies-chocolate/
+2026-08-21 16:23:21,363 - INFO -    -> [HARVESTER:SearXNG] 完成: 2 個連結
+2026-08-21 16:23:21,670 - INFO -    [SCORE] HIGH score=320 | https://ukshroombros.co.uk/product-category/shrooms-edibles/four-sigmatic/page/3/
+2026-08-21 16:23:53,345 - INFO - [TRACK B] 入庫+送封包 HIGH score=335 | https://ukshroombros.co.uk/product-category/shrooms-edibles/polkadot-mushroom-chocolate/
+2026-08-21 16:23:58,770 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:23:58,904 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/product-category/shrooms-edibles/polkadot-mushroom-chocolate/
+2026-08-21 16:24:18,345 - INFO - [TRACK B] 入庫+送封包 HIGH score=200 | https://ukshroombros.co.uk/shipping/
+2026-08-21 16:24:20,877 - INFO - HTTP Request: POST http://100.123.184.43:8001/api/crawler/report/ "HTTP/1.1 200 OK"
+2026-08-21 16:24:21,077 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product-category/shrooms-edibles/four-sigmatic/?add-to-cart=5328
+2026-08-21 16:24:21,215 - INFO - [WEBHOOK] 資料傳送成功: https://ukshroombros.co.uk/shipping/
+2026-08-21 16:24:21,400 - INFO -    -> [HARVESTER:Startpage] 檢索: cheap Crystal Meth real deal checkout Wo...
+2026-08-21 16:24:21,489 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product-category/shrooms-edibles/four-sigmatic/?add-to-cart=5087
+2026-08-21 16:24:21,586 - INFO -    -> [HARVESTER:Brave] 檢索: cheap Crystal Meth real deal checkout Wo...
+2026-08-21 16:24:58,958 - INFO - [TRACK B] 入庫+送封包 HIGH score=335 | https://ukshroombros.co.uk/product-category/wonka-chocolate-bars/
+2026-08-21 16:25:06,290 - INFO - Shutting down workers...
+2026-08-31 21:14:42,129 - WARNING - [Record] 已刪除過大舊檔 nlp_text.json (37.6 MB)，改用 JSONL 追加寫入
+2026-08-31 21:14:42,144 - INFO - [SEM] investigate=10 harvest=2 (workers=8)
+2026-08-31 21:14:47,449 - INFO - [STARTUP] 手動爬蟲 Browser 常駐池已就緒（reuse_browser=true）。
+2026-08-31 21:14:47,457 - INFO - API 伺服器啟動，系統初始化完成。
+2026-08-31 21:14:47,461 - INFO - [STARTUP] 24H 自動引擎已經在背景一併啟動運作中！
+2026-08-31 21:14:47,682 - INFO - [DB] 7 筆卡住的 in_progress 已標為 done
+2026-08-31 21:14:50,860 - INFO - V46.0 Investigate Browser ready (chrome).
+2026-08-31 21:14:51,963 - INFO - V46.0 Harvest Browser ready (chrome).
+2026-08-31 21:14:51,971 - INFO - V46.0 Fully Optimized Dual-Track Predator Engine Active (SQLite Mode). Workers: 8
+2026-08-31 21:14:51,973 - INFO - [TRACK A - v2] Harvester 啟動：執行多語義智能搜尋 (SQLite驅動)...
+2026-08-31 21:14:51,976 - INFO - [TRACK B - v2] Investigator 啟動：執行 8 軌非同步採集...
+2026-08-31 21:14:52,033 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product-category/shromiez-chocolate-bars/
+2026-08-31 21:14:52,170 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product/four-sigmatic-think-organic-ground-coffee/
+2026-08-31 21:14:52,204 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/locations/london/
+2026-08-31 21:14:52,384 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product/melmac-magic-mushroom/?add-to-cart=5124
+2026-08-31 21:14:52,433 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product-category/shrooms-edibles/mr-mushies-chocolate/?add-to-cart=5093
+2026-08-31 21:14:52,496 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product/melmac-magic-mushroom/?add-to-cart=5077
+2026-08-31 21:14:52,612 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product-category/shrooms-edibles/mr-mushies-chocolate/?add-to-cart=5426
+2026-08-31 21:14:53,280 - INFO -    Investigating (Full) [Attempt 1]: https://ukshroombros.co.uk/product/mango-ghost-pepper-gummies/
+2026-08-31 21:14:54,687 - INFO - Shutting down workers...
+2026-08-31 21:14:54,759 - INFO - [TRACK A] Harvester 停止...

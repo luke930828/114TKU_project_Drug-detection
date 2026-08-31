@@ -4,16 +4,23 @@ Record 目錄約定（精簡版）：
   log_24h.txt      24H 雙軌運行紀錄
   log_manual.txt   手動爬紀錄
   visited.txt      所有探訪過的網址 + 時間
-  images.json      截圖／商品圖 base64
-  nlp_text.json    NLP／頁面文字與評分摘要
+  images.jsonl     圖片紀錄摘要（不含 base64；JSONL 追加）
+  nlp_text.jsonl   NLP／評分摘要（不含全文；JSONL 追加）
   queue.db / monitor_state.db  佇列（SQLite，非 JSON）
 """
+from __future__ import annotations
+
 import json
+import logging
 import os
 import shutil
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
+# 單一 JSONL 超過此大小則輪替（預設 32 MB）
+DEFAULT_JSONL_MAX_BYTES = 32 * 1024 * 1024
+# 輪替後最多保留幾個 .1 .2 ... 舊檔
+DEFAULT_JSONL_BACKUP_COUNT = 3
 
 DEFAULT_RECORD_PATHS: Dict[str, Any] = {
     "dir": "Record",
@@ -22,11 +29,13 @@ DEFAULT_RECORD_PATHS: Dict[str, Any] = {
     "log_24h": "Record/log_24h.txt",
     "log_manual": "Record/log_manual.txt",
     "log_visited": "Record/visited.txt",
-    "json_images": "Record/images.json",
-    "json_nlp_text": "Record/nlp_text.json",
+    "json_images": "Record/images.jsonl",
+    "json_nlp_text": "Record/nlp_text.jsonl",
+    "jsonl_max_bytes": DEFAULT_JSONL_MAX_BYTES,
+    "jsonl_backup_count": DEFAULT_JSONL_BACKUP_COUNT,
     # 相容舊鍵（導向新檔，避免舊程式炸）
-    "json_reports": "Record/nlp_text.json",
-    "json_reports_jsonl": "Record/nlp_text.json",
+    "json_reports": "Record/nlp_text.jsonl",
+    "json_reports_jsonl": "Record/nlp_text.jsonl",
     "json_dedup_urls": "Record/dedup_urls.json",
     "json_dedup_images": "Record/dedup_images.json",
     "json_webhook_failed": "Record/log_24h.txt",
@@ -37,7 +46,7 @@ DEFAULT_RECORD_PATHS: Dict[str, Any] = {
     "log_dirs": {},
 }
 
-# 啟動時可刪／歸檔的雜訊檔
+# 啟動時可刪／歸檔的雜訊檔（含舊版整包 JSON，避免再被讀爆記憶體）
 OBSOLETE_NAMES = (
     "operation_v2.log",
     "operation_v2.log.1",
@@ -59,6 +68,9 @@ OBSOLETE_NAMES = (
     "seen_images.json",
     "visited_all.txt",
     "README.txt",
+    # INFRA-02：舊的整檔 JSON（可能數百 MB～GB）
+    "images.json",
+    "nlp_text.json",
 )
 
 OBSOLETE_DIRS = (
@@ -108,7 +120,128 @@ def append_visited(
     append_text_line(path, " ".join(parts))
 
 
+def _rotate_file_if_needed(
+    path: str,
+    *,
+    max_bytes: int = DEFAULT_JSONL_MAX_BYTES,
+    backup_count: int = DEFAULT_JSONL_BACKUP_COUNT,
+) -> None:
+    """超過上限則 images.jsonl -> images.jsonl.1 -> ...，刪最舊。"""
+    try:
+        if max_bytes <= 0 or not os.path.isfile(path):
+            return
+        if os.path.getsize(path) < max_bytes:
+            return
+        # 刪最舊
+        oldest = f"{path}.{backup_count}"
+        if os.path.isfile(oldest):
+            os.remove(oldest)
+        for i in range(backup_count - 1, 0, -1):
+            src = f"{path}.{i}"
+            dst = f"{path}.{i + 1}"
+            if os.path.isfile(src):
+                os.replace(src, dst)
+        os.replace(path, f"{path}.1")
+        logging.info(f"[Record] 已輪替過大檔案: {path} (>{max_bytes} bytes)")
+    except OSError as e:
+        logging.warning(f"[Record] 輪替失敗 {path}: {e}")
+
+
+def append_jsonl_record(
+    path: str,
+    record: Dict[str, Any],
+    *,
+    max_bytes: int = DEFAULT_JSONL_MAX_BYTES,
+    backup_count: int = DEFAULT_JSONL_BACKUP_COUNT,
+) -> None:
+    """一行一筆 JSON，只追加、不整檔重寫。"""
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    _rotate_file_if_needed(path, max_bytes=max_bytes, backup_count=backup_count)
+    line = json.dumps(record, ensure_ascii=False, separators=(",", ":"))
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(line + "\n")
+
+
+def _jsonl_limits(paths: Dict[str, Any]) -> tuple[int, int]:
+    max_bytes = int(paths.get("jsonl_max_bytes") or DEFAULT_JSONL_MAX_BYTES)
+    backup_count = int(paths.get("jsonl_backup_count") or DEFAULT_JSONL_BACKUP_COUNT)
+    return max_bytes, max(1, backup_count)
+
+
+def slim_images_record(record: Dict[str, Any]) -> Dict[str, Any]:
+    """去掉 base64，只留摘要（Webhook／MySQL 已有完整圖）。"""
+    products = record.get("product_images") or record.get("product_images_b64") or []
+    filenames: List[str] = []
+    if isinstance(products, list):
+        for i, item in enumerate(products, start=1):
+            if isinstance(item, dict):
+                name = str(item.get("filename") or "").strip()
+                filenames.append(name or f"image_{i:02d}")
+            elif isinstance(item, str) and item.strip():
+                filenames.append(f"image_{i:02d}")
+    has_shot = bool(
+        (record.get("screenshot_b64") or "").strip()
+        or (record.get("full_screenshot_base64") or "").strip()
+        or record.get("has_screenshot")
+    )
+    return {
+        "timestamp": record.get("timestamp") or _now(),
+        "url": record.get("url") or "",
+        "tier": record.get("tier", ""),
+        "score": record.get("score", 0),
+        "has_screenshot": has_shot,
+        "product_image_count": len(filenames),
+        "product_filenames": filenames[:30],
+        "source": record.get("source") or "24H",
+    }
+
+
+def slim_nlp_record(record: Dict[str, Any]) -> Dict[str, Any]:
+    """去掉大段全文，只留評分／關鍵字摘要。"""
+    text = record.get("text_content")
+    text_len = len(text) if isinstance(text, str) else int(record.get("text_len") or 0)
+    matched = record.get("matched") or record.get("keywords") or []
+    if not isinstance(matched, list):
+        matched = []
+    fps = record.get("fingerprints") or []
+    if not isinstance(fps, list):
+        fps = []
+    return {
+        "timestamp": record.get("timestamp") or _now(),
+        "url": record.get("url") or "",
+        "tier": record.get("tier", ""),
+        "score": record.get("score", 0),
+        "matched": [str(k) for k in matched if str(k).strip()][:50],
+        "fingerprints": [str(f) for f in fps if str(f).strip()][:20],
+        "text_len": text_len,
+        "source": record.get("source") or "24H",
+    }
+
+
+def append_images_record(paths: Dict[str, Any], record: Dict[str, Any]) -> None:
+    path = paths.get("json_images", "Record/images.jsonl")
+    max_bytes, backup_count = _jsonl_limits(paths)
+    append_jsonl_record(
+        path,
+        slim_images_record(record),
+        max_bytes=max_bytes,
+        backup_count=backup_count,
+    )
+
+
+def append_nlp_record(paths: Dict[str, Any], record: Dict[str, Any]) -> None:
+    path = paths.get("json_nlp_text", "Record/nlp_text.jsonl")
+    max_bytes, backup_count = _jsonl_limits(paths)
+    append_jsonl_record(
+        path,
+        slim_nlp_record(record),
+        max_bytes=max_bytes,
+        backup_count=backup_count,
+    )
+
+
 def _load_json_list(path: str) -> List[Dict[str, Any]]:
+    """相容舊整包 JSON array（遷移腳本用）；勿對巨大檔呼叫。"""
     if not os.path.isfile(path):
         return []
     try:
@@ -120,23 +253,10 @@ def _load_json_list(path: str) -> List[Dict[str, Any]]:
 
 
 def _save_json_list(path: str, items: List[Dict[str, Any]]) -> None:
+    """相容舊寫法；新路徑請用 append_jsonl_record。"""
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(items, f, indent=2, ensure_ascii=False)
-
-
-def append_images_record(paths: Dict[str, Any], record: Dict[str, Any]) -> None:
-    path = paths.get("json_images", "Record/images.json")
-    items = _load_json_list(path)
-    items.append(record)
-    _save_json_list(path, items)
-
-
-def append_nlp_record(paths: Dict[str, Any], record: Dict[str, Any]) -> None:
-    path = paths.get("json_nlp_text", "Record/nlp_text.json")
-    items = _load_json_list(path)
-    items.append(record)
-    _save_json_list(path, items)
 
 
 def cleanup_obsolete_record_files(paths: Dict[str, Any], *, force: bool = False) -> List[str]:
@@ -165,8 +285,14 @@ def cleanup_obsolete_record_files(paths: Dict[str, Any], *, force: bool = False)
             continue
         if os.path.isfile(p):
             try:
+                size_mb = os.path.getsize(p) / (1024 * 1024)
                 os.remove(p)
                 removed.append(name)
+                if size_mb >= 10:
+                    logging.warning(
+                        f"[Record] 已刪除過大舊檔 {name} ({size_mb:.1f} MB)，"
+                        f"改用 JSONL 追加寫入"
+                    )
             except OSError:
                 pass
 
@@ -192,11 +318,12 @@ def _write_readme(paths: Dict[str, Any]) -> None:
             "  log_24h.txt       24H 雙軌運行紀錄\n"
             "  log_manual.txt    手動爬紀錄\n"
             "  visited.txt       所有探訪網址 + 時間\n"
-            "  images.json       截圖／商品圖 base64\n"
-            "  nlp_text.json     頁面文字／評分（NLP 用）\n"
+            "  images.jsonl      圖片摘要（無 base64，JSONL 追加）\n"
+            "  nlp_text.jsonl    評分／關鍵字摘要（無全文，JSONL 追加）\n"
             "  monitor_state.db  24H 佇列（SQLite）\n"
             "  queue.db          手動／共用佇列（若有）\n"
             "\n"
+            "完整截圖／商品圖請以後端 MySQL／Webhook 為準，勿再整包存本地 JSON。\n"
             "舊資料遷移（僅手動）：python migrate_record_legacy.py\n"
         )
 
@@ -209,11 +336,12 @@ def ensure_record_layout(config: Dict[str, Any] | None = None) -> Dict[str, Any]
         p = paths[key]
         if not os.path.isfile(p):
             append_text_line(p, f"# {_now()} created\n")
+    # JSONL：不預先寫空陣列；檔案不存在時第一次 append 會建立
     for key in ("json_images", "json_nlp_text"):
         p = paths[key]
-        if not os.path.isfile(p):
-            _save_json_list(p, [])
-    # 不在啟動時 migrate；也不寫「已清理」到 log_24h
+        parent = os.path.dirname(p) or "."
+        os.makedirs(parent, exist_ok=True)
+    # 不在啟動時 migrate；清掉舊的巨大 images.json / nlp_text.json
     cleanup_obsolete_record_files(paths)
     if not os.path.isfile(os.path.join(paths["dir"], "README.txt")):
         _write_readme(paths)
