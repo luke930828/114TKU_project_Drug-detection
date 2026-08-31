@@ -233,3 +233,32 @@ def test_record_file_does_not_store_base64():
     for field in ("url", "timestamp"):
         assert slim.get(field), f"瘦身後遺失 {field}，紀錄就失去追溯價值了"
 
+
+@known_vuln("INFRA-05")
+def test_services_disable_core_dumps():
+    """
+    每個服務都要設 ulimits.core: 0。
+
+    WSL 的 core_pattern 是 |/wsl-capture-crash，導向管線時核心不套用
+    RLIMIT_CORE 的大小上限，崩潰的行程會把整個位址空間寫出來。
+    2026-08-31 Chromium 崩一次寫了 172 GB（370 MB/s），8/29 那次 191.7 GB。
+    """
+    compose = REPO / "deploy/docker-compose.yml"
+    if not compose.exists():
+        pytest.skip("找不到 docker-compose.yml")
+    import yaml
+    conf = yaml.safe_load(compose.read_text(encoding="utf-8"))
+
+    missing = []
+    for name, svc in (conf.get("services") or {}).items():
+        core = ((svc.get("ulimits") or {}).get("core"))
+        if isinstance(core, dict):
+            core = core.get("hard", core.get("soft"))
+        if core != 0:
+            missing.append(name)
+
+    assert not missing, (
+        "這些服務沒有關閉 core dump：" + "、".join(missing)
+        + "\n崩潰時會寫出跟記憶體一樣大的傾印檔，WSL 上沒有大小上限。"
+    )
+

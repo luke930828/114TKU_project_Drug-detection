@@ -366,3 +366,20 @@ VULNS["INFRA-04"] = dict(
         "另外整頁截圖（screenshot_b64）後端從來沒收，記錄檔是唯一一份，"
         "換格式前務必先把舊檔備份出來。",
 )
+
+VULNS["INFRA-05"] = dict(
+    severity=HIGH,
+    title="容器沒有關閉 core dump，Chromium 崩一次寫出 172 GB",
+    where="deploy/docker-compose.yml（ulimits）",
+    impact="WSL 的 /proc/sys/kernel/core_pattern 是 |/wsl-capture-crash。"
+           "core_pattern 導向管線時，核心不會套用 RLIMIT_CORE 的大小上限，"
+           "所以一個崩潰的行程會把整個位址空間寫成傾印檔，沒有任何煞車。"
+           "2026-08-31 爬蟲的 Chromium 崩潰，傾印檔以 370 MB/s 成長，"
+           "七分鐘寫到 172 GB，C 槽從 580 GB 可用掉到 366 GB——"
+           "再 26 分鐘就會塞爆整顆磁碟。2026-08-29 那次是 191.7 GB，"
+           "當時直接把 Docker Desktop 弄掛。"
+           "兩次都不是崩潰本身造成災難，是沒有上限的傾印檔。",
+    fix="compose 每個服務加 ulimits.core: 0。管線模式下 RLIMIT_CORE=0 是核心的"
+        "特例判斷（do_coredump 會直接 goto fail），所以這一行真的擋得掉。"
+        "這是止血，不是修好崩潰本身——Chromium 為什麼崩要另外查。",
+)

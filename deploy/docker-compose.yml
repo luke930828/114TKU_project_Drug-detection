@@ -8,6 +8,12 @@ services:
   mysql:
     image: mysql:8.0
     restart: unless-stopped
+    ulimits:
+      # 不要產生 core dump。WSL 的 core_pattern 是 |/wsl-capture-crash，
+      # 導向管線時核心不套用大小上限——Chromium 崩一次就寫出 172 GB
+      # （2026-08-31，370 MB/s；8/29 那次是 191.7 GB）。
+      # 管線模式下 RLIMIT_CORE=0 是特例，核心會直接跳過不 dump。
+      core: 0
     environment:
       TZ: Asia/Taipei
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-${DB_PASSWORD}}
@@ -50,6 +56,12 @@ services:
       context: ../modules/backend
       dockerfile: Dockerfile
     restart: unless-stopped
+    ulimits:
+      # 不要產生 core dump。WSL 的 core_pattern 是 |/wsl-capture-crash，
+      # 導向管線時核心不套用大小上限——Chromium 崩一次就寫出 172 GB
+      # （2026-08-31，370 MB/s；8/29 那次是 191.7 GB）。
+      # 管線模式下 RLIMIT_CORE=0 是特例，核心會直接跳過不 dump。
+      core: 0
     environment:
       TZ: Asia/Taipei
       DB_HOST: mysql
@@ -93,6 +105,12 @@ services:
       context: ../modules/crawler
       dockerfile: Dockerfile
     restart: unless-stopped
+    ulimits:
+      # 不要產生 core dump。WSL 的 core_pattern 是 |/wsl-capture-crash，
+      # 導向管線時核心不套用大小上限——Chromium 崩一次就寫出 172 GB
+      # （2026-08-31，370 MB/s；8/29 那次是 191.7 GB）。
+      # 管線模式下 RLIMIT_CORE=0 是特例，核心會直接跳過不 dump。
+      core: 0
     environment:
       TZ: Asia/Taipei
       #  這幾個目前這個模組還沒真的讀，位址是寫在 app/config.json 的
@@ -123,6 +141,12 @@ services:
       context: ../modules/nlp
       dockerfile: Dockerfile
     restart: unless-stopped
+    ulimits:
+      # 不要產生 core dump。WSL 的 core_pattern 是 |/wsl-capture-crash，
+      # 導向管線時核心不套用大小上限——Chromium 崩一次就寫出 172 GB
+      # （2026-08-31，370 MB/s；8/29 那次是 191.7 GB）。
+      # 管線模式下 RLIMIT_CORE=0 是特例，核心會直接跳過不 dump。
+      core: 0
     environment:
       TZ: Asia/Taipei
       MODEL_ID: ${MODEL_ID:-matt0513/drug-detection-xlm-roberta}
@@ -147,6 +171,12 @@ services:
       context: ../modules/yolo
       dockerfile: Dockerfile
     restart: unless-stopped
+    ulimits:
+      # 不要產生 core dump。WSL 的 core_pattern 是 |/wsl-capture-crash，
+      # 導向管線時核心不套用大小上限——Chromium 崩一次就寫出 172 GB
+      # （2026-08-31，370 MB/s；8/29 那次是 191.7 GB）。
+      # 管線模式下 RLIMIT_CORE=0 是特例，核心會直接跳過不 dump。
+      core: 0
     environment:
       TZ: Asia/Taipei
       BACKEND_BASE_URL: http://backend:8000
@@ -174,6 +204,12 @@ services:
 
   # ---------------- 前端 ----------------
   frontend:
+    ulimits:
+      # 不要產生 core dump。WSL 的 core_pattern 是 |/wsl-capture-crash，
+      # 導向管線時核心不套用大小上限——Chromium 崩一次就寫出 172 GB
+      # （2026-08-31，370 MB/s；8/29 那次是 191.7 GB）。
+      # 管線模式下 RLIMIT_CORE=0 是特例，核心會直接跳過不 dump。
+      core: 0
     environment:
       TZ: Asia/Taipei      # nginx 的 access log 也用本機時間
     build:
