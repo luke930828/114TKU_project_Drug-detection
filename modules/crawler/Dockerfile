@@ -10,7 +10,11 @@ FROM mcr.microsoft.com/playwright/python:v1.42.0-jammy
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl tzdata \
+# tzdata 一定要配 DEBIAN_FRONTEND=noninteractive：它的 postinst 會跳出
+# 「Please select the geographic area」的互動選單，在 build 裡沒有人回答，
+# 整個 build 就無聲地卡在那裡——看起來像編譯很慢，其實是在等輸入。
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl tzdata \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
