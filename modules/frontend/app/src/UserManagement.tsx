@@ -74,6 +74,7 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
   const [department, setDepartment] = useState("");
   const [saving, setSaving] = useState(false);
   const [auditLogs, setAuditLogs] = useState<AuditLogRecord[]>([]);
+  const LOGS_PER_PAGE = 20;
   const [logsPage, setLogsPage] = useState(1);
   const [logsTotalPages, setLogsTotalPages] = useState(1);
   const [logsTotalCount, setLogsTotalCount] = useState(0);
@@ -121,7 +122,10 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
   const loadAuditLogs = useCallback(async (page = 1) => {
     setLogsLoading(true);
     try {
-      const response = await authFetch(`/api/users/audit-logs?page=${page}&limit=100`);
+      // 一頁 20 筆。原本是 100——換頁控制項只在 total_pages > 1 時才顯示，
+      // 而稽核日誌長期不到 100 筆，等於分頁做了卻永遠看不到，
+      // 而且一次吐 100 筆要一直往下捲。
+      const response = await authFetch(`/api/users/audit-logs?page=${page}&limit=${LOGS_PER_PAGE}`);
       if (!response.ok) await handleResponseError(response);
 
       const payload = (await response.json()) as unknown;
