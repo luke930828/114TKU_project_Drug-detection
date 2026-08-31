@@ -21,3 +21,4 @@ clean_data.py
 User_Profile/ 
 testjpg/ 
 venv/ 
+.venv/ 
