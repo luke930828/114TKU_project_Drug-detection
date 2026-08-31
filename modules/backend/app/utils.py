@@ -37,7 +37,15 @@ def calculate_multimodal_risk_100_scale(nlp_raw_score: int, yolo_raw_score: int)
         risk_level = "極高風險"                      # 兩個引擎都指向毒品
     elif nlp_raw_score >= NLP_HIGH:
         risk_level = "高風險 (優先人工覆核)"          # 文字確定，影像沒東西可看
-    elif nlp_raw_score >= NLP_MEDIUM or yolo_raw_score >= NLP_HIGH:
+    # 舊寫法（勿用）：... or yolo_raw_score >= NLP_HIGH
+    # 上面才剛說「YOLO 不參與要不要覆核的判定」，這一行卻讓 YOLO 單獨把東西
+    # 推進覆核清單，是當初漏改的。實測代價很大：
+    #   線上資料 中風險 155 筆，其中 121 筆（78%）是這條觸發的，那批 nlp 平均 0 分
+    #   217 筆人工標註裡符合這條的有 12 筆，真陽性 0 個，命中率 0%
+    #   拿掉之後少標 12 筆，漏掉的真毒品網站是 0 個
+    # 也就是說它只產生誤報。YOLO 在乾淨的商品照上很容易把保健食品、化妝品、
+    # 食品看成毒品，而文字完全沒有訊號時那幾乎一定是誤判。
+    elif nlp_raw_score >= NLP_MEDIUM:
         risk_level = "中風險 (建議人工覆核)"
     else:
         risk_level = "低風險"
