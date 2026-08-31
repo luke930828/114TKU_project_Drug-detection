@@ -346,3 +346,23 @@ VULNS["ML-02"] = dict(
         "（SITEWIDE、FREE SHIPPING、MONDAY–FRIDAY），六個網頁裡三個變差，"
         "所以是列表過濾而不是改計分方式。",
 )
+
+VULNS["INFRA-04"] = dict(
+    severity=MEDIUM,
+    title="爬蟲把商品圖 base64 在記錄檔裡再存一份，磁碟成長 45 MB/分",
+    where="modules/crawler/app/record_paths.py（slim_images_record / slim_nlp_record）",
+    impact="商品圖在 receive_crawler_raw_data 已經寫進 suspect_websites.images_data"
+           "（routers/crawler.py:78），記錄檔裡是同一份資料的第二份。"
+           "實測 219 筆的組成：product_images 426.8 MB（92.5%）、"
+           "screenshot_b64 17.4 MB（3.8%）、full_screenshot_base64 17.4 MB（3.8%）。"
+           "實機量到 images.json 五分鐘長 223 MB，約 45 MB/分、一小時 2.7 GB。"
+           "記錄檔改成 JSONL（INFRA-02）之後記憶體不再成長，但磁碟照樣會被塞爆——"
+           "那是兩個不同的問題。",
+    fix="記錄檔只留摘要（網址、時間、分級、圖片檔名、有沒有截圖），base64 一律不寫；"
+        "再配合 JSONL 檔案輪替（jsonl_max_bytes / jsonl_backup_count）控制總量。"
+        "實測 713 MB + 89 MB 的舊檔轉成摘要後只剩 0.35 MB + 0.60 MB，1321 筆完整保留。"
+        "代價是記錄檔不再兼任「webhook 送失敗時的本機備份」——2026-08-31 三個 volume "
+        "消失時就是靠它救回 4665 張商品圖，所以 make backup 要確實執行。"
+        "另外整頁截圖（screenshot_b64）後端從來沒收，記錄檔是唯一一份，"
+        "換格式前務必先把舊檔備份出來。",
+)

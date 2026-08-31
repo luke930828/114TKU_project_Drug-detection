@@ -178,3 +178,58 @@ def test_nlp_keywords_are_whole_words_not_subwords():
         missing.append("attention 仍對全部層取平均，前段的均勻分布會稀釋後段訊號")
 
     assert not missing, "NLP 關鍵字抽取仍有問題：\n  " + "\n  ".join(missing)
+
+
+@known_vuln("INFRA-04")
+def test_record_file_does_not_store_base64():
+    """
+    寫進記錄檔的圖片紀錄不可以含 base64。
+
+    商品圖後端已經存進 suspect_websites.images_data（routers/crawler.py:78），
+    記錄檔再存一份是重複的，而且佔了 images.json 的 92.5%
+    （實測 219 筆：426.8 MB / 461.5 MB，磁碟成長 45 MB/分）。
+
+    直接呼叫 slim_images_record 驗行為，不去檢查呼叫端怎麼寫——瘦身放在
+    record_paths 內部或呼叫端都可以，重點是 base64 不能落到檔案裡。
+    record_paths.py 只 import 標準函式庫，測試環境不需要爬蟲的相依套件。
+    """
+    import json as _json
+    import sys as _sys
+
+    app_dir = REPO / "modules/crawler/app"
+    if not (app_dir / "record_paths.py").exists():
+        pytest.skip("找不到 record_paths.py")
+    _sys.path.insert(0, str(app_dir))
+    try:
+        import record_paths
+    finally:
+        _sys.path.remove(str(app_dir))
+
+    assert hasattr(record_paths, "slim_images_record"), (
+        "record_paths 沒有 slim_images_record——圖片紀錄沒有經過瘦身"
+    )
+
+    shot, full, prod, raw = "A" * 500, "B" * 500, "C" * 500, "D" * 500
+    slim = record_paths.slim_images_record({
+        "timestamp": "2026-08-31 00:00:00",
+        "url": "https://itest.invalid/",
+        "tier": "HIGH",
+        "score": 100,
+        "screenshot_b64": shot,
+        "full_screenshot_base64": full,
+        "product_images": [{"filename": "a.jpg", "base64_data": prod}, raw],
+    })
+    blob = _json.dumps(slim, ensure_ascii=False)
+
+    leaked = [name for name, val in
+              (("screenshot_b64", shot), ("full_screenshot_base64", full),
+               ("product_images[].base64_data", prod), ("product_images[] 純字串", raw))
+              if val[:100] in blob]
+    assert not leaked, (
+        "這些 base64 仍然會被寫進記錄檔：" + "、".join(leaked)
+        + f"\n瘦身後的內容：{blob[:200]}"
+    )
+
+    for field in ("url", "timestamp"):
+        assert slim.get(field), f"瘦身後遺失 {field}，紀錄就失去追溯價值了"
+
