@@ -128,6 +128,7 @@ class YOLOAnalysisReport(BaseModel):
     class_metadata: Optional[Dict[str, Any]] = None  # 每個類別獨立的 count / max_confidence，來自 api_server.py 的視覺計分模組
     representative_image_base64: Optional[str] = None  # 這批圖片裡分數最高的那張代表圖，供前端畫框展示
     representative_image_detections: Optional[List[Dict[str, Any]]] = None  # 代表圖對應的偵測框：[{class_name, confidence, box:[x1,y1,x2,y2]（0~1 正規化座標）}]
+    ocr_results: Optional[Dict[str, Any]] = None  # {engine, detected_texts:[{text, confidence, box_format, box}]}，整批每張圖 OCR 抓到的文字彙整
 
 class NLPAnalysisReport(BaseModel):
     url: str
@@ -411,6 +412,7 @@ def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends
         existing_record.class_metadata = report.class_metadata
         existing_record.representative_image_base64 = report.representative_image_base64
         existing_record.representative_image_detections = report.representative_image_detections
+        existing_record.ocr_results = report.ocr_results
 
         current_nlp_score = existing_record.nlp_score or 0
         nlp_keywords = parse_stored_list(existing_record.nlp_details)
@@ -431,6 +433,7 @@ def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends
                 class_metadata=report.class_metadata,
                 representative_image_base64=report.representative_image_base64,
                 representative_image_detections=report.representative_image_detections,
+                ocr_results=report.ocr_results,
                 nlp_details="文字分析中...",
                 nlp_score=0,
                 risk_score=final_score,
@@ -449,6 +452,7 @@ def receive_ai_analysis_result(report: YOLOAnalysisReport, db: Session = Depends
                 real_existing.class_metadata = report.class_metadata
                 real_existing.representative_image_base64 = report.representative_image_base64
                 real_existing.representative_image_detections = report.representative_image_detections
+                real_existing.ocr_results = report.ocr_results
                 current_nlp_score = real_existing.nlp_score or 0
                 nlp_keywords = parse_stored_list(real_existing.nlp_details)
                 final_score, level = calculate_multimodal_risk_100_scale(current_nlp_score, real_existing.yolo_score, nlp_keywords, report.yolo_objects)

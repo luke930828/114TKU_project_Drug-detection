@@ -1,7 +1,18 @@
 import base64
 import os
+import sys
 import threading
 from pathlib import Path
+
+# 1) Windows 主控台預設可能是 cp950/cp936 這類非 UTF-8 編碼，print() 印到 emoji（例如 ⚠️❌）會直接
+#    UnicodeEncodeError 炸掉——而且這個炸裂還會發生在 except 區塊自己的錯誤訊息裡，導致真正的錯誤被吃掉。
+# 2) line_buffering=True 是真正關鍵：只要 stdout 被導到檔案/管線（不是互動式終端機，log 蒐集一定是這樣），
+#    Python 預設會整段 buffer 起來，print() 不會馬上寫進 log，看起來就像背景任務卡住/沒反應——
+#    其實程式早就跑完了，只是訊息還沒被沖出來。強制 line-buffering 確保每一行 print 立刻可見。
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", line_buffering=True)
 
 import cv2
 import numpy as np
@@ -17,6 +28,7 @@ from ai_model.scoring import (
     new_class_metadata,
     record_detection,
 )
+from ai_model.ocr import extract_texts, load_ocr_reader
 
 app = FastAPI(title="防毒軟體 - YOLO 影像分析部門 API")
 
@@ -30,6 +42,20 @@ try:
     print("🚨 模型內部真正的 ID 對應是：", model.names)
 except Exception as e:
     print(f"🚨 [錯誤] 模型載入失敗，請確認 {MODEL_PATH} 是否存在！錯誤: {e}")
+
+# 1b. 載入 OCR 引擎（EasyOCR，繁中+英文）。跟 YOLO 模型一樣：失敗就設成 None，不讓服務直接掛掉，
+# /health 會照實回報有沒有載成功，OCR 掛了不影響 YOLO 那邊的計分邏輯繼續運作（解耦設計）。
+#
+# 🌟 刻意用 CPU（gpu=False）不跟 YOLO 搶 GPU：這張卡只有 4GB 顯存，實測過 YOLO + EasyOCR 同時用 GPU，
+# EasyOCR 的文字偵測模型會在推論時噴 "RuntimeError: bad allocation"（顯存不夠的錯誤，
+# 跟訓練時遇到的 ptxas/CUDA allocation 問題是同一類）。OCR 是背景批次工作，不像即時串流那樣在乎速度，
+# CPU 跑一張圖大約 2 秒，換來穩定不會跟 YOLO 搶顯存，這個取捨划算。
+ocr_reader = None
+try:
+    ocr_reader = load_ocr_reader(gpu=False)
+    print("🎉 [成功] EasyOCR（繁中+英文，CPU 模式）已順利載入！")
+except Exception as e:
+    print(f"🚨 [錯誤] OCR 引擎載入失敗，本次啟動將不含文字擷取功能！錯誤: {e}")
 
 # 2. 用「類別名稱」而非數字 ID 對齊 16 個 YOLO 類別，權重與組合加成定義於 ai_model/scoring.py
 # 用名稱比對可以在模型重新訓練、ID 洗牌時依然正確對齊，達成計分邏輯與模型 ID 的解耦。
@@ -103,15 +129,16 @@ def decode_base64_to_cv2(b64_data, task_id: str):
 # 5. 核心非同步工廠：偷偷在背景算 YOLO，全部圖片到齊後才打電話給後端
 def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_images: int):
     print(f"\n[🔥 影像分析啟動] 正在處理任務: {task_id}")
-    
+
     batch_id = task_id.split("_")[0] if "_" in task_id else task_id
-    
+
     try:
         # 解碼圖片
         img, cleaned_b64 = decode_base64_to_cv2(image_base64, task_id)
 
         current_class_metadata = new_class_metadata()
         current_detections = []  # 給前端畫框用的原始偵測清單，跟 class_metadata 分開、不受權重表過濾
+        current_ocr_texts = []   # 這張圖 OCR 抓到的文字，跟 YOLO 偵測獨立、不影響視覺分數
         current_score = 0
         is_valid = False
         visual_result = {"top_class": None, "triggered_combo": None}
@@ -136,6 +163,7 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
                     current_detections.append({
                         "class_name": actual_name,
                         "confidence": round(conf, 4),
+                        "box_format": "xyxyn",
                         "box": [round(x1, 4), round(y1, 4), round(x2, 4), round(y2, 4)],
                     })
 
@@ -143,6 +171,10 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
             visual_result = compute_visual_risk(current_class_metadata)
             current_score = visual_result["visual_score"]
             is_valid = bool(current_class_metadata)
+
+            # OCR 對每一張圖都跑，不像代表圖只挑分數最高的那張——文字可能出現在任何一張圖上
+            # （例如成分標示可能跟主要違禁品照片不是同一張），漏跑非代表圖會漏掉這些文字
+            current_ocr_texts = extract_texts(ocr_reader, img)
 
         # 這張圖要「有資格」被選為代表圖，本身至少要有一個框信心度夠高（避免整張圖全靠雜訊撐分數）；
         # 一旦有資格，實際畫出來的框則是「信心度夠高」加上「分數的解釋依據」（見 select_visible_detections）
@@ -157,6 +189,7 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
         batch_class_metadata = {}
         representative_image_base64 = None
         representative_image_detections = []
+        batch_ocr_texts = []
 
         # -----------------------------------------------------------------
         # 🌟 核心記憶體統整算式：使用 Lock 確保多執行緒累加安全
@@ -170,6 +203,7 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
                     "best_display_score": 0,          # 只從「有畫得出框」的圖片裡比分數，跟批次總分是兩件事
                     "best_display_image_base64": None, # 只留分數最高那張代表圖，給前端畫框用，不是每張圖都存
                     "best_display_image_detections": [],
+                    "ocr_texts": [],                  # 整批每張圖 OCR 抓到的文字都累加在這裡，不像代表圖只留一張
                 }
 
             # 圖片處理計數器 +1
@@ -179,6 +213,10 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
             if is_valid:
                 BATCH_MEMORY[batch_id]["valid_image_count"] += 1
                 merge_class_metadata(BATCH_MEMORY[batch_id]["class_metadata"], current_class_metadata)
+
+            # OCR 文字不分是不是代表圖，整批每張圖抓到的都累加進來
+            if current_ocr_texts:
+                BATCH_MEMORY[batch_id]["ocr_texts"].extend(current_ocr_texts)
 
             # 代表圖只從「至少有一個框信心度夠高、畫得出來」的圖片裡挑分數最高的，
             # 避免選到一張分數是靠低信心度雜訊框撐起來、濾掉框之後畫面空空如也的圖
@@ -198,6 +236,7 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
                 batch_class_metadata = BATCH_MEMORY[batch_id]["class_metadata"]
                 representative_image_base64 = BATCH_MEMORY[batch_id]["best_display_image_base64"]
                 representative_image_detections = BATCH_MEMORY[batch_id]["best_display_image_detections"]
+                batch_ocr_texts = BATCH_MEMORY[batch_id]["ocr_texts"]
 
                 # 🌟 批次分數：把整批圖片合併成「一份」類別證據（每個類別取全批最高信心度），
                 # 直接套用跟單張圖一樣的存在即採計＋組合加成公式，不再對每張圖的分數取平均。
@@ -227,6 +266,10 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
                 "is_valid_drug": is_valid_drug_payload,
                 "representative_image_base64": representative_image_base64, # 這批圖片裡分數最高的代表圖，供前端畫框展示
                 "representative_image_detections": representative_image_detections, # 代表圖對應的偵測框（0~1 正規化座標）
+                "ocr_results": {
+                    "engine": "easyocr",
+                    "detected_texts": batch_ocr_texts,  # 整批每張圖抓到的文字彙整，不是只有代表圖那一張
+                },
             }
 
             print(f"\n[🚀 批次全數到齊！] 正在發送最終結算報告給後端。批次: {batch_id}")
@@ -250,7 +293,7 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
 # 7. 健康檢查：讓 docker-compose 之類的編排工具知道這個模組是不是真的活了（模型有沒有載完）
 @app.get("/health")
 def health():
-    return {"status": "ok", "model_loaded": model is not None}
+    return {"status": "ok", "model_loaded": model is not None, "ocr_loaded": ocr_reader is not None}
 
 
 # 8. 接收口

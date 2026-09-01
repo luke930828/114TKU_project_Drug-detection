@@ -83,3 +83,4 @@ class AIAnalysisResult(Base):
     # 前端畫框用：只保留這批圖片裡分數最高的那張代表圖（不是每張圖都存），LONGTEXT 是因為 base64 圖片常超過 TEXT 的 64KB 上限
     representative_image_base64 = Column(LONGTEXT, nullable=True)
     representative_image_detections = Column(JSON, nullable=True)  # [{"class_name","confidence","box":[x1,y1,x2,y2] 皆為 0~1 正規化座標}]
+    ocr_results = Column(JSON, nullable=True)  # {"engine":"easyocr","detected_texts":[{"text","confidence","box_format","box"}]}，整批每張圖彙整
