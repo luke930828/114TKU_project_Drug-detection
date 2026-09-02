@@ -42,6 +42,7 @@ interface ResultType {
   score: number;
   caseNumber: string;
   nlpKeywords: string[];
+  hasRepresentativeImage: boolean;
   representativeImageBase64: string | null;
   representativeImageDetections: RepresentativeDetection[];
 }
@@ -141,6 +142,10 @@ const normalizeResult = (value: unknown, index: number): ResultType | null => {
     nlpKeywords: normalizeKeywords(
       value.nlp_details
     ),
+    hasRepresentativeImage:
+      value.has_representative_image === true ||
+      (typeof value.representative_image_base64 === "string" &&
+        value.representative_image_base64.trim() !== ""),
     representativeImageBase64:
       typeof value.representative_image_base64 === "string" &&
       value.representative_image_base64.trim()
@@ -155,6 +160,40 @@ const normalizeResult = (value: unknown, index: number): ResultType | null => {
 export function AIDetection({ onBack, onDetectionsLoaded }: Props) {
   const [data, setData] = useState<ResultType[]>([]);
   const [selected, setSelected] = useState<ResultType | null>(null);
+
+  // 代表圖不再夾帶在清單裡——每張 base64 可以到 600 KB，一頁 50 筆就近 10 MB。
+  // 改成點開明細時才去拿那一筆的圖。
+  const openDetail = useCallback(async (item: ResultType) => {
+    setSelected(item);
+    if (!item.hasRepresentativeImage || item.representativeImageBase64) return;
+    try {
+      const response = await authFetch(`/api/crawler/result/${item.id}/image/`);
+      if (!response.ok) return;
+      const payload = (await response.json()) as {
+        representative_image_base64?: unknown;
+        representative_image_detections?: unknown;
+      };
+      const base64 =
+        typeof payload.representative_image_base64 === "string"
+          ? payload.representative_image_base64.replace(/\s/g, "")
+          : "";
+      setSelected((current) =>
+        current && current.id === item.id
+          ? {
+              ...current,
+              representativeImageBase64: base64 || null,
+              representativeImageDetections:
+                normalizeRepresentativeDetections(payload.representative_image_detections),
+            }
+          : current
+      );
+    } catch (requestError) {
+      console.error("[DETAIL_IMAGE_FETCH_FAILED]", {
+        id: item.id,
+        message: requestError instanceof Error ? requestError.message : "未知錯誤",
+      });
+    }
+  }, []);
   const [filterRisk, setFilterRisk] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -341,7 +380,7 @@ export function AIDetection({ onBack, onDetectionsLoaded }: Props) {
                 <button
                   type="button"
                   key={item.id}
-                  onClick={() => setSelected(item)}
+                  onClick={() => openDetail(item)}
                   className="w-full text-left border-2 border-gray-200 p-5 rounded-2xl hover:shadow-lg hover:border-[#2B4C7E] transition"
                 >
                   <div className="min-w-0">

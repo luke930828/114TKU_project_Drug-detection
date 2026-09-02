@@ -53,10 +53,40 @@ def test_export_requires_admin(make_user):
 
 
 @known_vuln("SEC-12")
-def test_automated_list_requires_admin(make_user):
+def test_automated_list_is_bounded_for_normal_staff(make_user):
+    """
+    24 小時清單不限管理員——那是系統主畫面，一般人員要看它才能做事。
+
+    SEC-12 原本把匯出和清單綁在一起，但兩者的風險不一樣：
+      匯出  一次把全部蒐證資料帶走 → 限管理員（見上一個測試）
+      清單  分頁瀏覽，一頁最多 200 筆且不含 base64（SEC-16 修過）
+            → 一般人員可以看，但必須登入且不能無上限地撈
+
+    所以這裡驗的是「有界」而不是「限管理員」。
+    """
     _, _, api = make_user()
+
     r = api.get("/api/crawler/automated_24h_list/")
-    assert r.status_code == 403, "一般人員可以讀取完整的可疑網站清單"
+    assert r.status_code == 200, f"一般人員應該看得到主畫面清單（HTTP {r.status_code}）"
+
+    # 但不能一次撈走整張表
+    r = api.get("/api/crawler/automated_24h_list/", params={"limit": 999999})
+    assert r.status_code in (400, 422), "limit 沒有上限，一般人員可以整包撈走"
+
+    # 也不能靠負數頁碼繞過
+    r = api.get("/api/crawler/automated_24h_list/", params={"page": -1})
+    assert r.status_code in (400, 422), "page 沒有下限"
+
+    # 未登入一律擋掉
+    from conftest import BACKEND
+    import requests as _rq
+    r = _rq.get(f"{BACKEND}/api/crawler/automated_24h_list/", timeout=30)
+    # 422 也算擋掉：get_current_user 的 x_token 是 Header(...)（必填），
+    # 缺 header 時 FastAPI 當成參數驗證錯誤而不是驗證失敗。
+    # 語意上 401 才對，但那是回應碼的問題，不是有沒有擋住的問題。
+    assert r.status_code in (401, 403, 422), (
+        f"未登入也讀得到清單（HTTP {r.status_code}）"
+    )
 
 
 @known_vuln("SEC-13")

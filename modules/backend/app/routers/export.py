@@ -1,4 +1,4 @@
-from dependencies import get_db, get_current_user, log_audit_action
+from dependencies import get_db, get_current_user, verify_admin, log_audit_action
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
@@ -13,8 +13,10 @@ router = APIRouter(tags=["報表匯出模組"])
 def export_raw_results_to_excel(
     start_date: Optional[str] = Query(None, description="開始日期 (YYYY-MM-DD)"),
     end_date: Optional[str] = Query(None, description="結束日期 (YYYY-MM-DD)"),
-    db: Session = Depends(get_db), 
-    current_user = Depends(get_current_user)
+    db: Session = Depends(get_db),
+    # 匯出是把「全部蒐證資料」一次帶走，不是一般查詢——限管理員（SEC-12）。
+    # 原本是 get_current_user，任何登入者都能整包下載。
+    current_user = Depends(verify_admin),
 ): 
     query = db.query(
         database.AIAnalysisResult.id,

@@ -90,15 +90,29 @@ class WhitelistCreate(BaseModel):
 
 #  內部通訊區 
 class WebsiteReport(BaseModel):
-    task_type: Optional[str] = "unknown"  
-    timestamp: Optional[str] = "unknown"  
-    keywords: Optional[List[str]] = []    
-    url: str                             
+    """
+    爬蟲回報的封包。每個欄位都要有長度上限（SEC-16）。
+
+    沒有上限的後果不是理論問題：
+      * task_type 會被組成 suspect_websites.title（String(100)），
+        過長時 MySQL 丟 DataError，整個請求 500，AI 派發也不會發生。
+      * text_content 進 LONGTEXT，nginx 放行 50 MB，等於一個請求就能
+        往資料庫塞 50 MB，連按幾次就把磁碟吃光。
+    上限訂在「資料庫欄位裝得下」而不是「越大越好」。
+    """
+    # title 是 String(100)，格式為 "[{task_type}] 爬蟲自動通報"（多 9 個字），
+    # 留 50 給 task_type 綽綽有餘。
+    task_type: Optional[str] = Field("unknown", max_length=50)
+    timestamp: Optional[str] = Field("unknown", max_length=64)
+    # keywords_found 是 String(500)，逗號串接後會被截斷，這裡先擋住離譜的量。
+    keywords: Optional[List[str]] = Field(default=[], max_length=100)
+    url: str = Field(..., max_length=768)          # suspect_websites.url 是 varchar(768)
     screenshot_b64: Optional[str] = None
     full_screenshot_base64: Optional[str] = None
     product_images_b64: Optional[List[Any]] = None   
     product_images_base64: Optional[List[Any]] = None
-    text_content: Optional[str] = None
+    # 模型只讀前 256 個 token，1 MB 已經遠超過需要；再多只是佔資料庫。
+    text_content: Optional[str] = Field(None, max_length=1_000_000)
 
 class YOLOAnalysisReport(BaseModel):
     url: str

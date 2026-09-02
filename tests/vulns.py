@@ -139,10 +139,14 @@ VULNS = {
     "SEC-12": dict(
         severity=MEDIUM,
         title="一般人員即可匯出全部蒐證資料",
-        where="routers/export.py:14, routers/crawler.py:119",
-        impact="Excel 匯出與 24h 清單只掛 get_current_user，非管理員也能整包帶走。"
-               "這是數位證據系統，不該人人可匯出。",
-        fix="改成 verify_admin，並把匯出動作寫進 audit_logs（見 SEC-17）。",
+        where="routers/export.py:14",
+        impact="Excel 匯出用的是 get_current_user，任何登入者都能把整張 "
+               "ai_analysis_results 下載成檔案帶走。對一個存放毒品案件蒐證資料的"
+               "系統來說，「誰能整包帶走」跟「誰能查詢」是兩件事。",
+        fix="匯出改成 verify_admin。"
+            "24 小時清單刻意維持開放給一般人員——那是系統主畫面，擋掉他們就沒事可做了；"
+            "而且 SEC-16 修完之後清單已經一頁最多 200 筆、不含 base64，"
+            "不再是「整包帶走」的路徑。清單那邊驗的是「有界」而不是「限管理員」。",
     ),
     "SEC-13": dict(
         severity=MEDIUM,

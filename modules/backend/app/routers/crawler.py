@@ -12,13 +12,55 @@ router = APIRouter(tags=["自動爬蟲管理"])
 
 #  模組三：查詢已識別網站
 @router.get("/api/crawler/report/", summary="獲取前端專用 AI 分析黑名單報表")
-def get_frontend_report(current_user: database.User = Depends(verify_admin), db: Session = Depends(get_db)):
-    results = db.query(database.AIAnalysisResult).all()
+def get_frontend_report(
+    current_user: database.User = Depends(verify_admin),
+    db: Session = Depends(get_db),
+    page: int = Query(1, ge=1, description="頁碼，從 1 開始"),
+    limit: int = Query(50, ge=1, le=200, description="每頁筆數，上限 200"),
+):
+    """
+    SEC-16：以前這裡是 .all()，沒有分頁也沒有排除 base64。
+
+    實測回應 413 MB、耗時 13 秒——5226 筆全撈出來，每筆還夾帶最大 600 KB 的
+    representative_image_base64。一個請求就能讓後端吃掉幾百 MB 記憶體，
+    帶管理員 token 的人連按幾次就能把服務打掛。
+
+    代表圖不放進列表（跟 automated_24h_list 一致），
+    要圖請打 /api/crawler/result/{id}/image/。
+    """
+    base = db.query(database.AIAnalysisResult).order_by(
+        database.AIAnalysisResult.created_at.desc(),
+        database.AIAnalysisResult.id.desc(),      # 同一秒內順序才穩定
+    )
+    total = base.count()
+    rows = base.offset((page - 1) * limit).limit(limit).all()
+
+    data = [{
+        "id": r.id,
+        "url": r.url,
+        "yolo_details": r.yolo_details,
+        "yolo_score": r.yolo_score,
+        "nlp_details": r.nlp_details,
+        "nlp_score": r.nlp_score,
+        "risk_score": r.risk_score,
+        "risk_level": r.risk_level,
+        "class_metadata": r.class_metadata,
+        "task_source": r.task_source,
+        "created_at": r.created_at,
+        "has_representative_image": bool(r.representative_image_base64),
+    } for r in rows]
+
     return {
         "status": "success",
         "message": "成功抓取最新 AI 多模態識別資料庫",
-        "total_count": len(results),
-        "data": results
+        "total_count": total,
+        "pagination": {
+            "total_count": total,
+            "current_page": page,
+            "limit": limit,
+            "total_pages": (total + limit - 1) // limit if limit > 0 else 0,
+        },
+        "data": data,
     }
 
 # 模組四：爬蟲專用通道 
@@ -123,12 +165,33 @@ def receive_crawler_raw_data(
         print(f"嚴重錯誤：/api/crawler/report/ 處理失敗（{report.url}）：{e!r}")
         traceback.print_exc()
         raise HTTPException(status_code=500, detail="伺服器內部錯誤，請聯繫系統管理員")
+@router.get("/api/crawler/result/{result_id}/image/",
+            summary="取單筆的 YOLO 代表圖（清單不夾帶，點開明細才抓）")
+def get_result_image(result_id: int, db: Session = Depends(get_db),
+                     current_user = Depends(get_current_user)):
+    """
+    代表圖單獨取。放在清單裡的話一頁 50 筆最多會變成近 10 MB，
+    而使用者通常只會點開其中一兩筆。
+    """
+    row = db.query(database.AIAnalysisResult).filter(
+        database.AIAnalysisResult.id == result_id).first()
+    if not row:
+        raise HTTPException(status_code=404, detail="找不到該筆分析結果")
+    return {
+        "id": row.id,
+        "representative_image_base64": row.representative_image_base64 or "",
+        "representative_image_detections": row.representative_image_detections or [],
+    }
+
+
 @router.get("/api/crawler/automated_24h_list/", summary="獲取 24 小時自動爬蟲清單")
 def get_automated_24h_results(
     db: Session = Depends(get_db), 
     current_user = Depends(get_current_user),
-    page: int = Query(1, description="當前頁碼 (預設第 1 頁)"),
-    limit: int = Query(50, description="每頁顯示幾筆")
+    # ge/le 不能省。沒有下限時 page=-1 會讓 offset 變負數，
+    # 沒有上限時 limit=999999 會把整張表倒出來（SEC-16）。
+    page: int = Query(1, ge=1, description="當前頁碼 (預設第 1 頁)"),
+    limit: int = Query(50, ge=1, le=200, description="每頁顯示幾筆，上限 200")
 ):
     
     base_query = db.query(database.AIAnalysisResult).filter(
@@ -180,8 +243,12 @@ def get_automated_24h_results(
             "nlp_details": ai_record.nlp_details,
             "nlp_score": ai_record.nlp_score,
             "class_metadata": ai_record.class_metadata,
-            "representative_image_base64": ai_record.representative_image_base64,
-            "representative_image_detections": ai_record.representative_image_detections
+            # 代表圖不放進清單。它只有點開明細時才會用到，但每張 base64 可以到
+            # 600 KB，一頁 50 筆就變成近 10 MB——實測 page 5 是 9.8 MB、
+            # page 20 是 9.9 MB，而 page 1、3 只有 24 KB（那幾頁剛好沒圖）。
+            # API 本身都在 0.3 秒內，慢的是傳輸和瀏覽器解碼幾十張 base64。
+            # 改成只回一個布林值，圖由 /api/crawler/result/{id}/image/ 按需取。
+            "has_representative_image": bool(ai_record.representative_image_base64)
         })
 
     return {
