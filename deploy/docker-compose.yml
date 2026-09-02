@@ -101,6 +101,10 @@ services:
 
   # ---------------- 爬蟲 ----------------
   crawler:
+    # Chromium 用 /dev/shm 做渲染程序間的共享記憶體，Docker 預設只給 64 MB。
+    # 吃滿時渲染程序會帶著 SIGTRAP 崩掉——2026-08-29 / 08-31 / 09-02 三次
+    # 磁碟災難的源頭都是這個崩潰（傾印檔最大 244 GB）。
+    shm_size: 1gb
     build:
       context: ../modules/crawler
       dockerfile: Dockerfile
