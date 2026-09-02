@@ -1,10 +1,12 @@
 from dependencies import get_db, get_current_user
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
+from sqlalchemy import case
 from sqlalchemy.orm import Session
+from typing import Optional
 import json
 import database
 from schemas import WebsiteReport
-from dependencies import get_db, verify_admin, verify_internal_token
+from dependencies import get_db, verify_admin, verify_internal_token, log_audit_action
 from utils import (calculate_multimodal_risk_100_scale, dispatch_to_ai_engines,
                    is_whitelisted, needs_review)
 import traceback
@@ -166,6 +168,34 @@ def receive_crawler_raw_data(
         print(f"嚴重錯誤：/api/crawler/report/ 處理失敗（{report.url}）：{e!r}")
         traceback.print_exc()
         raise HTTPException(status_code=500, detail="伺服器內部錯誤，請聯繫系統管理員")
+@router.post("/api/crawler/result/{result_id}/confirm/",
+             summary="人工覆核：確認這筆是毒品網站")
+def confirm_result(result_id: int, db: Session = Depends(get_db),
+                   current_admin: database.User = Depends(verify_admin)):
+    """
+    把「高風險 (優先人工覆核)」改成「極高風險」，代表已經有人看過並確認。
+
+    在這之前，待確認清單的分類按鈕只改前端記憶體，重新整理就沒了——
+    也就是說沒有任何一次人工覆核被記錄下來。對數位證據系統來說，
+    「誰在什麼時候確認了這筆」比判定結果本身更重要。
+    """
+    row = db.query(database.AIAnalysisResult).filter(
+        database.AIAnalysisResult.id == result_id).first()
+    if not row:
+        raise HTTPException(status_code=404, detail="找不到該筆分析結果")
+
+    before = row.risk_level
+    row.risk_level = "極高風險"
+    db.commit()
+
+    log_audit_action(
+        db, current_admin.user_id, "人工覆核確認",
+        f"確認 {row.url} 為毒品網站（原判定：{before}）"[:500],
+    )
+    return {"status": "success", "message": "已確認並移入黑名單",
+            "id": row.id, "before": before, "after": row.risk_level}
+
+
 @router.get("/api/crawler/result/{result_id}/image/",
             summary="取單筆的 YOLO 代表圖（清單不夾帶，點開明細才抓）")
 def get_result_image(result_id: int, db: Session = Depends(get_db),
@@ -192,12 +222,31 @@ def get_automated_24h_results(
     # ge/le 不能省。沒有下限時 page=-1 會讓 offset 變負數，
     # 沒有上限時 limit=999999 會把整張表倒出來（SEC-16）。
     page: int = Query(1, ge=1, description="當前頁碼 (預設第 1 頁)"),
-    limit: int = Query(50, ge=1, le=200, description="每頁顯示幾筆，上限 200")
+    limit: int = Query(50, ge=1, le=200, description="每頁顯示幾筆，上限 200"),
+    bucket: Optional[str] = Query(
+        None,
+        description="blacklist=極高風險；pending=待人工覆核（高風險+中風險）；不給則全部",
+    ),
 ):
     
     base_query = db.query(database.AIAnalysisResult).filter(
         database.AIAnalysisResult.task_source.like("%[automated_24h]%")
     )
+
+    # bucket 讓前端不必自己撈全部再過濾。
+    #
+    # 為什麼「高風險」歸在 pending 而不是 blacklist：那一級的全名就是
+    # 「高風險 (優先人工覆核)」，模型的意思是「這個要優先給人看」，
+    # 不是「已經確認是毒品網站」。以前前端把極高+高一起塞進黑名單，
+    # 結果 1540 筆標著「優先人工覆核」的網站一次都沒被人看過——
+    # 待確認清單裡只有 35 筆「建議」覆核的。優先順序整個顛倒。
+    if bucket == "blacklist":
+        base_query = base_query.filter(
+            database.AIAnalysisResult.risk_level == "極高風險")
+    elif bucket == "pending":
+        base_query = base_query.filter(
+            database.AIAnalysisResult.risk_level.in_(
+                ["高風險 (優先人工覆核)", "中風險 (建議人工覆核)"]))
 
     # 統計也依 risk_level，不要再用 risk_score 自己切一套門檻
     total_count = base_query.count()
@@ -208,10 +257,19 @@ def get_automated_24h_results(
             ["高風險 (優先人工覆核)", "中風險 (建議人工覆核)"])).count()
     low_risk_count = total_count - high_risk_count - med_risk_count
     skip = (page - 1) * limit
-    results = base_query.order_by(database.AIAnalysisResult.created_at.desc()) \
-                        .offset(skip) \
-                        .limit(limit) \
-                        .all()
+    if bucket == "pending":
+        # 高風險排在中風險前面（"高" < "中" 的字典序剛好相反，所以明寫順序），
+        # 同一級再依分數高到低。人力有限時要先看最該看的。
+        order = [
+            case((database.AIAnalysisResult.risk_level == "高風險 (優先人工覆核)", 0),
+                 else_=1),
+            database.AIAnalysisResult.risk_score.desc(),
+            database.AIAnalysisResult.created_at.desc(),
+        ]
+    else:
+        order = [database.AIAnalysisResult.created_at.desc()]
+
+    results = base_query.order_by(*order).offset(skip).limit(limit).all()
 
     frontend_data = []
     

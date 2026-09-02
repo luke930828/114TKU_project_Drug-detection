@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AIDetection } from "./AIDetection";
 import { URLAnalysis } from "./URLAnalysis";
 import { Report } from "./Report";
-import WebsiteQuery, { type PendingWebsite } from "./WebsiteQuery";
+import WebsiteQuery from "./WebsiteQuery";
 import Login from "./Login";
 import UserManagement from "./UserManagement";
 import {
@@ -11,16 +11,13 @@ import {
   clearAuthToken,
   getAuthToken,
 } from "./auth";
-import { isHighRisk, isMediumRisk } from "./riskLevel";
 
 export default function App() {
   const [page, setPage] = useState("home");
-  const [blacklist, setBlacklist] = useState<string[]>(["dark-market-x.onion"]);
-  const [whitelist, setWhitelist] = useState<string[]>(["google.com"]);
-  const [pendingSites, setPendingSites] = useState<PendingWebsite[]>([]);
-  // 後端對全部資料算出來的待覆核總數。pendingSites 只是已載入的那幾頁，
-  // 顯示筆數要用這個，不然使用者會以為只有幾筆要處理。
-  const [pendingTotal, setPendingTotal] = useState(0);
+  // 黑名單／待確認／白名單都不再是前端狀態——WebsiteQuery 直接查後端。
+  // 以前這裡的初始值是寫死的假資料（dark-market-x.onion / google.com），
+  // 而且只有開過「AI 偵測」才會被填入、只填那一頁 50 筆，重新整理就歸零，
+  // 所以「待確認 11 筆」從來不是待辦總量。
 
   const [isAuthenticated, setIsAuthenticated] = useState(
     Boolean(getAuthToken())
@@ -62,41 +59,6 @@ export default function App() {
     return (
       <AIDetection
         onBack={() => setPage("home")}
-        onDetectionsLoaded={(sites, meta) => {
-          setPendingTotal(meta.pendingTotal);
-          const highRiskUrls = new Set(
-            sites.filter((site) => isHighRisk(site.riskLevel)).map((site) => site.url)
-          );
-          const mediumRiskSites = sites.filter((site) => isMediumRisk(site.riskLevel));
-
-          setBlacklist((current) =>
-            Array.from(new Set([...current, ...highRiskUrls]))
-          );
-          setWhitelist((current) =>
-            current.filter((url) => !highRiskUrls.has(url))
-          );
-          setPendingSites((current) => {
-            const merged = new Map(
-              current
-                .filter(
-                  (site) =>
-                    isMediumRisk(site.riskLevel) &&
-                    !highRiskUrls.has(site.url)
-                )
-                .map((site) => [site.url, site])
-            );
-
-            mediumRiskSites.forEach((site) => {
-              if (!blacklist.includes(site.url) && !whitelist.includes(site.url)) {
-                merged.set(site.url, site);
-              }
-            });
-
-            return Array.from(merged.values()).sort(
-              (first, second) => second.score - first.score
-            );
-          });
-        }}
       />
     );
 
@@ -114,33 +76,6 @@ export default function App() {
     return (
       <WebsiteQuery
         onBack={() => setPage("home")}
-        blacklist={blacklist}
-        pendingSites={pendingSites}
-        pendingTotal={pendingTotal}
-        onAdd={(type, url) => {
-          if (type === "black") {
-            setBlacklist((current) => current.includes(url) ? current : [...current, url]);
-            setWhitelist((current) => current.filter((item) => item !== url));
-          } else {
-            setWhitelist((current) => current.includes(url) ? current : [...current, url]);
-            setBlacklist((current) => current.filter((item) => item !== url));
-          }
-          setPendingSites((current) => current.filter((item) => item.url !== url));
-        }}
-        onRemove={(type, url) => {
-          if (type === "black") setBlacklist((current) => current.filter((item) => item !== url));
-          else setWhitelist((current) => current.filter((item) => item !== url));
-        }}
-        onClassify={(url, type) => {
-          if (type === "black") {
-            setBlacklist((current) => current.includes(url) ? current : [...current, url]);
-            setWhitelist((current) => current.filter((item) => item !== url));
-          } else {
-            setWhitelist((current) => current.includes(url) ? current : [...current, url]);
-            setBlacklist((current) => current.filter((item) => item !== url));
-          }
-          setPendingSites((current) => current.filter((item) => item.url !== url));
-        }}
       />
     );
 

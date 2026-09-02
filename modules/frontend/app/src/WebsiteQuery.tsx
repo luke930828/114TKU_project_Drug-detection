@@ -4,6 +4,8 @@ import { authFetch, getErrorMessage } from "./auth";
 import { hasMaliciousInput, MALICIOUS_INPUT_MESSAGE } from "./inputSecurity";
 
 export interface PendingWebsite {
+  /** ai_analysis_results.id——覆核時要用它呼叫後端 */
+  id?: number;
   url: string;
   score: number;
   riskLevel: string;
@@ -38,35 +40,105 @@ const normalizeWhitelistEntry = (
   };
 };
 
+const normalizeSites = (value: unknown): PendingWebsite[] => {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((row) => {
+    if (!row || typeof row !== "object") return [];
+    const r = row as Record<string, unknown>;
+    const url = typeof r.domain_name === "string" ? r.domain_name : "";
+    if (!url) return [];
+    const score = Number(r.risk_score);
+    const id = Number(r.id);
+    return [{
+      id: Number.isFinite(id) ? id : undefined,
+      url,
+      score: Number.isFinite(score) ? score : 0,
+      riskLevel: typeof r.risk_level === "string" ? r.risk_level : "",
+      detectedAt: typeof r.discovered_date === "string" ? r.discovered_date : "",
+    }];
+  });
+};
+
 interface Props {
   onBack: () => void;
-  blacklist: string[];
-  pendingSites: PendingWebsite[];
-  /** 後端算出的待覆核總數。pendingSites 只是已載入的那幾頁，兩者不會一樣。 */
-  pendingTotal?: number;
-  onAdd: (type: "black" | "white", url: string) => void;
-  onRemove: (type: "black" | "white", url: string) => void;
-  onClassify: (url: string, type: "black" | "white") => void;
+  // blacklist / pendingSites / pendingTotal 已經移除：那三個是 App.tsx 的
+  // 記憶體狀態，只有開過「AI 偵測」頁面才會被填入、且只填當時那一頁，
+  // 重新整理就歸零。現在這兩個清單由本元件直接查後端。
+  /** 覆核完一筆時通知父層更新總數。實際寫入由本元件直接打後端。 */
+  onReviewed?: () => void;
 }
 
 export default function WebsiteQuery({
   onBack,
-  blacklist,
-  pendingSites,
-  pendingTotal,
-  onAdd,
-  onRemove,
-  onClassify,
+  onReviewed,
 }: Props) {
   const [tab, setTab] = useState<"black" | "white" | "pending">("pending");
   const [input, setInput] = useState("");
   const [whiteUrl, setWhiteUrl] = useState("");
   const [whiteTitle, setWhiteTitle] = useState("");
   const [whiteReason, setWhiteReason] = useState("");
+  // 黑名單與待確認直接查後端。
+  //
+  // 以前這兩個清單是 App.tsx 的 useState，初始值還是寫死的假資料
+  // （dark-market-x.onion / google.com），而且只有開啟「AI 偵測」頁面時
+  // 才會被填入、只填當時載入的那一頁 50 筆，重新整理就歸零。
+  // 所以「待確認 11 筆」從來不是待辦總量，是那一頁裡剛好有幾筆。
+  const [remoteBlacklist, setRemoteBlacklist] = useState<PendingWebsite[]>([]);
+  const [remoteBlacklistTotal, setRemoteBlacklistTotal] = useState(0);
+  const [remotePending, setRemotePending] = useState<PendingWebsite[]>([]);
+  const [remotePendingTotal, setRemotePendingTotal] = useState(0);
+  const [bucketLoading, setBucketLoading] = useState(true);
   const [whitelistEntries, setWhitelistEntries] = useState<WhitelistEntry[]>([]);
   const [whitelistLoading, setWhitelistLoading] = useState(true);
   const [whitelistError, setWhitelistError] = useState<string | null>(null);
   const [whitelistSaving, setWhitelistSaving] = useState(false);
+
+  const confirmAsBlacklist = async (site: PendingWebsite) => {
+    if (!site.id) {
+      alert("這筆缺少識別碼，無法確認。");
+      return;
+    }
+    try {
+      const response = await authFetch(`/api/crawler/result/${site.id}/confirm/`, {
+        method: "POST",
+      });
+      if (!response.ok) throw new Error(await getErrorMessage(response));
+      onReviewed?.();
+      await loadBuckets();
+    } catch (requestError) {
+      alert(requestError instanceof Error ? requestError.message : "確認失敗");
+    }
+  };
+
+  const loadBuckets = useCallback(async () => {
+    setBucketLoading(true);
+    try {
+      const [blackRes, pendingRes] = await Promise.all([
+        authFetch("/api/crawler/automated_24h_list/?bucket=blacklist&limit=200"),
+        authFetch("/api/crawler/automated_24h_list/?bucket=pending&limit=200"),
+      ]);
+      if (blackRes.ok) {
+        const payload = await blackRes.json();
+        setRemoteBlacklist(normalizeSites(payload?.data));
+        setRemoteBlacklistTotal(Number(payload?.total_count ?? 0));
+      }
+      if (pendingRes.ok) {
+        const payload = await pendingRes.json();
+        setRemotePending(normalizeSites(payload?.data));
+        setRemotePendingTotal(Number(payload?.total_count ?? 0));
+      }
+    } catch (requestError) {
+      console.error("[BUCKET_FETCH_FAILED]", {
+        message: requestError instanceof Error ? requestError.message : "未知錯誤",
+      });
+    } finally {
+      setBucketLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadBuckets();
+  }, [loadBuckets]);
 
   const addBlacklistItem = () => {
     const value = input.trim();
@@ -75,7 +147,9 @@ export default function WebsiteQuery({
       alert(MALICIOUS_INPUT_MESSAGE);
       return;
     }
-    onAdd("black", value);
+    // 後端沒有「手動黑名單」這張表——黑名單是由 risk_level=極高風險 推導的。
+    // 要讓某個網址進黑名單，正確做法是在待確認清單裡覆核它。
+    alert("黑名單是由 AI 判定結果推導的，請到「待確認」分頁覆核該網址。");
     setInput("");
   };
 
@@ -140,7 +214,8 @@ export default function WebsiteQuery({
       if (!response.ok) throw new Error(await getErrorMessage(response));
 
       const result = (await response.json()) as { message?: string };
-      onAdd("white", url);
+      onReviewed?.();
+      void loadBuckets();
       setWhiteUrl("");
       setWhiteTitle("");
       setWhiteReason("");
@@ -167,7 +242,6 @@ export default function WebsiteQuery({
       });
       if (!response.ok) throw new Error(await getErrorMessage(response));
 
-      onRemove("white", entry.url);
       await loadWhitelist();
       alert("白名單刪除成功！");
     } catch (requestError) {
@@ -197,9 +271,9 @@ export default function WebsiteQuery({
               AI 判定為可疑的網站，需由警員確認後才能正式分類。
             </p>
           </div>
-          {pendingSites.length > 0 && (
+          {remotePendingTotal > 0 && (
             <span className="bg-amber-100 text-amber-700 px-3 py-1.5 rounded-full text-sm font-medium">
-              {pendingTotal ?? pendingSites.length} 筆待確認
+              {remotePendingTotal} 筆待確認
             </span>
           )}
         </div>
@@ -212,7 +286,7 @@ export default function WebsiteQuery({
               tab === "black" ? "bg-red-500 text-white" : "bg-gray-100 hover:bg-gray-200"
             }`}
           >
-            黑名單（{blacklist.length}）
+            黑名單（{remoteBlacklistTotal}）
           </button>
           <button
             type="button"
@@ -230,7 +304,7 @@ export default function WebsiteQuery({
               tab === "pending" ? "bg-amber-500 text-white" : "bg-gray-100 hover:bg-gray-200"
             }`}
           >
-            待確認（{pendingTotal ?? pendingSites.length}）
+            待確認（{remotePendingTotal}）
           </button>
         </div>
 
@@ -256,20 +330,22 @@ export default function WebsiteQuery({
             </div>
 
             <div className="space-y-3">
-              {blacklist.length === 0 ? (
+              {remoteBlacklist.length === 0 ? (
                 <div className="text-center text-gray-400 py-12 border-2 border-dashed rounded-xl">
                   目前沒有資料
                 </div>
               ) : (
-                blacklist.map((item) => (
-                  <div key={item} className="flex items-center justify-between gap-3 border p-4 rounded-xl">
+                remoteBlacklist.map((item) => (
+                  <div key={item.url} className="flex items-center justify-between gap-3 border p-4 rounded-xl">
                     <div className="flex items-center gap-3 min-w-0">
                       <ShieldAlert className="text-red-500 shrink-0" />
-                      <span className="break-all">{item}</span>
+                      <span className="break-all">{item.url}</span>
                     </div>
                     <button
                       type="button"
-                      onClick={() => onRemove("black", item)}
+                      onClick={() =>
+                        alert("黑名單由 AI 判定結果推導，要移除請將該網址加入白名單。")
+                      }
                       className="text-gray-500 hover:text-red-500 shrink-0"
                     >
                       刪除
@@ -356,7 +432,9 @@ export default function WebsiteQuery({
 
         {tab === "pending" && (
           <div className="space-y-4">
-            {pendingSites.length === 0 ? (
+            {bucketLoading ? (
+              <div className="text-center text-gray-400 py-12">載入中…</div>
+            ) : remotePending.length === 0 ? (
               <div className="text-center py-14 border-2 border-dashed border-gray-200 rounded-xl">
                 <Check className="w-10 h-10 text-green-500 mx-auto mb-3" />
                 <p className="font-medium text-gray-700">目前沒有待確認網站</p>
@@ -364,14 +442,14 @@ export default function WebsiteQuery({
               </div>
             ) : (
               <>
-              {typeof pendingTotal === "number" && pendingTotal > pendingSites.length && (
+              {remotePendingTotal > remotePending.length && (
                 <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-                  共 <strong>{pendingTotal}</strong> 筆待確認，
-                  這裡顯示已載入的 {pendingSites.length} 筆。
-                  到「24 小時 AI 自動識別」翻頁可以載入更多。
+                  共 <strong>{remotePendingTotal}</strong> 筆待確認，
+                  這裡顯示風險最高的 {remotePending.length} 筆。
+                  處理完會自動補上後面的。
                 </div>
               )}
-              {pendingSites.map((site) => (
+              {remotePending.map((site) => (
                 <div key={site.url} className="border border-amber-200 bg-amber-50/50 rounded-xl p-5">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                     <div className="min-w-0">
@@ -386,7 +464,7 @@ export default function WebsiteQuery({
                     <div className="flex gap-2 shrink-0">
                       <button
                         type="button"
-                        onClick={() => onClassify(site.url, "black")}
+                        onClick={() => void confirmAsBlacklist(site)}
                         className="bg-red-500 hover:bg-red-600 text-white px-4 py-2.5 rounded-lg"
                       >
                         加入黑名單
