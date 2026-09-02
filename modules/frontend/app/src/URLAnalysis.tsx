@@ -26,6 +26,39 @@ interface RepresentativeDetection {
   normalized: boolean;
 }
 
+interface OcrResult {
+  imageIndex?: number;
+  text: string;
+  confidence?: number;
+  bbox?: [number, number, number, number];
+}
+
+const normalizeOcrResults = (value: unknown): OcrResult[] => {
+  if (!Array.isArray(value)) return [];
+
+  return value.flatMap((item): OcrResult[] => {
+    if (!item || typeof item !== "object") return [];
+    const result = item as Record<string, unknown>;
+    const text = typeof result.text === "string" ? result.text.trim() : "";
+    if (!text) return [];
+
+    const imageIndex = Number(result.image_index);
+    const confidence = Number(result.confidence);
+    const rawBbox = Array.isArray(result.bbox) && result.bbox.length === 4
+      ? result.bbox.map(Number)
+      : null;
+
+    return [{
+      text,
+      imageIndex: Number.isFinite(imageIndex) ? imageIndex : undefined,
+      confidence: Number.isFinite(confidence) ? confidence : undefined,
+      bbox: rawBbox?.every(Number.isFinite)
+        ? rawBbox as [number, number, number, number]
+        : undefined,
+    }];
+  });
+};
+
 const clampCoordinate = (value: number) => Math.min(1, Math.max(0, value));
 
 const isValidTargetUrl = (value: string) => {
@@ -134,6 +167,7 @@ export function URLAnalysis({ onBack }: URLAnalysisProps) {
   const representativeDetections = normalizeRepresentativeDetections(
     analysisData?.representative_image_detections
   );
+  const ocrResults = normalizeOcrResults(analysisData?.ocr_results);
 
   useEffect(() => {
     setRepresentativeImageSize(null);
@@ -688,6 +722,34 @@ export function URLAnalysis({ onBack }: URLAnalysisProps) {
                   {analysisData.nlp_details}
                 </p>
               </div>
+
+              {ocrResults.length > 0 && (
+                <div className="col-span-2 bg-[#1e3a63] p-4 rounded-lg">
+                  <span className="text-blue-300 text-xs font-bold block mb-3">
+                    OCR 辨識結果
+                  </span>
+
+                  <div className="space-y-3">
+                    {ocrResults.map((item, index) => {
+                      const confidence = item.confidence == null
+                        ? null
+                        : item.confidence <= 1
+                          ? item.confidence * 100
+                          : item.confidence;
+
+                      return (
+                        <div key={`${item.imageIndex ?? "image"}-${index}`} className="rounded-lg bg-[#142d50] p-3">
+                          <p className="whitespace-pre-wrap break-words text-sm text-gray-100">{item.text}</p>
+                          <div className="mt-1 flex flex-wrap gap-3 text-xs text-gray-400">
+                            {item.imageIndex != null && <span>圖片序號：{item.imageIndex}</span>}
+                            {confidence != null && <span>信心度：{Math.round(confidence)}%</span>}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               <div className="col-span-2 bg-[#1e3a63] p-4 rounded-lg">
                 <span className="text-blue-300 text-xs font-bold block mb-1">

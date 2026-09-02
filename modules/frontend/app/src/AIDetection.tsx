@@ -31,6 +31,13 @@ interface RepresentativeDetection {
   box: [number, number, number, number];
 }
 
+interface OcrResult {
+  imageIndex?: number;
+  text: string;
+  confidence?: number;
+  bbox?: [number, number, number, number];
+}
+
 interface ResultType {
   id: string | number;
   time: string;
@@ -42,9 +49,35 @@ interface ResultType {
   score: number;
   caseNumber: string;
   nlpKeywords: string[];
+  ocrResults: OcrResult[];
   representativeImageBase64: string | null;
   representativeImageDetections: RepresentativeDetection[];
 }
+
+const normalizeOcrResults = (value: unknown): OcrResult[] => {
+  if (!Array.isArray(value)) return [];
+
+  return value.flatMap((item) => {
+    if (!isRecord(item)) return [];
+    const text = getString(item.text).trim();
+    if (!text) return [];
+
+    const imageIndex = Number(item.image_index);
+    const confidence = Number(item.confidence);
+    const rawBbox = Array.isArray(item.bbox) && item.bbox.length === 4
+      ? item.bbox.map(Number)
+      : null;
+
+    return [{
+      text,
+      imageIndex: Number.isFinite(imageIndex) ? imageIndex : undefined,
+      confidence: Number.isFinite(confidence) ? confidence : undefined,
+      bbox: rawBbox?.every(Number.isFinite)
+        ? rawBbox as [number, number, number, number]
+        : undefined,
+    }];
+  });
+};
 
 interface CrawlerStats {
   total: number;
@@ -141,6 +174,7 @@ const normalizeResult = (value: unknown, index: number): ResultType | null => {
     nlpKeywords: normalizeKeywords(
       value.nlp_details
     ),
+    ocrResults: normalizeOcrResults(value.ocr_results),
     representativeImageBase64:
       typeof value.representative_image_base64 === "string" &&
       value.representative_image_base64.trim()
@@ -416,6 +450,30 @@ export function AIDetection({ onBack, onDetectionsLoaded }: Props) {
                     <span className="text-gray-400">未提供</span>
                   )}
                 </div>
+                {selected.ocrResults.length > 0 && (
+                  <section className="mb-4 rounded-xl border border-sky-200 bg-sky-50 p-4">
+                    <h3 className="mb-3 font-semibold text-sky-900">OCR 辨識結果</h3>
+                    <div className="space-y-3">
+                      {selected.ocrResults.map((item, index) => {
+                        const confidence = item.confidence == null
+                          ? null
+                          : item.confidence <= 1
+                            ? item.confidence * 100
+                            : item.confidence;
+
+                        return (
+                          <div key={`${item.imageIndex ?? "image"}-${index}`} className="rounded-lg bg-white p-3 text-sm shadow-sm">
+                            <p className="whitespace-pre-wrap break-words text-gray-800">{item.text}</p>
+                            <div className="mt-1 flex flex-wrap gap-3 text-xs text-gray-500">
+                              {item.imageIndex != null && <span>圖片序號：{item.imageIndex}</span>}
+                              {confidence != null && <span>信心度：{Math.round(confidence)}%</span>}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+                )}
                 <h3 className="font-semibold mb-2">AI 分析</h3>
                 {selected.representativeImageBase64 ? (
                   <div className="relative inline-block max-w-full overflow-hidden rounded-xl border border-blue-200 bg-gray-100">
