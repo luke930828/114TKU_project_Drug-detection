@@ -467,7 +467,7 @@ export default function WebsiteQuery({
                   if (event.key === "Enter") void runBlackSearch();
                 }}
                 className="border px-3 py-2.5 flex-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
-                placeholder="搜尋黑名單：網址、名稱或原因"
+                placeholder="搜尋：網址、案件編號、名稱或原因"
               />
               <button
                 type="button"

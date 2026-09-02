@@ -1,6 +1,6 @@
 from dependencies import get_db, get_current_user
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
-from sqlalchemy import case
+from sqlalchemy import case, or_
 from sqlalchemy.orm import Session
 from typing import Optional
 import json
@@ -311,7 +311,7 @@ def get_automated_24h_results(
         None,
         description="blacklist=極高風險；pending=待人工覆核（高風險+中風險）；不給則全部",
     ),
-    q: Optional[str] = Query(None, description="關鍵字搜尋：網址"),
+    q: Optional[str] = Query(None, description="關鍵字搜尋：網址或案件編號"),
 ):
     
     base_query = db.query(database.AIAnalysisResult).filter(
@@ -326,8 +326,14 @@ def get_automated_24h_results(
     # 結果 1540 筆標著「優先人工覆核」的網站一次都沒被人看過——
     # 待確認清單裡只有 35 筆「建議」覆核的。優先順序整個顛倒。
     if q and q.strip():
-        base_query = base_query.filter(
-            database.AIAnalysisResult.url.like(f"%{q.strip()}%"))
+        keyword = q.strip()
+        # 案件編號在前端是 ai_analysis_results.id（AIDetection.tsx 的
+        # caseNumber 找不到 case_number 時就退回 id），所以純數字要一起比對 id。
+        # 用 or_ 而不是分開兩個 filter——分開會變成 AND，兩個條件不可能同時成立。
+        conditions = [database.AIAnalysisResult.url.like(f"%{keyword}%")]
+        if keyword.isdigit():
+            conditions.append(database.AIAnalysisResult.id == int(keyword))
+        base_query = base_query.filter(or_(*conditions))
 
     if bucket == "blacklist":
         base_query = base_query.filter(

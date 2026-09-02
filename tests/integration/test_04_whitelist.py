@@ -174,9 +174,38 @@ def test_false_positive_report_adds_to_whitelist(internal, admin, unique_url):
             admin.delete(f"/api/whitelist/{i}")
 
 
-def test_ai_blacklist_is_searchable(admin):
-    """AI 判定的黑名單也要能搜尋——使用者不會知道一個網址是人工加的還是 AI 判的。"""
-    r = admin.get("/api/crawler/automated_24h_list/",
-                  params={"bucket": "blacklist", "q": "zzz-不可能存在-zzz", "limit": 1})
+def test_ai_blacklist_is_searchable(internal, admin, unique_url):
+    """
+    AI 判定的黑名單要能用網址與案件編號搜尋。
+
+    使用者不會知道一個網址是人工加的還是 AI 判的，只搜其中一邊等於搜不到；
+    而案件編號在前端就是 ai_analysis_results.id（AIDetection.tsx 的 caseNumber
+    找不到 case_number 時退回 id），所以純數字關鍵字要一起比對 id。
+    """
+    # 一定要走爬蟲流程建立，不能只打兩個 report 端點——automated_24h_list 會先
+    # 過濾 task_source LIKE '%[automated_24h]%'，而直接打 report 建的列
+    # task_source 是「未知來源」，根本不在這個清單裡。
+    crawler_report(internal, unique_url)
+    row = wait_for(lambda: find_result(admin, unique_url), what="分析結果")
+
+    # 用網址片段
+    frag = unique_url.split("//")[1][:12]
+    r = admin.get("/api/crawler/automated_24h_list/", params={"q": frag, "limit": 5})
     assert r.status_code == 200
+    assert any(x["id"] == row["id"] for x in r.json()["data"]), "用網址片段搜不到"
+
+    # 用案件編號
+    r = admin.get("/api/crawler/automated_24h_list/",
+                  params={"q": str(row["id"]), "limit": 5})
+    assert r.status_code == 200
+    got = r.json()
+    # 不能斷言「只有一筆」——條件是「網址包含關鍵字 or id 相等」的聯集，
+    # 案件編號那串數字有可能剛好出現在別筆的網址裡。要驗的是目標那筆搜得到。
+    assert any(x["id"] == row["id"] for x in got["data"]), (
+        f"用案件編號 {row['id']} 搜不到，拿到 {got['total_count']} 筆"
+    )
+
+    # 不存在的關鍵字
+    r = admin.get("/api/crawler/automated_24h_list/",
+                  params={"q": "zzz-不可能存在-zzz", "limit": 1})
     assert r.json()["total_count"] == 0, "搜尋沒有生效，關鍵字不存在卻有結果"
