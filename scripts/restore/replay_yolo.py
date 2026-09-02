@@ -44,13 +44,22 @@ def main():
         if ONLY:
             c.execute("SELECT id FROM suspect_websites WHERE url=%s", (ONLY,))
         else:
-            # 只挑「有圖、而且分析結果還沒有代表圖」的
+            # 只挑「有圖、而且 YOLO 根本沒跑過」的。
+            #
+            # 不能用「沒有代表圖」當條件——YOLO 只在信心度 >= 0.5 時才產生
+            # 代表圖（yolo/app/main.py:155），所以跑過但沒圖是正常結果。
+            # 用那個條件的話，1357 筆裡有 1276 筆會被一遍遍重跑而且永遠
+            # 不會「跑完」，實際需要補的只有 81 筆。
+            #
+            # 真正沒跑過的特徵是 yolo_details 還停在建檔時的佔位字串。
             c.execute(
                 "SELECT s.id FROM suspect_websites s "
                 "JOIN ai_analysis_results a ON a.url = s.url "
                 "WHERE JSON_LENGTH(s.images_data) > 0 "
-                "  AND (a.representative_image_base64 IS NULL "
-                "       OR a.representative_image_base64 = '') "
+                "  AND (a.yolo_details IS NULL "
+                "       OR a.yolo_details = '' "
+                "       OR a.yolo_details LIKE '影像分析中%%' "
+                "       OR a.yolo_details LIKE '還原%%') "
                 "GROUP BY s.id ORDER BY s.id"
             )
         ids = [r[0] for r in c.fetchall()]
@@ -108,6 +117,9 @@ def main():
                   "WHERE representative_image_base64 IS NOT NULL "
                   "  AND representative_image_base64 <> ''")
         print("已有代表圖的分析結果：", c.fetchone()[0])
+        c.execute("SELECT COUNT(*) FROM ai_analysis_results "
+                  "WHERE yolo_details LIKE '影像分析中%%' OR yolo_details LIKE '還原%%'")
+        print("仍未跑過 YOLO：", c.fetchone()[0])
 
 
 if __name__ == "__main__":

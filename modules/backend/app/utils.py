@@ -161,3 +161,15 @@ def is_whitelisted(db, url: str):
         if registrable_domain(row.url) == target:
             return row
     return None
+
+
+def is_blacklisted(db, url: str):
+    """這個網址所屬的網域在不在人工黑名單裡。找到就回傳那一筆，否則 None。"""
+    import database
+    target = registrable_domain(url)
+    if not target:
+        return None
+    for row in db.query(database.BlacklistWebsite).all():
+        if registrable_domain(row.url) == target:
+            return row
+    return None

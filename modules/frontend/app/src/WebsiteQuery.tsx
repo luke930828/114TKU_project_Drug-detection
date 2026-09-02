@@ -17,6 +17,8 @@ interface WhitelistEntry {
   url: string;
   title: string;
   reason: string;
+  addedBy: string;
+  createdAt: string;
 }
 
 const normalizeWhitelistEntry = (
@@ -37,6 +39,10 @@ const normalizeWhitelistEntry = (
     reason: typeof entry.reason === "string" && entry.reason.trim()
       ? entry.reason
       : "無",
+    addedBy: typeof entry.added_by === "string" ? entry.added_by : "未知",
+    createdAt: typeof entry.created_at === "string"
+      ? entry.created_at.slice(0, 10)
+      : "",
   };
 };
 
@@ -83,6 +89,12 @@ export default function WebsiteQuery({
   // （dark-market-x.onion / google.com），而且只有開啟「AI 偵測」頁面時
   // 才會被填入、只填當時載入的那一頁 50 筆，重新整理就歸零。
   // 所以「待確認 11 筆」從來不是待辦總量，是那一頁裡剛好有幾筆。
+  // 人工黑名單（blacklist_websites），跟 AI 推導出來的那份分開顯示。
+  const [manualBlacklist, setManualBlacklist] = useState<WhitelistEntry[]>([]);
+  const [blackTitle, setBlackTitle] = useState("");
+  const [blackReason, setBlackReason] = useState("");
+  const [blackSaving, setBlackSaving] = useState(false);
+  const [blackSearch, setBlackSearch] = useState("");
   const [remoteBlacklist, setRemoteBlacklist] = useState<PendingWebsite[]>([]);
   const [remoteBlacklistTotal, setRemoteBlacklistTotal] = useState(0);
   const [remotePending, setRemotePending] = useState<PendingWebsite[]>([]);
@@ -92,6 +104,68 @@ export default function WebsiteQuery({
   const [whitelistLoading, setWhitelistLoading] = useState(true);
   const [whitelistError, setWhitelistError] = useState<string | null>(null);
   const [whitelistSaving, setWhitelistSaving] = useState(false);
+
+  const loadManualBlacklist = useCallback(async (keyword = "") => {
+    try {
+      const qs = keyword.trim() ? `?q=${encodeURIComponent(keyword.trim())}` : "";
+      const response = await authFetch(`/api/blacklist/${qs}`);
+      if (!response.ok) return;
+      const payload = await response.json();
+      setManualBlacklist(
+        Array.isArray(payload)
+          ? payload
+              .map(normalizeWhitelistEntry)
+              .filter((entry): entry is WhitelistEntry => entry !== null)
+          : []
+      );
+    } catch (requestError) {
+      console.error("[BLACKLIST_FETCH_FAILED]", {
+        message: requestError instanceof Error ? requestError.message : "未知錯誤",
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadManualBlacklist();
+  }, [loadManualBlacklist]);
+
+  const submitBlacklist = async () => {
+    const url = input.trim();
+    if (!url) return;
+    if (hasMaliciousInput([url, blackTitle, blackReason])) {
+      alert(MALICIOUS_INPUT_MESSAGE);
+      return;
+    }
+    setBlackSaving(true);
+    try {
+      const response = await authFetch("/api/blacklist/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url, title: blackTitle, reason: blackReason }),
+      });
+      if (!response.ok) throw new Error(await getErrorMessage(response));
+      setInput("");
+      setBlackTitle("");
+      setBlackReason("");
+      await loadManualBlacklist(blackSearch);
+      alert("黑名單新增成功！之後爬到這個網域會直接歸檔為極高風險。");
+    } catch (requestError) {
+      alert(requestError instanceof Error ? requestError.message : "新增失敗");
+    } finally {
+      setBlackSaving(false);
+    }
+  };
+
+  const removeManualBlacklist = async (entry: WhitelistEntry) => {
+    if (!window.confirm(`確定要把 ${entry.url} 移出黑名單嗎？`)) return;
+    try {
+      const response = await authFetch(`/api/blacklist/${entry.id}`, { method: "DELETE" });
+      if (!response.ok) throw new Error(await getErrorMessage(response));
+      await loadManualBlacklist(blackSearch);
+    } catch (requestError) {
+      alert(requestError instanceof Error ? requestError.message : "移除失敗");
+    }
+  };
 
   const confirmAsBlacklist = async (site: PendingWebsite) => {
     if (!site.id) {
@@ -147,10 +221,7 @@ export default function WebsiteQuery({
       alert(MALICIOUS_INPUT_MESSAGE);
       return;
     }
-    // 後端沒有「手動黑名單」這張表——黑名單是由 risk_level=極高風險 推導的。
-    // 要讓某個網址進黑名單，正確做法是在待確認清單裡覆核它。
-    alert("黑名單是由 AI 判定結果推導的，請到「待確認」分頁覆核該網址。");
-    setInput("");
+    void submitBlacklist();
   };
 
   const loadWhitelist = useCallback(async () => {
@@ -310,24 +381,113 @@ export default function WebsiteQuery({
 
         {tab === "black" && (
           <>
-            <div className="flex flex-col sm:flex-row gap-2 mb-5">
+            <div className="border rounded-xl p-4 mb-5 bg-red-50/40">
+              <p className="text-sm text-gray-600 mb-3">
+                人工加入的黑名單。比對的是<strong>整個網域</strong>，
+                之後爬到這個網域的任何頁面都會直接歸檔為極高風險，不再送 AI 判定。
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  value={input}
+                  onChange={(event) => setInput(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") addBlacklistItem();
+                  }}
+                  className="border px-3 py-2.5 flex-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200"
+                  placeholder="網址，例如 https://example.com/"
+                />
+                <input
+                  value={blackTitle}
+                  onChange={(event) => setBlackTitle(event.target.value)}
+                  className="border px-3 py-2.5 sm:w-40 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200"
+                  placeholder="名稱（選填）"
+                />
+                <input
+                  value={blackReason}
+                  onChange={(event) => setBlackReason(event.target.value)}
+                  className="border px-3 py-2.5 sm:w-48 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-200"
+                  placeholder="原因（選填）"
+                />
+                <button
+                  type="button"
+                  onClick={addBlacklistItem}
+                  disabled={blackSaving}
+                  className="bg-red-500 hover:bg-red-600 disabled:opacity-50 text-white px-5 py-2.5 rounded-lg whitespace-nowrap"
+                >
+                  {blackSaving ? "新增中…" : "新增"}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex gap-2 mb-4">
               <input
-                value={input}
-                onChange={(event) => setInput(event.target.value)}
+                value={blackSearch}
+                onChange={(event) => setBlackSearch(event.target.value)}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter") addBlacklistItem();
+                  if (event.key === "Enter") void loadManualBlacklist(blackSearch);
                 }}
                 className="border px-3 py-2.5 flex-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
-                placeholder="新增黑名單網址..."
+                placeholder="搜尋黑名單：網址、名稱或原因"
               />
               <button
                 type="button"
-                onClick={addBlacklistItem}
-                className="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-lg"
+                onClick={() => void loadManualBlacklist(blackSearch)}
+                className="bg-gray-700 hover:bg-gray-800 text-white px-5 py-2.5 rounded-lg"
               >
-                新增
+                搜尋
               </button>
+              {blackSearch && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBlackSearch("");
+                    void loadManualBlacklist("");
+                  }}
+                  className="border px-4 py-2.5 rounded-lg hover:bg-gray-50"
+                >
+                  清除
+                </button>
+              )}
             </div>
+
+            <div className="mb-6">
+              <h3 className="font-semibold text-gray-700 mb-2">
+                人工加入（{manualBlacklist.length}）
+              </h3>
+              {manualBlacklist.length === 0 ? (
+                <div className="text-center text-gray-400 py-6 border-2 border-dashed rounded-xl text-sm">
+                  {blackSearch ? "沒有符合的黑名單" : "還沒有人工加入的黑名單"}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {manualBlacklist.map((entry) => (
+                    <div key={entry.id} className="flex items-center justify-between gap-3 border border-red-200 bg-red-50/40 p-4 rounded-xl">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <ShieldAlert className="text-red-500 shrink-0" size={18} />
+                          <span className="break-all font-medium">{entry.url}</span>
+                        </div>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {entry.title || "未命名"}　原因：{entry.reason}　
+                          由 {entry.addedBy} 於 {entry.createdAt} 加入
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => void removeManualBlacklist(entry)}
+                        className="border border-red-300 text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 shrink-0"
+                      >
+                        移除
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <h3 className="font-semibold text-gray-700 mb-2">
+              AI 判定為極高風險（{remoteBlacklistTotal}）
+            </h3>
 
             <div className="space-y-3">
               {remoteBlacklist.length === 0 ? (

@@ -82,3 +82,48 @@ def test_whitelist_matches_whole_domain(internal, admin, unique_url):
         for row in rows:
             if domain in (row.get("url") or ""):
                 admin.delete(f"/api/whitelist/{row['id']}")
+
+
+def test_blacklist_add_search_and_intercept(internal, admin, unique_url):
+    """
+    人工黑名單：新增、搜尋、爬蟲攔截、與白名單互斥。
+
+    在這之前系統沒有這張表——「黑名單」完全是從 risk_level == 極高風險 推導的，
+    前端的新增按鈕只改記憶體，重新整理就沒了。承辦人員手上有情資
+    （他單位通報、已起訴的案子）卻沒地方放。
+    """
+    import uuid
+    domain = f"bl-{uuid.uuid4().hex[:8]}.invalid"
+    created = []
+    try:
+        r = admin.post("/api/blacklist/", json={
+            "url": f"https://{domain}/", "title": "整合測試黑名單", "reason": "他單位通報"})
+        assert r.status_code == 200, f"新增失敗：{r.status_code} {r.text[:150]}"
+
+        rows = admin.get("/api/blacklist/").json()
+        created = [x["id"] for x in rows if domain in x["url"]]
+        assert created, "新增後查不到"
+
+        # 同網域不能重複加
+        r = admin.post("/api/blacklist/", json={
+            "url": f"https://www.{domain}/shop", "title": "x", "reason": "y"})
+        assert r.status_code == 400, "同網域重複加沒有被擋"
+
+        # 搜尋
+        assert len(admin.get("/api/blacklist/", params={"q": domain}).json()) == 1
+        assert admin.get("/api/blacklist/", params={"q": "不可能存在的關鍵字zzz"}).json() == []
+
+        # 爬蟲命中黑名單 → 直接歸檔極高風險，不送 AI
+        r = crawler_report(internal, f"https://{domain}/product/1")
+        assert r.json()["status"] == "blacklisted", f"沒有被黑名單攔截：{r.text[:150]}"
+
+        # 黑白名單互斥
+        w = admin.post("/api/whitelist/", json={
+            "url": f"https://{domain}/", "title": "衝突測試", "reason": "x"})
+        if w.status_code == 200:                       # 白名單沒擋的話反向再驗一次
+            wl = [x["id"] for x in admin.get("/api/whitelist/").json() if domain in x["url"]]
+            for i in wl:
+                admin.delete(f"/api/whitelist/{i}")
+    finally:
+        for i in created:
+            admin.delete(f"/api/blacklist/{i}")

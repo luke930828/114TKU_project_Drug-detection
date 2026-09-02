@@ -8,7 +8,7 @@ import database
 from schemas import WebsiteReport
 from dependencies import get_db, verify_admin, verify_internal_token, log_audit_action
 from utils import (calculate_multimodal_risk_100_scale, dispatch_to_ai_engines,
-                   is_whitelisted, needs_review)
+                   is_blacklisted, is_whitelisted, needs_review)
 import traceback
 
 router = APIRouter(tags=["自動爬蟲管理"])
@@ -86,6 +86,36 @@ def receive_crawler_raw_data(
                 "status": "skipped", 
                 "message": f"攔截成功：網址 {report.url} 位於白名單中 ({white.title})，已自動放行。"
             }
+        # 人工黑名單：已經有情資確認是毒品網站，不必再花 NLP + YOLO 去判一次。
+        # 直接歸檔為極高風險。順帶省下運算與 base64 的儲存空間。
+        black = is_blacklisted(db, report.url)
+        if black:
+            print(f"[人工黑名單] 網址 {report.url} 命中黑名單 ({black.title})，直接歸檔為極高風險。")
+            existing = db.query(database.SuspectWebsite).filter(
+                database.SuspectWebsite.url == report.url).first()
+            if not existing:
+                db.add(database.SuspectWebsite(
+                    url=report.url,
+                    title=f"[{report.task_type}] 人工黑名單",
+                    keywords_found=", ".join(report.keywords or [])[:500],
+                    reported_by="爬蟲端自動上傳",
+                    html_content=report.text_content or "",
+                    images_data="[]",          # 已確認的站不必再留圖佔空間
+                ))
+            ai_row = db.query(database.AIAnalysisResult).filter(
+                database.AIAnalysisResult.url == report.url).first()
+            if not ai_row:
+                ai_row = database.AIAnalysisResult(url=report.url)
+                db.add(ai_row)
+            ai_row.risk_score = 100
+            ai_row.risk_level = "極高風險"
+            ai_row.nlp_details = f"人工黑名單：{black.reason or black.title or '已確認'}"[:500]
+            ai_row.yolo_details = "人工黑名單，未經影像分析"
+            ai_row.task_source = f"[{report.task_type}] 爬蟲自動通報"
+            db.commit()
+            return {"status": "blacklisted",
+                    "message": f"網址 {report.url} 命中人工黑名單（{black.title}），已直接歸檔為極高風險。"}
+
         html_text = report.text_content if report.text_content else ""
         if "非毒品" in html_text or "無法正常登入" in html_text or "無法登入" in html_text:
             print(f" [攔截機制啟動] 爬蟲遇到需登入或非目標網站 ({report.url})，直接歸檔為 0 分！")

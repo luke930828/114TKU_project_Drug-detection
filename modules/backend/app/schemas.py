@@ -88,6 +88,12 @@ class WhitelistCreate(BaseModel):
     reason: str = Field(max_length=255)
 
 
+class BlacklistCreate(BaseModel):
+    url: str = Field(min_length=1, max_length=768)         # blacklist_websites 各欄位
+    title: str = Field(default="", max_length=100)
+    reason: str = Field(default="", max_length=255)
+
+
 #  內部通訊區 
 class WebsiteReport(BaseModel):
     """

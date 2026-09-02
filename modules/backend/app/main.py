@@ -5,7 +5,7 @@ import os
 import secrets
 import uuid
 import database
-from routers import auth, scan, crawler, whitelist, ai_engine, export, users
+from routers import auth, scan, crawler, whitelist, ai_engine, export, users, blacklist
 
 from password import hash_password as get_password_hash
 
@@ -125,6 +125,7 @@ app.include_router(auth.router)
 app.include_router(scan.router)
 app.include_router(crawler.router)
 app.include_router(whitelist.router)
+app.include_router(blacklist.router)
 app.include_router(ai_engine.router)
 app.include_router(export.router)
 app.include_router(users.router)

@@ -82,6 +82,24 @@ class WhitelistWebsite(Base):
     added_by = Column(String(50)) 
     created_at = Column(DateTime, default=func.now())
 
+class BlacklistWebsite(Base):
+    """
+    人工加入的黑名單。跟白名單對稱。
+
+    在這之前系統的「黑名單」是從 ai_analysis_results.risk_level == 極高風險
+    推導出來的，沒有辦法人工把一個網址直接標為毒品網站——承辦人員手上有
+    情資但系統裡沒地方放。
+    """
+    __tablename__ = "blacklist_websites"
+
+    id = Column(Integer, primary_key=True, index=True)
+    url = Column(String(768), unique=True, index=True, nullable=False)
+    title = Column(String(100))
+    reason = Column(String(255))
+    added_by = Column(String(50))
+    created_at = Column(DateTime, default=func.now())
+
+
 # 6. 定義：專門展示給前端看的 AI 分析結果表
 class AIAnalysisResult(Base):
     __tablename__ = "ai_analysis_results"
