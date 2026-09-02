@@ -81,6 +81,10 @@ class WhitelistWebsite(Base):
     reason = Column(String(255))
     added_by = Column(String(50)) 
     created_at = Column(DateTime, default=func.now())
+    # 怎麼進白名單的：一般新增 vs 誤判回報。
+    # 兩者的意義不同——「誤判回報」代表 AI 判錯過，那是模型改善的線索，
+    # 混在一起看就分不出「我們主動排除的正常網站」和「模型抓錯的網站」。
+    source = Column(String(20), default="一般新增")
 
 class BlacklistWebsite(Base):
     """

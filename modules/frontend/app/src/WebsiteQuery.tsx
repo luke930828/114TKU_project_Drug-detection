@@ -19,6 +19,8 @@ interface WhitelistEntry {
   reason: string;
   addedBy: string;
   createdAt: string;
+  /** 一般新增 / 誤判回報 */
+  source: string;
 }
 
 const normalizeWhitelistEntry = (
@@ -43,6 +45,9 @@ const normalizeWhitelistEntry = (
     createdAt: typeof entry.created_at === "string"
       ? entry.created_at.slice(0, 10)
       : "",
+    source: typeof entry.source === "string" && entry.source.trim()
+      ? entry.source
+      : "一般新增",
   };
 };
 
@@ -167,6 +172,40 @@ export default function WebsiteQuery({
     }
   };
 
+  // 搜尋兩邊都要帶到——使用者不會知道一個網址是人工加的還是 AI 判的。
+  const runBlackSearch = async () => {
+    await Promise.all([loadManualBlacklist(blackSearch), loadBuckets(blackSearch)]);
+  };
+
+  const reportFalsePositive = async (site: PendingWebsite) => {
+    if (!site.id) {
+      alert("這筆缺少識別碼，無法回報。");
+      return;
+    }
+    const reason = window.prompt(
+      `回報「${site.url}」為誤判？\n\n` +
+        "確認後會把這個網域加入白名單，之後爬蟲遇到它會直接放行、不再判定。\n" +
+        "（單純刪除沒有用——下次爬到還是會重新分析、重新出現。）\n\n" +
+        "請輸入誤判原因：",
+      "實際是合法網站"
+    );
+    if (reason === null) return;
+    try {
+      const qs = reason.trim() ? `?reason=${encodeURIComponent(reason.trim())}` : "";
+      const response = await authFetch(
+        `/api/crawler/result/${site.id}/false-positive/${qs}`,
+        { method: "POST" }
+      );
+      if (!response.ok) throw new Error(await getErrorMessage(response));
+      const result = (await response.json()) as { message?: string };
+      onReviewed?.();
+      await Promise.all([loadBuckets(blackSearch), loadWhitelist()]);
+      alert(result.message ?? "已回報誤判");
+    } catch (requestError) {
+      alert(requestError instanceof Error ? requestError.message : "回報失敗");
+    }
+  };
+
   const confirmAsBlacklist = async (site: PendingWebsite) => {
     if (!site.id) {
       alert("這筆缺少識別碼，無法確認。");
@@ -184,11 +223,12 @@ export default function WebsiteQuery({
     }
   };
 
-  const loadBuckets = useCallback(async () => {
+  const loadBuckets = useCallback(async (keyword = "") => {
     setBucketLoading(true);
+    const q = keyword.trim() ? `&q=${encodeURIComponent(keyword.trim())}` : "";
     try {
       const [blackRes, pendingRes] = await Promise.all([
-        authFetch("/api/crawler/automated_24h_list/?bucket=blacklist&limit=200"),
+        authFetch(`/api/crawler/automated_24h_list/?bucket=blacklist&limit=200${q}`),
         authFetch("/api/crawler/automated_24h_list/?bucket=pending&limit=200"),
       ]);
       if (blackRes.ok) {
@@ -424,14 +464,14 @@ export default function WebsiteQuery({
                 value={blackSearch}
                 onChange={(event) => setBlackSearch(event.target.value)}
                 onKeyDown={(event) => {
-                  if (event.key === "Enter") void loadManualBlacklist(blackSearch);
+                  if (event.key === "Enter") void runBlackSearch();
                 }}
                 className="border px-3 py-2.5 flex-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
                 placeholder="搜尋黑名單：網址、名稱或原因"
               />
               <button
                 type="button"
-                onClick={() => void loadManualBlacklist(blackSearch)}
+                onClick={() => void runBlackSearch()}
                 className="bg-gray-700 hover:bg-gray-800 text-white px-5 py-2.5 rounded-lg"
               >
                 搜尋
@@ -442,6 +482,7 @@ export default function WebsiteQuery({
                   onClick={() => {
                     setBlackSearch("");
                     void loadManualBlacklist("");
+                    void loadBuckets("");
                   }}
                   className="border px-4 py-2.5 rounded-lg hover:bg-gray-50"
                 >
@@ -503,12 +544,11 @@ export default function WebsiteQuery({
                     </div>
                     <button
                       type="button"
-                      onClick={() =>
-                        alert("黑名單由 AI 判定結果推導，要移除請將該網址加入白名單。")
-                      }
-                      className="text-gray-500 hover:text-red-500 shrink-0"
+                      onClick={() => void reportFalsePositive(item)}
+                      className="border border-amber-400 text-amber-700 hover:bg-amber-50 px-4 py-2 rounded-lg shrink-0 whitespace-nowrap"
+                      title="這不是毒品網站？回報誤判會把該網域加入白名單"
                     >
-                      刪除
+                      回報誤判
                     </button>
                   </div>
                 ))
@@ -566,14 +606,36 @@ export default function WebsiteQuery({
                   目前沒有白名單資料
                 </div>
               ) : (
-                whitelistEntries.map((entry) => (
+                (() => {
+                  // 誤判回報與一般新增分開顯示。兩者意義不同：
+                  // 「誤判回報」代表模型判錯過，那是改善模型的線索；
+                  // 「一般新增」是我們主動排除的已知正常網站。
+                  // 混在一起看就分不出模型到底錯在哪裡。
+                  const groups: Array<[string, string, WhitelistEntry[]]> = [
+                    ["誤判回報", "AI 判錯、由人工回報後加入的。這些是改善模型的線索。",
+                     whitelistEntries.filter((e) => e.source === "誤判回報")],
+                    ["一般新增", "主動排除的已知正常網站。",
+                     whitelistEntries.filter((e) => e.source !== "誤判回報")],
+                  ];
+                  return groups
+                    .filter(([, , rows]) => rows.length > 0)
+                    .map(([label, hint, rows]) => (
+                      <div key={label} className="mb-5">
+                        <h3 className="font-semibold text-gray-700">
+                          {label}（{rows.length}）
+                        </h3>
+                        <p className="mb-2 text-sm text-gray-500">{hint}</p>
+                        <div className="space-y-2">
+                          {rows.map((entry) => (
                   <div key={entry.id} className="flex flex-col justify-between gap-3 rounded-xl border p-4 sm:flex-row sm:items-center">
                     <div className="flex min-w-0 items-start gap-3">
                       <ShieldCheck className="mt-0.5 shrink-0 text-green-500" />
                       <div className="min-w-0">
                         <p className="font-medium text-gray-800">{entry.title}</p>
                         <p className="mt-1 break-all text-blue-600">{entry.url}</p>
-                        <p className="mt-1 text-sm text-gray-500">原因：{entry.reason}</p>
+                        <p className="mt-1 text-sm text-gray-500">
+                          原因：{entry.reason}　由 {entry.addedBy} 於 {entry.createdAt} 加入
+                        </p>
                       </div>
                     </div>
                     <button
@@ -584,7 +646,11 @@ export default function WebsiteQuery({
                       刪除
                     </button>
                   </div>
-                ))
+                          ))}
+                        </div>
+                      </div>
+                    ));
+                })()
               )}
             </div>
           </>

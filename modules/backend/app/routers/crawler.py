@@ -8,7 +8,8 @@ import database
 from schemas import WebsiteReport
 from dependencies import get_db, verify_admin, verify_internal_token, log_audit_action
 from utils import (calculate_multimodal_risk_100_scale, dispatch_to_ai_engines,
-                   is_blacklisted, is_whitelisted, needs_review)
+                   is_blacklisted, is_whitelisted, needs_review,
+                   registrable_domain)
 import traceback
 
 router = APIRouter(tags=["自動爬蟲管理"])
@@ -198,6 +199,59 @@ def receive_crawler_raw_data(
         print(f"嚴重錯誤：/api/crawler/report/ 處理失敗（{report.url}）：{e!r}")
         traceback.print_exc()
         raise HTTPException(status_code=500, detail="伺服器內部錯誤，請聯繫系統管理員")
+@router.post("/api/crawler/result/{result_id}/false-positive/",
+             summary="人工覆核：回報誤判，並把該網域加入白名單")
+def report_false_positive(
+    result_id: int,
+    reason: str = Query("", max_length=255, description="誤判原因"),
+    db: Session = Depends(get_db),
+    current_admin: database.User = Depends(verify_admin),
+):
+    """
+    AI 判定的黑名單只提供這一個動作，不提供「單純刪除」。
+
+    因為單純刪除沒有意義：那一筆刪掉之後，下次爬蟲爬到同一個網址還是會
+    重新分析、重新出現，使用者會一直刪同一個東西。要讓它真的不再出現，
+    就得把網域加進白名單——那才是「這個站是正常的」這件事的正確表達。
+
+    白名單那筆會標記 source=誤判回報，跟主動排除的正常網站分開顯示。
+    兩者的意義不同：「誤判回報」代表模型判錯過，那是改善模型的線索，
+    混在一起就看不出模型到底錯在哪裡。
+    """
+    row = db.query(database.AIAnalysisResult).filter(
+        database.AIAnalysisResult.id == result_id).first()
+    if not row:
+        raise HTTPException(status_code=404, detail="找不到該筆分析結果")
+
+    url, level = row.url, row.risk_level
+    domain = registrable_domain(url)
+    if not domain:
+        raise HTTPException(status_code=400, detail="網址解析不出網域，無法加入白名單。")
+
+    already = is_whitelisted(db, url)
+    if not already:
+        db.add(database.WhitelistWebsite(
+            url=url,
+            title=f"誤判回報：{domain}"[:100],
+            reason=(reason or f"AI 誤判為{level}")[:255],
+            added_by=current_admin.account,
+            source="誤判回報",
+        ))
+
+    db.delete(row)
+    db.commit()
+
+    log_audit_action(
+        db, current_admin.user_id, "回報誤判",
+        f"回報 {url} 為誤判（原判定：{level}），網域 {domain} 已加入白名單。"
+        f"{('原因：' + reason) if reason else ''}"[:500],
+    )
+    return {"status": "success", "id": result_id, "url": url, "domain": domain,
+            "before": level, "whitelisted": not bool(already),
+            "message": f"已回報誤判，{domain} 已加入白名單" if not already
+                       else f"已回報誤判，{domain} 原本就在白名單中"}
+
+
 @router.post("/api/crawler/result/{result_id}/confirm/",
              summary="人工覆核：確認這筆是毒品網站")
 def confirm_result(result_id: int, db: Session = Depends(get_db),
@@ -257,6 +311,7 @@ def get_automated_24h_results(
         None,
         description="blacklist=極高風險；pending=待人工覆核（高風險+中風險）；不給則全部",
     ),
+    q: Optional[str] = Query(None, description="關鍵字搜尋：網址"),
 ):
     
     base_query = db.query(database.AIAnalysisResult).filter(
@@ -270,6 +325,10 @@ def get_automated_24h_results(
     # 不是「已經確認是毒品網站」。以前前端把極高+高一起塞進黑名單，
     # 結果 1540 筆標著「優先人工覆核」的網站一次都沒被人看過——
     # 待確認清單裡只有 35 筆「建議」覆核的。優先順序整個顛倒。
+    if q and q.strip():
+        base_query = base_query.filter(
+            database.AIAnalysisResult.url.like(f"%{q.strip()}%"))
+
     if bucket == "blacklist":
         base_query = base_query.filter(
             database.AIAnalysisResult.risk_level == "極高風險")

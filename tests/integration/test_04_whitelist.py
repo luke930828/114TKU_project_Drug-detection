@@ -1,6 +1,6 @@
 """白名單：加進去之後，爬蟲端與手動掃描端都要放行。"""
 import pytest
-from helpers import crawler_report, find_result
+from helpers import crawler_report, find_result, wait_for
 
 pytestmark = pytest.mark.integration
 
@@ -127,3 +127,56 @@ def test_blacklist_add_search_and_intercept(internal, admin, unique_url):
     finally:
         for i in created:
             admin.delete(f"/api/blacklist/{i}")
+
+
+def test_false_positive_report_adds_to_whitelist(internal, admin, unique_url):
+    """
+    AI 判定的黑名單只提供「回報誤判」，不提供單純刪除。
+
+    單純刪除沒有意義：那一筆刪掉之後，下次爬蟲爬到同一個網址還是會重新分析、
+    重新出現，使用者會一直刪同一個東西。要讓它真的不再出現，就得把網域加進
+    白名單——那才是「這個站是正常的」這件事的正確表達。
+
+    白名單那筆要標記 source=誤判回報，跟主動排除的正常網站分開統計：
+    前者代表模型判錯過，是改善模型的線索。
+    """
+    # 造一筆極高風險
+    internal.post("/api/nlp/report/",
+                  json={"url": unique_url, "risk_score": 95, "nlp_keywords": ["t"]})
+    internal.post("/api/ai_result/report/",
+                  json={"url": unique_url, "risk_score": 95, "yolo_objects": ["t"]})
+    row = wait_for(lambda: find_result(admin, unique_url), what="極高風險紀錄")
+    assert row["risk_level"] == "極高風險", row["risk_level"]
+
+    created = []
+    try:
+        r = admin.post(f"/api/crawler/result/{row['id']}/false-positive/",
+                       params={"reason": "整合測試：實際是合法網站"})
+        assert r.status_code == 200, f"回報失敗：{r.status_code} {r.text[:150]}"
+        assert r.json()["whitelisted"] is True
+
+        # 分析結果被移除
+        assert find_result(admin, unique_url) is None, "回報誤判後那筆仍在清單上"
+
+        # 白名單多了一筆，而且標記為誤判回報
+        entries = admin.get("/api/whitelist/").json()
+        hit = [e for e in entries if e["url"] == unique_url]
+        assert hit, "回報誤判後白名單沒有那一筆"
+        created = [e["id"] for e in hit]
+        assert hit[0]["source"] == "誤判回報", (
+            f"來源標記錯誤：{hit[0].get('source')}——誤判回報要跟一般新增分開統計"
+        )
+
+        # 之後爬到同網域會直接放行
+        assert crawler_report(internal, unique_url).json()["status"] == "skipped"
+    finally:
+        for i in created:
+            admin.delete(f"/api/whitelist/{i}")
+
+
+def test_ai_blacklist_is_searchable(admin):
+    """AI 判定的黑名單也要能搜尋——使用者不會知道一個網址是人工加的還是 AI 判的。"""
+    r = admin.get("/api/crawler/automated_24h_list/",
+                  params={"bucket": "blacklist", "q": "zzz-不可能存在-zzz", "limit": 1})
+    assert r.status_code == 200
+    assert r.json()["total_count"] == 0, "搜尋沒有生效，關鍵字不存在卻有結果"

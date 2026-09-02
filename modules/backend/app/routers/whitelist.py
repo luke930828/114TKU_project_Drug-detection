@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
+from typing import Optional
 from sqlalchemy.orm import Session
 import database
 from schemas import WhitelistCreate
@@ -9,8 +10,20 @@ router = APIRouter(tags=["白名單維護"])
 # 模組六：白名單維護管理
 
 @router.get("/api/whitelist/", summary="查看白名單清單 (限管理員)")
-def list_whitelist(db: Session = Depends(get_db), current_admin: database.User = Depends(verify_admin)):
-    return db.query(database.WhitelistWebsite).all()
+def list_whitelist(
+    db: Session = Depends(get_db),
+    current_admin: database.User = Depends(verify_admin),
+    q: Optional[str] = Query(None, description="關鍵字搜尋：網址、標題或原因"),
+):
+    query = db.query(database.WhitelistWebsite)
+    if q:
+        like = f"%{q.strip()}%"
+        query = query.filter(
+            database.WhitelistWebsite.url.like(like)
+            | database.WhitelistWebsite.title.like(like)
+            | database.WhitelistWebsite.reason.like(like)
+        )
+    return query.order_by(database.WhitelistWebsite.created_at.desc()).all()
 
 # 👇 這裡把 verify_super_admin 換成了 verify_admin
 @router.post("/api/whitelist/", summary="管理員：新增白名單")
@@ -19,7 +32,9 @@ def add_whitelist(data: WhitelistCreate, admin: database.User = Depends(verify_a
     if existing:
         raise HTTPException(status_code=400, detail="該網址已存在於白名單中。")
         
-    new_white = database.WhitelistWebsite(url=data.url, title=data.title, reason=data.reason, added_by=admin.account)
+    new_white = database.WhitelistWebsite(
+        url=data.url, title=data.title, reason=data.reason,
+        added_by=admin.account, source=data.source or "一般新增")
     db.add(new_white)
     db.commit()
     
