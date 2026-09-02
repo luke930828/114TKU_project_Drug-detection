@@ -29,6 +29,7 @@ def receive_ai_analysis_result(
         existing_record.class_metadata = report.class_metadata
         existing_record.representative_image_base64 = report.representative_image_base64
         existing_record.representative_image_detections = report.representative_image_detections
+        existing_record.ocr_results = report.ocr_results
         
         current_nlp_score = existing_record.nlp_score or 0
         final_score, level = calculate_multimodal_risk_100_scale(current_nlp_score, existing_record.yolo_score)
@@ -47,6 +48,7 @@ def receive_ai_analysis_result(
                 class_metadata=report.class_metadata,
                 representative_image_base64=report.representative_image_base64,
                 representative_image_detections=report.representative_image_detections,
+                ocr_results=report.ocr_results,
                 task_source=source_title
             )
             db.add(new_record)
@@ -63,6 +65,7 @@ def receive_ai_analysis_result(
                 real_existing.class_metadata = report.class_metadata
                 real_existing.representative_image_base64 = report.representative_image_base64
                 real_existing.representative_image_detections = report.representative_image_detections
+                real_existing.ocr_results = report.ocr_results
                 real_existing.task_source = source_title
                 current_nlp_score = real_existing.nlp_score or 0
                 final_score, level = calculate_multimodal_risk_100_scale(current_nlp_score, real_existing.yolo_score)

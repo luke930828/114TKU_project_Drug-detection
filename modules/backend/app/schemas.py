@@ -108,6 +108,8 @@ class YOLOAnalysisReport(BaseModel):
     class_metadata: Optional[Dict[str, Any]] = None
     representative_image_base64: Optional[str] = None
     representative_image_detections: Optional[List[Dict[str, Any]]] = None
+    # OCR 引擎的結果格式可能隨模型版本而改變（清單或物件），以 JSON 原樣保存。
+    ocr_results: Optional[Any] = None
 
 class NLPAnalysisReport(BaseModel):
     url: str

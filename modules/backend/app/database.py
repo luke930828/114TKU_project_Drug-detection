@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text, JSON, Boolean
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text, JSON, Boolean, inspect, text
 from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 from datetime import datetime
@@ -101,12 +101,32 @@ class AIAnalysisResult(Base):
     class_metadata = Column(JSON, nullable=True) 
     representative_image_base64 = Column(LONGTEXT, nullable=True)
     representative_image_detections = Column(JSON, nullable=True)
+    # OCR 是由影像分析引擎回傳的結構化結果；保留 JSON，避免把每個辨識框拆成
+    # 多張資料表後破壞既有 API 的回傳格式。
+    ocr_results = Column(JSON, nullable=True)
     task_source = Column(String(100), default="未知來源")
     created_at = Column(DateTime, default=func.now())
+
+
+def initialize_database():
+    """建立新表並以非破壞方式補齊既有資料庫缺少的欄位。"""
+    Base.metadata.create_all(bind=engine)
+
+    # create_all 只會建不存在的表，絕不會 ALTER 已存在的表；因此 OCR 上線時
+    # 舊的 ai_analysis_results 必須在啟動階段額外補欄位。先檢查可讓此程序安全
+    # 地重複執行，且不會覆寫任何既有資料。
+    inspector = inspect(engine)
+    columns = {column["name"] for column in inspector.get_columns("ai_analysis_results")}
+    if "ocr_results" not in columns:
+        with engine.begin() as connection:
+            connection.execute(text(
+                "ALTER TABLE ai_analysis_results ADD COLUMN ocr_results JSON NULL"
+            ))
+        print("已新增 ai_analysis_results.ocr_results 欄位")
 
 
 #  7. 執行建立資料表的指令 
 if __name__ == "__main__":
     print("正在連線資料庫並建立資料表...")
-    Base.metadata.create_all(bind=engine)
+    initialize_database()
     print(" 資料表建立完成！")

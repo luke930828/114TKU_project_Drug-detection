@@ -181,7 +181,8 @@ def get_automated_24h_results(
             "nlp_score": ai_record.nlp_score,
             "class_metadata": ai_record.class_metadata,
             "representative_image_base64": ai_record.representative_image_base64,
-            "representative_image_detections": ai_record.representative_image_detections
+            "representative_image_detections": ai_record.representative_image_detections,
+            "ocr_results": ai_record.ocr_results,
         })
 
     return {

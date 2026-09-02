@@ -64,7 +64,9 @@ def init_default_admin(db):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("🚀 伺服器啟動中，連線至資料庫...")
-    # 注意：這裡假設你的 database.py 裡面是用 SessionLocal 來建立連線
+    # Docker 會在 uvicorn 前執行一次；保留這次呼叫讓直接以 uvicorn 啟動的
+    # 開發環境也能補齊既有資料表的 OCR 欄位。此程序可安全重複執行。
+    database.initialize_database()
     db = database.SessionLocal()
     try:
         init_default_admin(db)
