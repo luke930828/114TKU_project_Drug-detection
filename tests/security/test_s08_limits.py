@@ -121,3 +121,85 @@ def test_search_keyword_length_capped(admin):
         assert r.status_code in (400, 422), (
             f"{endpoint} 接受了 10000 字元的搜尋關鍵字（HTTP {r.status_code}）"
         )
+
+
+@known_vuln("SEC-16")
+@pytest.mark.parametrize("path,body,why", [
+    ("/api/nlp/report/",
+     {"url": "A" * 100_000, "risk_score": 1, "nlp_keywords": []},
+     "url 超過 varchar(768)"),
+    ("/api/nlp/report/",
+     {"url": "https://t.invalid/", "risk_score": 1,
+      "nlp_keywords": ["k" * 100_000]},
+     "單一關鍵字超長"),
+    ("/api/nlp/report/",
+     {"url": "https://t.invalid/", "risk_score": 1,
+      "nlp_keywords": ["k"] * 5000},
+     "關鍵字數量過多"),
+    ("/api/nlp/report/",
+     {"url": "https://t.invalid/", "risk_score": 99999, "nlp_keywords": []},
+     "分數超出 0~100"),
+    ("/api/ai_result/report/",
+     {"url": "A" * 100_000, "risk_score": 1, "yolo_objects": []},
+     "url 超過 varchar(768)"),
+    ("/api/ai_result/report/",
+     {"url": "https://t.invalid/", "risk_score": 1,
+      "yolo_objects": ["o" * 100_000]},
+     "單一物件名稱超長"),
+])
+def test_ai_report_fields_are_bounded(internal, path, body, why):
+    """
+    兩個 AI 回報端點的每個欄位都要有上限。
+
+    這兩個模型原本一個上限都沒有——實測 1 MB 的 url 讓請求 500
+    （ai_analysis_results.url 是 varchar(768)，寫入時 MySQL 丟 DataError），
+    50 個 1 MB 的關鍵字串接後寫進 varchar(500) 的 nlp_details 也是 500。
+
+    注意 List 的 max_length 限的是「項目數量」不是「每個字串的長度」，
+    兩者都要擋，第一次只加了前者所以 50×1MB 還是穿過去。
+
+    端點雖然要 internal token，但那個 token 存在五個容器裡，
+    任何一個被打下來就等於可以往資料庫塞任意大的資料。
+    """
+    r = internal.post(path, json=body)
+    assert r.status_code in (400, 422), (
+        f"{path} 收下了不合理的輸入（{why}），HTTP {r.status_code}"
+    )
+
+
+@known_vuln("SEC-16")
+def test_export_date_format_validated(admin):
+    """
+    匯出的日期參數要驗格式。
+
+    沒驗的話 start_date="' OR 1=1--" 會讓 MySQL 在比較時丟例外、請求 500。
+    SQLAlchemy 有參數化所以注入不會成立，但 500 對使用者毫無資訊，
+    而且那是「把使用者輸入直接當日期用」的徵兆。
+    """
+    for bad in ("abc", "' OR 1=1--", "2026-13-45", "2026/08/01"):
+        r = admin.get("/api/export/ai_results_excel/", params={"start_date": bad})
+        assert r.status_code == 400, (
+            f"start_date={bad!r} 沒有被擋（HTTP {r.status_code}）"
+        )
+    # 正常的日期還是要能用
+    r = admin.get("/api/export/ai_results_excel/", params={"start_date": "2026-01-01"})
+    assert r.status_code == 200, f"合法日期被擋掉了（HTTP {r.status_code}）"
+
+
+@known_vuln("SEC-16")
+def test_bucket_only_accepts_known_values(admin):
+    """
+    bucket 要限定合法值。
+
+    不限的話打錯字（bucket=blaclist）會靜靜地回傳全部資料，
+    呼叫端以為自己有過濾、其實沒有——那比直接報錯難查得多。
+    """
+    for bad in ("<script>", "blaclist", "'; DROP TABLE users; --", "all"):
+        r = admin.get("/api/crawler/automated_24h_list/",
+                      params={"bucket": bad, "limit": 1})
+        assert r.status_code == 422, f"bucket={bad!r} 沒有被擋（HTTP {r.status_code}）"
+
+    for good in ("blacklist", "pending"):
+        r = admin.get("/api/crawler/automated_24h_list/",
+                      params={"bucket": good, "limit": 1})
+        assert r.status_code == 200, f"bucket={good} 被誤擋（HTTP {r.status_code}）"

@@ -6,13 +6,14 @@ from typing import Optional
 import pandas as pd
 import io
 import database
+from datetime import datetime
 
 router = APIRouter(tags=["報表匯出模組"])
 
 @router.get("/api/export/ai_results_excel/", summary="匯出 AI 分析結果資料表")
 def export_raw_results_to_excel(
-    start_date: Optional[str] = Query(None, description="開始日期 (YYYY-MM-DD)"),
-    end_date: Optional[str] = Query(None, description="結束日期 (YYYY-MM-DD)"),
+    start_date: Optional[str] = Query(None, max_length=32, description="開始日期 (YYYY-MM-DD)"),
+    end_date: Optional[str] = Query(None, max_length=32, description="結束日期 (YYYY-MM-DD)"),
     db: Session = Depends(get_db),
     # 匯出是把「全部蒐證資料」一次帶走，不是一般查詢——限管理員（SEC-12）。
     # 原本是 get_current_user，任何登入者都能整包下載。
@@ -26,10 +27,26 @@ def export_raw_results_to_excel(
         database.AIAnalysisResult.created_at 
     )
     
+    # 日期一定要先驗格式再丟進查詢。
+    # 沒驗的話 start_date="' OR 1=1--" 會讓 MySQL 在比較時丟例外，
+    # 整個請求 500——雖然 SQLAlchemy 有參數化、注入不會成立，
+    # 但把使用者輸入直接當日期比較本來就會炸，而且 500 對使用者毫無資訊。
+    def _as_date(value: str, field: str) -> str:
+        try:
+            return datetime.strptime(value.strip(), "%Y-%m-%d").strftime("%Y-%m-%d")
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail=f"{field} 的格式不正確，要 YYYY-MM-DD（收到：{value[:30]}）",
+            )
+
     if start_date:
-        query = query.filter(database.AIAnalysisResult.created_at >= start_date)
+        query = query.filter(
+            database.AIAnalysisResult.created_at >= _as_date(start_date, "start_date"))
     if end_date:
-        query = query.filter(database.AIAnalysisResult.created_at <= f"{end_date} 23:59:59")
+        query = query.filter(
+            database.AIAnalysisResult.created_at
+            <= f"{_as_date(end_date, 'end_date')} 23:59:59")
         
     results = query.all()
     

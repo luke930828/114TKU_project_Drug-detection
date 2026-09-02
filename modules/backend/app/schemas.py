@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, StringConstraints, field_validator
+from typing import Annotated
 from typing import List, Dict, Any, Optional
 import ipaddress
 import socket
@@ -122,15 +123,37 @@ class WebsiteReport(BaseModel):
     text_content: Optional[str] = Field(None, max_length=1_000_000)
 
 class YOLOAnalysisReport(BaseModel):
-    url: str
-    risk_score: int
-    yolo_objects: List[str] = []
-    processed_images: Optional[List[str]] = []
+    """
+    YOLO 的回報。每個欄位都要有上限（SEC-16）。
+
+    這兩個 AI 回報模型原本一個上限都沒有：1 MB 的 url 讓請求 500
+    （ai_analysis_results.url 是 varchar(768)，寫入時 MySQL 丟 DataError），
+    1 MB 的 representative_image_base64 則被照單全收寫進 LONGTEXT。
+
+    ⚠️ List 的 max_length 限的是「項目數量」，不是每個字串的長度。
+    兩者都要擋——只加前者的話，一個 1 MB 的物件名稱照樣穿得過去。
+
+    端點雖然要 internal token，但那個 token 存在五個容器裡，
+    任何一個被打下來就等於可以往資料庫塞任意大的資料。
+    """
+    url: str = Field(..., max_length=768)          # ai_analysis_results.url
+    risk_score: int = Field(..., ge=0, le=100)
+    yolo_objects: List[Annotated[str, StringConstraints(max_length=200)]] = Field(
+        default=[], max_length=100)
+    processed_images: Optional[List[Annotated[str, StringConstraints(max_length=2000)]]] = Field(
+        default=[], max_length=100)
     class_metadata: Optional[Dict[str, Any]] = None
-    representative_image_base64: Optional[str] = None
-    representative_image_detections: Optional[List[Dict[str, Any]]] = None
+    # 實際的代表圖約 30 KB ~ 1 MB，10 MB 已經是很寬鬆的上限。
+    representative_image_base64: Optional[str] = Field(None, max_length=10_000_000)
+    representative_image_detections: Optional[List[Dict[str, Any]]] = Field(
+        default=None, max_length=500)
 
 class NLPAnalysisReport(BaseModel):
-    url: str
-    risk_score: int
-    nlp_keywords: List[str] = []
+    """NLP 的回報。上限的理由同 YOLOAnalysisReport。"""
+    url: str = Field(..., max_length=768)          # ai_analysis_results.url
+    risk_score: int = Field(..., ge=0, le=100)
+    # 清單長度與「每個項目的長度」是兩回事。max_length 用在 List 上限的是
+    # 項目數量，一個 1 MB 的關鍵字照樣進得來——實測 50 個 1 MB 的關鍵字
+    # 串接後寫進 varchar(500) 的 nlp_details，MySQL 丟 DataError、請求 500。
+    nlp_keywords: List[Annotated[str, StringConstraints(max_length=200)]] = Field(
+        default=[], max_length=100)

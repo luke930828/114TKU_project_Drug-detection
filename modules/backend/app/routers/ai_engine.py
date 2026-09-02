@@ -15,7 +15,12 @@ def receive_ai_analysis_result(
     db: Session = Depends(get_db),
     _internal: bool = Depends(verify_internal_token),
 ):
-    yolo_str = ", ".join(report.yolo_objects) if report.yolo_objects else "無檢出影像特徵"
+    # 一定要截斷：yolo_details / nlp_details 都是 varchar(500)，
+    # 串接後超長的話 MySQL 會丟 DataError，整個請求 500 而且分析結果不會寫進去。
+    # schema 已經擋掉離譜的輸入，這裡是第二層——欄位長度是資料庫的事實，
+    # 不該依賴呼叫端剛好沒送太長。
+    yolo_str = (", ".join(report.yolo_objects) if report.yolo_objects
+                else "無檢出影像特徵")[:500]
     existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
     suspect = db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == report.url).first()
     source_title = suspect.title if suspect else "未知來源"
@@ -77,7 +82,8 @@ def receive_nlp_analysis_result(
     db: Session = Depends(get_db),
     _internal: bool = Depends(verify_internal_token),
 ):
-    nlp_str = ", ".join(report.nlp_keywords) if report.nlp_keywords else "無檢出文字特徵"
+    nlp_str = (", ".join(report.nlp_keywords) if report.nlp_keywords
+               else "無檢出文字特徵")[:500]
     existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
     suspect = db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == report.url).first()
     source_title = suspect.title if suspect else "未知來源"

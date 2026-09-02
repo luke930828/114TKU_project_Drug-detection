@@ -307,8 +307,11 @@ def get_automated_24h_results(
     # 沒有上限時 limit=999999 會把整張表倒出來（SEC-16）。
     page: int = Query(1, ge=1, description="當前頁碼 (預設第 1 頁)"),
     limit: int = Query(50, ge=1, le=200, description="每頁顯示幾筆，上限 200"),
+    # pattern 限定合法值。不限的話打錯字（bucket=blaclist）會靜靜地回傳全部，
+    # 呼叫端以為自己有過濾、其實沒有——那比直接報錯難查得多。
     bucket: Optional[str] = Query(
         None,
+        pattern="^(blacklist|pending)$",
         description="blacklist=極高風險；pending=待人工覆核（高風險+中風險）；不給則全部",
     ),
     q: Optional[str] = Query(None, max_length=200,
