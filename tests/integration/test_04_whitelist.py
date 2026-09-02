@@ -50,3 +50,35 @@ def test_delete_removes_it(admin, unique_url):
                if w["url"] == unique_url)
     assert admin.delete(f"/api/whitelist/{wid}").status_code == 200
     assert unique_url not in [w["url"] for w in admin.get("/api/whitelist/").json()]
+
+
+def test_whitelist_matches_whole_domain(internal, admin, unique_url):
+    """
+    白名單要擋整個網域，不是只擋加進去的那一個網址。
+
+    以前是拿完整網址做等值比對：加了 https://www.momoshop.com.tw/ 之後，
+    https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=12345 照樣被分析。
+    momo 有幾十萬個商品頁，一頁一頁加是不可能的——白名單形同無效。
+    """
+    import uuid
+    domain = f"wl-{uuid.uuid4().hex[:8]}.invalid"
+    r = admin.post("/api/whitelist/", json={
+        "url": f"https://www.{domain}/", "title": "測試白名單", "reason": "整合測試"})
+    assert r.status_code == 200, f"建立白名單失敗：{r.status_code} {r.text[:150]}"
+
+    try:
+        # 加進去的那一個網址
+        assert crawler_report(internal, f"https://www.{domain}/").json()["status"] == "skipped"
+        # 同網域的子頁面
+        assert crawler_report(
+            internal, f"https://www.{domain}/goods/detail?id=123").json()["status"] == "skipped", \
+            "子頁面沒有被白名單擋掉——白名單只比對完整網址"
+        # 沒有 www. 也算同一個站
+        assert crawler_report(internal, f"https://{domain}/x").json()["status"] == "skipped"
+        # 別的網域不受影響
+        assert crawler_report(internal, unique_url).json()["status"] != "skipped"
+    finally:
+        rows = admin.get("/api/whitelist/").json()
+        for row in rows:
+            if domain in (row.get("url") or ""):
+                admin.delete(f"/api/whitelist/{row['id']}")

@@ -1,5 +1,7 @@
 import os
 import uuid
+from urllib.parse import urlparse
+
 import requests
 
 # 分級門檻。crawler.py 的 24 小時清單也讀這裡，不要各寫一套
@@ -125,3 +127,37 @@ def dispatch_to_ai_engines(url: str, html_content: str, images: list):
                 print(f"    第 {index+1} 張派發成功！對方回應: {response.text}")
             except Exception as e:
                 print(f"    第 {index+1} 張圖片派發至 YOLO 失敗: {e}")
+
+def registrable_domain(url: str) -> str:
+    """
+    取出用來比對白名單的網域。www. 視為同一個站。
+
+    不用 tldextract：後端沒這個相依，而且白名單比的是「使用者輸入的那個站」，
+    不需要處理 co.uk 這種多段字尾——momo.com.tw 與 www.momo.com.tw
+    要視為同一個，剩下的交給完整網域字串比對就夠準了。
+    """
+    try:
+        host = (urlparse(url if "//" in url else f"//{url}").hostname or "").lower()
+    except ValueError:
+        return ""
+    return host[4:] if host.startswith("www.") else host
+
+
+def is_whitelisted(db, url: str):
+    """
+    這個網址所屬的網域在不在白名單裡。找到就回傳那一筆，否則 None。
+
+    以前是拿完整網址做等值比對，等於只擋得住白名單裡「一模一樣」的那一頁。
+    實測 https://www.momoshop.com.tw/ 加了白名單之後，
+    https://www.momoshop.com.tw/goods/GoodsDetail.jsp?i_code=12345 照樣被分析——
+    momo 有幾十萬個商品頁，一頁一頁加是不可能的，白名單形同無效。
+    改成比對網域。
+    """
+    import database
+    target = registrable_domain(url)
+    if not target:
+        return None
+    for row in db.query(database.WhitelistWebsite).all():
+        if registrable_domain(row.url) == target:
+            return row
+    return None

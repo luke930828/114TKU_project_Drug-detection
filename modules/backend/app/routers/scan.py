@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 import database
 from dependencies import get_db, get_current_user, log_audit_action
+from utils import is_whitelisted as is_whitelisted_domain
 from schemas import FrontendScanRequest
 
 router = APIRouter(tags=["網址即時識別模組"])
@@ -20,7 +21,8 @@ def scan_target_url(request_data: FrontendScanRequest, db: Session = Depends(get
     log_audit_action(db, current_user.user_id, "網址掃描", f"查詢網址：{target_url}"[:500])
     
    # 1. 白名單檢查
-    is_whitelisted = db.query(database.WhitelistWebsite).filter(database.WhitelistWebsite.url == target_url).first()
+    # 比網域不是比完整網址，理由同 crawler.py
+    is_whitelisted = is_whitelisted_domain(db, target_url)
     if is_whitelisted:
         return {
             "status": "safe", 

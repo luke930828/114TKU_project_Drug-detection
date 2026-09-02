@@ -5,7 +5,8 @@ import json
 import database
 from schemas import WebsiteReport
 from dependencies import get_db, verify_admin, verify_internal_token
-from utils import calculate_multimodal_risk_100_scale, dispatch_to_ai_engines, needs_review
+from utils import (calculate_multimodal_risk_100_scale, dispatch_to_ai_engines,
+                   is_whitelisted, needs_review)
 import traceback
 
 router = APIRouter(tags=["自動爬蟲管理"])
@@ -73,15 +74,15 @@ def receive_crawler_raw_data(
 ):
     try:
         print(f"收到爬蟲通報網址：{report.url}")
-        is_whitelisted = db.query(database.WhitelistWebsite).filter(
-            database.WhitelistWebsite.url == report.url
-        ).first()
+        # 比網域不是比完整網址——白名單加了 momoshop.com.tw 就該擋掉它底下
+        # 所有頁面，不然幾十萬個商品頁要一頁一頁加。
+        white = is_whitelisted(db, report.url)
 
-        if is_whitelisted:
-            print(f"[白名單放行] 網址 {report.url} 位於白名單中 ({is_whitelisted.title})，跳過後續所有動作！")
+        if white:
+            print(f"[白名單放行] 網址 {report.url} 位於白名單中 ({white.title})，跳過後續所有動作！")
             return {
                 "status": "skipped", 
-                "message": f"攔截成功：網址 {report.url} 位於白名單中 ({is_whitelisted.title})，已自動放行。"
+                "message": f"攔截成功：網址 {report.url} 位於白名單中 ({white.title})，已自動放行。"
             }
         html_text = report.text_content if report.text_content else ""
         if "非毒品" in html_text or "無法正常登入" in html_text or "無法登入" in html_text:
