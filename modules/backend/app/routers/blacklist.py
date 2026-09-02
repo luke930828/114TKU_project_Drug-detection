@@ -18,7 +18,7 @@ from typing import Optional
 import database
 from schemas import BlacklistCreate
 from dependencies import get_db, verify_admin, log_audit_action
-from utils import registrable_domain
+from utils import like_pattern, registrable_domain
 
 router = APIRouter(tags=["黑名單維護"])
 
@@ -27,15 +27,16 @@ router = APIRouter(tags=["黑名單維護"])
 def list_blacklist(
     db: Session = Depends(get_db),
     current_admin: database.User = Depends(verify_admin),
-    q: Optional[str] = Query(None, description="關鍵字搜尋：網址、標題或原因"),
+    q: Optional[str] = Query(None, max_length=200,
+                             description="關鍵字搜尋：網址、標題或原因"),
 ):
     query = db.query(database.BlacklistWebsite)
-    if q:
-        like = f"%{q.strip()}%"
+    if q and q.strip():
+        like = like_pattern(q)
         query = query.filter(
-            database.BlacklistWebsite.url.like(like)
-            | database.BlacklistWebsite.title.like(like)
-            | database.BlacklistWebsite.reason.like(like)
+            database.BlacklistWebsite.url.like(like, escape="\\")
+            | database.BlacklistWebsite.title.like(like, escape="\\")
+            | database.BlacklistWebsite.reason.like(like, escape="\\")
         )
     return query.order_by(database.BlacklistWebsite.created_at.desc()).all()
 

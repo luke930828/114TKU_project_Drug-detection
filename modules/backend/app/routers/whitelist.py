@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 import database
 from schemas import WhitelistCreate
 from dependencies import get_db, verify_admin, verify_super_admin, log_audit_action
+from utils import like_pattern
 
 router = APIRouter(tags=["白名單維護"])
 
@@ -13,15 +14,16 @@ router = APIRouter(tags=["白名單維護"])
 def list_whitelist(
     db: Session = Depends(get_db),
     current_admin: database.User = Depends(verify_admin),
-    q: Optional[str] = Query(None, description="關鍵字搜尋：網址、標題或原因"),
+    q: Optional[str] = Query(None, max_length=200,
+                             description="關鍵字搜尋：網址、標題或原因"),
 ):
     query = db.query(database.WhitelistWebsite)
-    if q:
-        like = f"%{q.strip()}%"
+    if q and q.strip():
+        like = like_pattern(q)
         query = query.filter(
-            database.WhitelistWebsite.url.like(like)
-            | database.WhitelistWebsite.title.like(like)
-            | database.WhitelistWebsite.reason.like(like)
+            database.WhitelistWebsite.url.like(like, escape="\\")
+            | database.WhitelistWebsite.title.like(like, escape="\\")
+            | database.WhitelistWebsite.reason.like(like, escape="\\")
         )
     return query.order_by(database.WhitelistWebsite.created_at.desc()).all()
 

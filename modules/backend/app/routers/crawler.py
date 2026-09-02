@@ -9,7 +9,7 @@ from schemas import WebsiteReport
 from dependencies import get_db, verify_admin, verify_internal_token, log_audit_action
 from utils import (calculate_multimodal_risk_100_scale, dispatch_to_ai_engines,
                    is_blacklisted, is_whitelisted, needs_review,
-                   registrable_domain)
+                   like_pattern, registrable_domain)
 import traceback
 
 router = APIRouter(tags=["自動爬蟲管理"])
@@ -311,7 +311,8 @@ def get_automated_24h_results(
         None,
         description="blacklist=極高風險；pending=待人工覆核（高風險+中風險）；不給則全部",
     ),
-    q: Optional[str] = Query(None, description="關鍵字搜尋：網址或案件編號"),
+    q: Optional[str] = Query(None, max_length=200,
+                             description="關鍵字搜尋：網址或案件編號"),
 ):
     
     base_query = db.query(database.AIAnalysisResult).filter(
@@ -330,7 +331,8 @@ def get_automated_24h_results(
         # 案件編號在前端是 ai_analysis_results.id（AIDetection.tsx 的
         # caseNumber 找不到 case_number 時就退回 id），所以純數字要一起比對 id。
         # 用 or_ 而不是分開兩個 filter——分開會變成 AND，兩個條件不可能同時成立。
-        conditions = [database.AIAnalysisResult.url.like(f"%{keyword}%")]
+        conditions = [database.AIAnalysisResult.url.like(
+            like_pattern(keyword), escape="\\")]
         if keyword.isdigit():
             conditions.append(database.AIAnalysisResult.id == int(keyword))
         base_query = base_query.filter(or_(*conditions))

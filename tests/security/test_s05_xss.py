@@ -121,3 +121,51 @@ def test_sql_injection_does_not_drop_tables(anon, db):
     with db.cursor() as c:
         c.execute("SHOW TABLES LIKE 'users'")
         assert c.fetchone(), "users 資料表不見了"
+
+
+def test_search_is_not_sql_injectable(admin):
+    """
+    黑白名單與 AI 清單的搜尋不能被 SQL injection。
+
+    q 是使用者輸入、直接進 LIKE 條件的，是最典型的注入點。
+    這裡不是驗「有沒有回結果」，是驗資料表還在、而且沒有回出不該回的東西。
+    """
+    payloads = [
+        "' OR '1'='1",
+        "'; DROP TABLE blacklist_websites; --",
+        "1 UNION SELECT password_hash FROM users--",
+        "\\' OR 1=1#",
+        "') OR ('a'='a",
+    ]
+    for endpoint in ("/api/blacklist/", "/api/whitelist/"):
+        for payload in payloads:
+            r = admin.get(endpoint, params={"q": payload})
+            assert r.status_code == 200, f"{endpoint} q={payload!r} → {r.status_code}"
+            body = r.text
+            assert "$2b$" not in body, f"{endpoint} 回應裡出現密碼雜湊：{payload!r}"
+
+    # 表還在（注入成功的話 DROP TABLE 會讓這裡 500）
+    assert admin.get("/api/blacklist/").status_code == 200
+    assert admin.get("/api/whitelist/").status_code == 200
+
+
+def test_search_escapes_like_wildcards(admin):
+    """
+    搜尋要跳脫 LIKE 的 % 與 _。
+
+    不跳脫的話 q=% 會匹配所有資料——實測修之前在 6695 筆的表上，
+    q=% 回傳全部 6695 筆、q=_ 也是。那不只是搜尋結果不對，
+    使用者想找字面上的 % 或 _ 時永遠找不到。
+    """
+    all_count = admin.get("/api/crawler/automated_24h_list/",
+                          params={"limit": 1}).json()["total_count"]
+    if all_count < 2:
+        pytest.skip("資料太少，看不出萬用字元有沒有生效")
+
+    for wildcard in ("%", "_"):
+        got = admin.get("/api/crawler/automated_24h_list/",
+                        params={"q": wildcard, "limit": 1}).json()["total_count"]
+        assert got < all_count, (
+            f"q={wildcard!r} 回傳 {got} 筆／共 {all_count} 筆——"
+            f"萬用字元沒有跳脫，被當成「匹配任何字元」了"
+        )

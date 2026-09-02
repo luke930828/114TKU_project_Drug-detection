@@ -109,3 +109,15 @@ def test_export_is_audited(admin, db):
     if r.status_code == 404:
         pytest.skip("目前沒有資料可匯出")
     assert _audit_count(db, "匯出") > before, "匯出資料沒有留下稽核紀錄"
+
+
+@known_vuln("SEC-16")
+def test_search_keyword_length_capped(admin):
+    """搜尋關鍵字要有長度上限，不然一個請求就能塞任意長的字串進 LIKE。"""
+    long_q = "A" * 10000
+    for endpoint in ("/api/blacklist/", "/api/whitelist/",
+                     "/api/crawler/automated_24h_list/"):
+        r = admin.get(endpoint, params={"q": long_q})
+        assert r.status_code in (400, 422), (
+            f"{endpoint} 接受了 10000 字元的搜尋關鍵字（HTTP {r.status_code}）"
+        )

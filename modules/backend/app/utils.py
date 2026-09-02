@@ -173,3 +173,17 @@ def is_blacklisted(db, url: str):
         if registrable_domain(row.url) == target:
             return row
     return None
+
+
+# LIKE 的萬用字元。搜尋關鍵字是使用者輸入的，不跳脫的話 q=% 會把整張表撈出來，
+# q=a_b 會誤命中 axb——實測 q=% 在 6695 筆的表上回傳全部 6695 筆。
+# 反斜線要第一個換，不然後面換出來的跳脫字元會被重複處理。
+LIKE_SPECIAL = (("\\", "\\\\"), ("%", "\\%"), ("_", "\\_"))
+
+
+def like_pattern(keyword: str) -> str:
+    """把使用者的關鍵字轉成安全的 LIKE 樣式（呼叫端要配 escape="\\"）。"""
+    text = (keyword or "").strip()
+    for src, dst in LIKE_SPECIAL:
+        text = text.replace(src, dst)
+    return f"%{text}%"
