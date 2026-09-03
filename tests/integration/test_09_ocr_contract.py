@@ -57,7 +57,9 @@ def _row_from_24h_list(admin, url):
     if r.status_code != 200:
         return None
     for row in r.json().get("data", []):
-        if row.get("url") == url:
+        # 這支端點的網址欄位叫 domain_name（不是 url，也不是 websiteUrl）。
+        # 前端 AIDetection 的 normalizeResult 讀的就是這個。
+        if row.get("domain_name") == url:
             return row
     return None
 
