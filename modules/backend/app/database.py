@@ -130,21 +130,36 @@ class AIAnalysisResult(Base):
     created_at = Column(DateTime, default=func.now())
 
 
+# 既有資料庫要補的欄位。create_all 只會「建不存在的表」，絕不會 ALTER
+# 已存在的表——所以每次替既有的表加欄位，都得在這裡登記一筆，
+# 否則組員 pull 之後程式讀得到欄位、資料庫沒有，一查就 1054 Unknown column。
+#
+# (表名, 欄位名, 完整的 DDL 片段)
+_PENDING_COLUMNS = [
+    ("ai_analysis_results", "ocr_results", "JSON NULL"),
+    # 白名單的來源分類（一般新增 / 誤判回報）。原本是請組員自己下 SQL，
+    # 但那種「請大家記得手動跑」的步驟一定會有人漏掉，放進這裡自動補。
+    ("whitelist_websites", "source", "VARCHAR(20) DEFAULT '一般新增'"),
+]
+
+
 def initialize_database():
-    """建立新表並以非破壞方式補齊既有資料庫缺少的欄位。"""
+    """建立新表並以非破壞方式補齊既有資料庫缺少的欄位。
+
+    可以安全地重複執行：每一欄都先檢查存不存在，不會覆寫任何既有資料。
+    """
     Base.metadata.create_all(bind=engine)
 
-    # create_all 只會建不存在的表，絕不會 ALTER 已存在的表；因此 OCR 上線時
-    # 舊的 ai_analysis_results 必須在啟動階段額外補欄位。先檢查可讓此程序安全
-    # 地重複執行，且不會覆寫任何既有資料。
     inspector = inspect(engine)
-    columns = {column["name"] for column in inspector.get_columns("ai_analysis_results")}
-    if "ocr_results" not in columns:
+    for table, column, ddl in _PENDING_COLUMNS:
+        if table not in inspector.get_table_names():
+            continue
+        existing = {c["name"] for c in inspector.get_columns(table)}
+        if column in existing:
+            continue
         with engine.begin() as connection:
-            connection.execute(text(
-                "ALTER TABLE ai_analysis_results ADD COLUMN ocr_results JSON NULL"
-            ))
-        print("已新增 ai_analysis_results.ocr_results 欄位")
+            connection.execute(text(f"ALTER TABLE {table} ADD COLUMN {column} {ddl}"))
+        print(f"已新增 {table}.{column} 欄位")
 
 
 #  7. 執行建立資料表的指令 
