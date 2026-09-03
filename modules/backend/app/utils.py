@@ -1,4 +1,5 @@
 import os
+import time
 import uuid
 from urllib.parse import urlparse
 
@@ -60,6 +61,46 @@ def needs_review(nlp_raw_score: int, yolo_raw_score: int) -> bool:
     return nlp_raw_score >= NLP_HIGH or yolo_raw_score >= NLP_HIGH
 
 
+# 服務之間的呼叫要重試
+# ────────────────────
+# compose 一直有設 HTTP_TIMEOUT / HTTP_RETRIES，但程式碼從來沒有讀過它們——
+# 設了等於沒設（跟稽核抓到的 UVICORN_EXTRA_ARGS 同一類）。
+#
+# 沒有重試的後果 2026-09-03 實際發生了：重建 nlp 容器的那七分鐘，Docker 的 DNS
+# 解析不到 nlp 這個名字，
+#     Failed to resolve 'nlp' ([Errno -2] Name or service not known)
+# 那段時間爬蟲進來的 226 筆，NLP 分析全部靜靜掉了——只印一行錯誤就繼續，
+# 那些網址永遠停在「文字分析中...」，而且沒有任何地方會告訴你。
+#
+# 容器重建、服務重啟、暫時性的網路問題都是常態，不是異常。重試幾次就能救回來。
+HTTP_TIMEOUT = int(os.getenv("HTTP_TIMEOUT", "10"))
+HTTP_RETRIES = int(os.getenv("HTTP_RETRIES", "2"))
+
+
+def post_with_retry(url: str, *, json=None, headers=None, timeout=None, retries=None):
+    """POST 並在連線失敗時重試。回傳 Response，全部失敗則回傳 None。
+
+    只重試「連線層」的錯誤（連不上、DNS 解析不到、逾時）。4xx/5xx 直接回傳，
+    那是對方收到了但不接受，重送幾次結果一樣。
+    """
+    timeout = HTTP_TIMEOUT if timeout is None else timeout
+    attempts = (HTTP_RETRIES if retries is None else retries) + 1
+    delay = 2
+    last = None
+    for i in range(attempts):
+        try:
+            return requests.post(url, json=json, headers=headers, timeout=timeout)
+        except (requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout) as e:
+            last = e
+            if i < attempts - 1:
+                print(f"[重試 {i + 1}/{attempts - 1}] {url} 連線失敗，{delay}s 後再試：{e.__class__.__name__}")
+                time.sleep(delay)
+                delay *= 2
+    print(f"❌ {url} 連續 {attempts} 次都連不上，放棄：{last}")
+    return None
+
+
 def dispatch_to_ai_engines(url: str, html_content: str, images: list):
     """
     背景任務：將資料派發給 NLP 與 YOLO 引擎
@@ -86,9 +127,9 @@ def dispatch_to_ai_engines(url: str, html_content: str, images: list):
         }
         print("準備將文字派發給 NLP...")
 
-        response = requests.post(NLP_PREDICT_URL, json=nlp_payload, timeout=10)
+        response = post_with_retry(NLP_PREDICT_URL, json=nlp_payload)
 
-        if response.status_code == 200:
+        if response is not None and response.status_code == 200:
             nlp_result = response.json()
             print(f"NLP 分析完成！收到結果：{nlp_result}")
             
@@ -123,7 +164,10 @@ def dispatch_to_ai_engines(url: str, html_content: str, images: list):
                     "total_images": len(images),  
                     "priority": 0
                 }
-                response = requests.post(YOLO_API_URL, json=yolo_payload, timeout=5)
+                response = post_with_retry(YOLO_API_URL, json=yolo_payload, timeout=5)
+                if response is None:
+                    print(f"    第 {index+1} 張派發失敗（連不上 YOLO），這張圖的分析會缺。")
+                    continue
                 print(f"    第 {index+1} 張派發成功！對方回應: {response.text}")
             except Exception as e:
                 print(f"    第 {index+1} 張圖片派發至 YOLO 失敗: {e}")
