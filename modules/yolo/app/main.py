@@ -2,6 +2,7 @@ import base64
 import os
 import sys
 import threading
+import time
 from pathlib import Path
 
 # 1) Windows 主控台預設可能是 cp950/cp936 這類非 UTF-8 編碼，print() 印到 emoji（例如 ⚠️❌）會直接
@@ -109,6 +110,34 @@ def select_visible_detections(detections, visual_result):
 BATCH_MEMORY = {}
 memory_lock = threading.Lock()
 
+# OCR 一次只跑一個。
+#
+# 2026-09-03 這個容器連續三次被全域 OOM 砍掉（anon-rss 8.4 / 7.7 / 7.6 GB），
+# 第三次把 Docker Desktop 的 WSL 整合一起帶走、六個服務全停。
+#
+# 原因：EasyOCR 是第二個模型，而且對「每一張圖」都跑一次 CPU 推論。
+# FastAPI 的 BackgroundTasks 會把同步函式丟進 threadpool（預設 40 條），
+# 爬蟲一頁送十張圖、同時好幾頁進來，等於幾十個 EasyOCR 推論並行，
+# 每一個都自己配一份張量。加 OCR 之前 yolo 峰值約 5 GB，加了之後 8 GB。
+#
+# 序列化之後只有一個推論在跑，其餘執行緒在這裡等——會變慢（CPU 模式一張約
+# 2 秒），但排隊遠比整台機器被打掛好。真的太慢再往上調，記憶體是線性增加的。
+OCR_SEMAPHORE = threading.Semaphore(1)
+
+# OCR 前先把圖縮小。
+#
+# 商品圖常常是 2000px 以上，但要讀的是包裝上的字，不需要那個解析度——
+# EasyOCR 自己也會縮（canvas_size 預設 2560）。先縮可以省下解碼後那份大陣列
+# 以及推論時的張量。長邊 1920 對讀字綽綽有餘。
+OCR_MAX_SIDE = 1920
+
+# 沒收齊的批次要過期清掉。
+#
+# BATCH_MEMORY[batch_id] 只有在 processed_count == total_images 時才會被刪。
+# 只要有一張圖沒送到（爬蟲少送、請求失敗、yolo 中途重啟），這一筆就永遠留著，
+# 而且裡面存著代表圖的 base64——不會有任何錯誤訊息，就是慢慢漏。
+BATCH_TTL_SECONDS = 30 * 60
+
 # 4. 影像解碼小工具 (記憶體直接流轉，完全不寫入硬碟，速度最快)
 def decode_base64_to_cv2(b64_data, task_id: str):
     """回傳 (cv2 圖片, 清乾淨後的 base64 字串)；清乾淨後的字串可以原封不動轉發給後端存檔，不用重新編碼。"""
@@ -131,6 +160,31 @@ def decode_base64_to_cv2(b64_data, task_id: str):
     except Exception as decode_err:
         print(f"[⚠️ 解碼炸裂] Base64 解析失敗 (Task: {task_id}): {decode_err}")
         return None, None
+
+def downscale_for_ocr(img):
+    """長邊超過 OCR_MAX_SIDE 就等比例縮小。座標是正規化的（xyxyn），
+    縮圖不影響回報出去的框位置。"""
+    if img is None:
+        return img
+    height, width = img.shape[:2]
+    longest = max(height, width)
+    if longest <= OCR_MAX_SIDE:
+        return img
+    scale = OCR_MAX_SIDE / longest
+    return cv2.resize(img, (int(width * scale), int(height * scale)),
+                      interpolation=cv2.INTER_AREA)
+
+
+def evict_stale_batches():
+    """把太久沒動靜的批次丟掉。呼叫端必須已經持有 memory_lock。"""
+    now = time.time()
+    stale = [bid for bid, data in BATCH_MEMORY.items()
+             if now - data.get("last_touch", now) > BATCH_TTL_SECONDS]
+    for bid in stale:
+        print(f"🧹 [過期清理] 批次 {bid} 超過 {BATCH_TTL_SECONDS // 60} 分鐘沒有新圖，"
+              f"已處理 {BATCH_MEMORY[bid]['processed_count']} 張，判定收不齊，釋放。")
+        del BATCH_MEMORY[bid]
+
 
 # 5. 核心非同步工廠：偷偷在背景算 YOLO，全部圖片到齊後才打電話給後端
 def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_images: int):
@@ -190,7 +244,10 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
 
             # OCR 對每一張圖都跑，不像代表圖只挑分數最高的那張——文字可能出現在任何一張圖上
             # （例如成分標示可能跟主要違禁品照片不是同一張），漏跑非代表圖會漏掉這些文字
-            current_ocr_texts = extract_texts(ocr_reader, img)
+            ocr_img = downscale_for_ocr(img)
+            with OCR_SEMAPHORE:
+                current_ocr_texts = extract_texts(ocr_reader, ocr_img)
+            del ocr_img
             for item in current_ocr_texts:
                 item["image_index"] = image_index
 
@@ -222,10 +279,13 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
                     "best_display_image_base64": None, # 只留分數最高那張代表圖，給前端畫框用，不是每張圖都存
                     "best_display_image_detections": [],
                     "ocr_texts": [],                  # 整批每張圖 OCR 抓到的文字都累加在這裡，不像代表圖只留一張
+                    "last_touch": time.time(),        # 給 evict_stale_batches 判斷這批是不是已經收不齊了
                 }
+                evict_stale_batches()
 
             # 圖片處理計數器 +1
             BATCH_MEMORY[batch_id]["processed_count"] += 1
+            BATCH_MEMORY[batch_id]["last_touch"] = time.time()
 
             # 🌟 解耦設計：count / max_confidence 獨立於單張分數之外，逐圖合併成整批的 metadata
             if is_valid:

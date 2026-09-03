@@ -204,7 +204,23 @@ services:
               device_ids: ["0"]
               capabilities: [gpu]
         limits:
-          memory: 12G
+          # ⚠️ 這個數字一定要小於 .wslconfig 的 memory（目前 12GB）。
+          #
+          # 原本寫 12G，跟整台 WSL 虛擬機一樣大——那等於沒有上限：cgroup 永遠
+          # 不會先觸發，容器可以一路吃到整台機器沒東西為止，最後由核心用
+          # 「全域 OOM」收場。全域 OOM 會隨便挑一個行程砍，旁邊的東西一起遭殃。
+          #
+          # 2026-09-03 實際發生：加了 EasyOCR 之後 yolo 從 5 GB 漲到 8 GB，
+          #   15:59:57  anon-rss 8.4 GB  global_oom  被砍
+          #   16:05:37  anon-rss 7.7 GB  global_oom  被砍（重啟後 5 分半又漲回去）
+          #   16:10:36  anon-rss 7.6 GB  global_oom  被砍 → Docker Desktop 的
+          #                                          WSL 整合一起崩掉，六個服務全停
+          # 對照同一份 log 裡 9/2 的 Chrome：constraint=CONSTRAINT_MEMCG，
+          # 碰到自己的上限、只砍自己、其他人沒事——那才是我們要的失敗方式。
+          #
+          # 6G 是「其他容器實際用量（mysql 0.4 + backend 0.2 + nlp 1.1 +
+          # crawler 峰值 5）加上 VM 本身」之後剩得下的量。
+          memory: 6G
 
   # ---------------- 前端 ----------------
   frontend:
