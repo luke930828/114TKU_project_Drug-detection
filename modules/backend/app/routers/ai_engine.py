@@ -21,6 +21,11 @@ def receive_ai_analysis_result(
     # 不該依賴呼叫端剛好沒送太長。
     yolo_str = (", ".join(report.yolo_objects) if report.yolo_objects
                 else "無檢出影像特徵")[:500]
+
+    # ocr_results 在 schema 裡是 OCRResults 這個 Pydantic 模型（不是 dict），
+    # 直接指派給 JSON 欄位的話 SQLAlchemy 序列化不了會丟 TypeError。
+    # 這裡轉成 dict 一次，下面三個寫入點共用。
+    ocr_payload = report.ocr_results.model_dump() if report.ocr_results else None
     existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
     suspect = db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == report.url).first()
     source_title = suspect.title if suspect else "未知來源"
@@ -34,6 +39,7 @@ def receive_ai_analysis_result(
         existing_record.class_metadata = report.class_metadata
         existing_record.representative_image_base64 = report.representative_image_base64
         existing_record.representative_image_detections = report.representative_image_detections
+        existing_record.ocr_results = ocr_payload
         
         current_nlp_score = existing_record.nlp_score or 0
         final_score, level = calculate_multimodal_risk_100_scale(current_nlp_score, existing_record.yolo_score)
@@ -52,6 +58,7 @@ def receive_ai_analysis_result(
                 class_metadata=report.class_metadata,
                 representative_image_base64=report.representative_image_base64,
                 representative_image_detections=report.representative_image_detections,
+                ocr_results=ocr_payload,
                 task_source=source_title
             )
             db.add(new_record)
@@ -68,6 +75,7 @@ def receive_ai_analysis_result(
                 real_existing.class_metadata = report.class_metadata
                 real_existing.representative_image_base64 = report.representative_image_base64
                 real_existing.representative_image_detections = report.representative_image_detections
+                real_existing.ocr_results = ocr_payload
                 real_existing.task_source = source_title
                 current_nlp_score = real_existing.nlp_score or 0
                 final_score, level = calculate_multimodal_risk_100_scale(current_nlp_score, real_existing.yolo_score)

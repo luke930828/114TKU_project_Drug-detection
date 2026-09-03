@@ -17,5 +17,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=10s --timeout=3s --start-period=30s --retries=5 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-# 啟動時自動建表（冪等，不會重複建），不用再手動 python database.py
-CMD ["sh", "-c", "python -c \"import database; database.Base.metadata.create_all(bind=database.engine)\" && uvicorn main:app --host 0.0.0.0 --port 8000"]
+# 啟動時建立新表，並安全補上既有資料庫缺少的 OCR 欄位。
+CMD ["sh", "-c", "python -c \"import database; database.initialize_database()\" && uvicorn main:app --host 0.0.0.0 --port 8000"]

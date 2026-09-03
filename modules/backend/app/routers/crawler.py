@@ -407,7 +407,11 @@ def get_automated_24h_results(
             # page 20 是 9.9 MB，而 page 1、3 只有 24 KB（那幾頁剛好沒圖）。
             # API 本身都在 0.3 秒內，慢的是傳輸和瀏覽器解碼幾十張 base64。
             # 改成只回一個布林值，圖由 /api/crawler/result/{id}/image/ 按需取。
-            "has_representative_image": bool(ai_record.representative_image_base64)
+            "has_representative_image": bool(ai_record.representative_image_base64),
+            # OCR 文字則直接放進清單：前端明細面板是從清單資料渲染的，
+            # 而且純文字量級跟 base64 圖片差好幾個數量級（實測一批 20 張圖
+            # 大約幾 KB），不需要比照圖片另外開一個按需取的端點。
+            "ocr_results": ai_record.ocr_results,
         })
 
     return {

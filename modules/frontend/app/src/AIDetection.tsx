@@ -31,6 +31,13 @@ interface RepresentativeDetection {
   box: [number, number, number, number];
 }
 
+interface OcrResult {
+  imageIndex?: number;
+  text: string;
+  confidence?: number;
+  box?: [number, number, number, number];
+}
+
 interface ResultType {
   id: string | number;
   time: string;
@@ -43,9 +50,51 @@ interface ResultType {
   caseNumber: string;
   nlpKeywords: string[];
   hasRepresentativeImage: boolean;
+  ocrResults: OcrResult[];
   representativeImageBase64: string | null;
   representativeImageDetections: RepresentativeDetection[];
 }
+
+// 後端送來的是「物件」不是「陣列」：
+//   { engine: "easyocr", detected_texts: [ { text, confidence, box_format, box, image_index } ] }
+//
+// 這裡原本寫 `if (!Array.isArray(value)) return []`，而 YOLO 送的一直是上面那個
+// 物件，所以 OCR 區塊從來沒有顯示過——兩邊各自照自己想的格式寫，中間沒有對過
+// 契約，而且失敗方式是「安靜地不顯示」，看起來就像 OCR 沒抓到東西。
+// 契約現在也寫進 backend/app/schemas.py 的 OCRResults，格式再變就會 422。
+//
+// 仍然容忍直接傳陣列的舊格式，避免資料庫裡既有的資料讀不出來。
+const normalizeOcrResults = (value: unknown): OcrResult[] => {
+  const container = value as Record<string, unknown> | null | undefined;
+  const rows: unknown[] = Array.isArray(value)
+    ? value
+    : container && typeof container === "object" && Array.isArray(container.detected_texts)
+      ? container.detected_texts as unknown[]
+      : [];
+
+  return rows.flatMap((item): OcrResult[] => {
+    if (!item || typeof item !== "object") return [];
+    const row = item as Record<string, unknown>;
+    const text = typeof row.text === "string" ? row.text.trim() : "";
+    if (!text) return [];
+
+    const imageIndex = Number(row.image_index);
+    const confidence = Number(row.confidence);
+    // 欄位名是 box 不是 bbox，格式跟 YOLO 偵測框一樣是 xyxyn（0~1 正規化）。
+    const rawBox = Array.isArray(row.box) && row.box.length === 4
+      ? row.box.map(Number)
+      : null;
+
+    return [{
+      text,
+      imageIndex: Number.isFinite(imageIndex) ? imageIndex : undefined,
+      confidence: Number.isFinite(confidence) ? confidence : undefined,
+      box: rawBox?.every(Number.isFinite)
+        ? rawBox as [number, number, number, number]
+        : undefined,
+    }];
+  });
+};
 
 interface CrawlerStats {
   total: number;
@@ -146,6 +195,7 @@ const normalizeResult = (value: unknown, index: number): ResultType | null => {
       value.has_representative_image === true ||
       (typeof value.representative_image_base64 === "string" &&
         value.representative_image_base64.trim() !== ""),
+    ocrResults: normalizeOcrResults(value.ocr_results),
     representativeImageBase64:
       typeof value.representative_image_base64 === "string" &&
       value.representative_image_base64.trim()
@@ -455,6 +505,30 @@ export function AIDetection({ onBack, onDetectionsLoaded }: Props) {
                     <span className="text-gray-400">未提供</span>
                   )}
                 </div>
+                {selected.ocrResults.length > 0 && (
+                  <section className="mb-4 rounded-xl border border-sky-200 bg-sky-50 p-4">
+                    <h3 className="mb-3 font-semibold text-sky-900">OCR 辨識結果</h3>
+                    <div className="space-y-3">
+                      {selected.ocrResults.map((item, index) => {
+                        const confidence = item.confidence == null
+                          ? null
+                          : item.confidence <= 1
+                            ? item.confidence * 100
+                            : item.confidence;
+
+                        return (
+                          <div key={`${item.imageIndex ?? "image"}-${index}`} className="rounded-lg bg-white p-3 text-sm shadow-sm">
+                            <p className="whitespace-pre-wrap break-words text-gray-800">{item.text}</p>
+                            <div className="mt-1 flex flex-wrap gap-3 text-xs text-gray-500">
+                              {item.imageIndex != null && <span>圖片序號：{item.imageIndex}</span>}
+                              {confidence != null && <span>信心度：{Math.round(confidence)}%</span>}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+                )}
                 <h3 className="font-semibold mb-2">AI 分析</h3>
                 {selected.representativeImageBase64 ? (
                   <div className="relative inline-block max-w-full overflow-hidden rounded-xl border border-blue-200 bg-gray-100">

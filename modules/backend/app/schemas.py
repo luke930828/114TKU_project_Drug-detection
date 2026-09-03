@@ -122,6 +122,25 @@ class WebsiteReport(BaseModel):
     # 模型只讀前 256 個 token，1 MB 已經遠超過需要；再多只是佔資料庫。
     text_content: Optional[str] = Field(None, max_length=1_000_000)
 
+class OCRDetectedText(BaseModel):
+    """OCR 在一張圖上找到的一段文字。欄位名對齊 modules/yolo/app/ai_model/ocr.py。"""
+    text: str = Field(..., max_length=500)
+    confidence: float = Field(0.0, ge=0.0, le=1.0)
+    # 整批圖的文字是混在一起回報的，靠這個才知道是從第幾張圖抓到的。
+    image_index: Optional[int] = Field(None, ge=0, le=10_000)
+    # 座標格式跟 YOLO 的偵測框一致（xyxyn，0~1 正規化），前端才能共用畫框邏輯。
+    box_format: Optional[str] = Field(None, max_length=20)
+    box: Optional[List[float]] = Field(None, max_length=4)
+
+
+class OCRResults(BaseModel):
+    """整批圖片的 OCR 彙整。engine 留著，之後換引擎時舊資料還看得出來源。"""
+    engine: str = Field("easyocr", max_length=50)
+    # 一批可能有 20 張圖，每張十幾段文字；2000 是很寬鬆的上限，
+    # 但擋得住「一段 1 MB 的文字」那種病態輸入。
+    detected_texts: List[OCRDetectedText] = Field(default=[], max_length=2000)
+
+
 class YOLOAnalysisReport(BaseModel):
     """
     YOLO 的回報。每個欄位都要有上限（SEC-16）。
@@ -147,6 +166,15 @@ class YOLOAnalysisReport(BaseModel):
     representative_image_base64: Optional[str] = Field(None, max_length=10_000_000)
     representative_image_detections: Optional[List[Dict[str, Any]]] = Field(
         default=None, max_length=500)
+    # OCR 結果寫成明確的結構，不用 Optional[Any]。
+    #
+    # 原本的版本是 `ocr_results: Optional[Any] = None`，註解寫「格式可能隨模型
+    # 版本改變，以 JSON 原樣保存」。但這個欄位正是 YOLO 與前端對不起來的地方：
+    # YOLO 送物件、前端讀陣列，兩邊都「照自己的格式寫」，結果 OCR 永遠不顯示。
+    # 把契約寫進 schema，格式一變就 422，不會再靜靜地不顯示。
+    #
+    # 另外 Any 沒有任何長度上限，等於在 SEC-16 修好的地方開一個新洞。
+    ocr_results: Optional[OCRResults] = None
 
 class NLPAnalysisReport(BaseModel):
     """NLP 的回報。上限的理由同 YOLOAnalysisReport。"""

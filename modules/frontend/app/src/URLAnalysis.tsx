@@ -26,6 +26,54 @@ interface RepresentativeDetection {
   normalized: boolean;
 }
 
+interface OcrResult {
+  imageIndex?: number;
+  text: string;
+  confidence?: number;
+  box?: [number, number, number, number];
+}
+
+// 後端送來的是「物件」不是「陣列」：
+//   { engine: "easyocr", detected_texts: [ { text, confidence, box_format, box, image_index } ] }
+//
+// 這裡原本寫 `if (!Array.isArray(value)) return []`，而 YOLO 送的一直是上面那個
+// 物件，所以 OCR 區塊從來沒有顯示過——兩邊各自照自己想的格式寫，中間沒有對過
+// 契約，而且失敗方式是「安靜地不顯示」，看起來就像 OCR 沒抓到東西。
+// 契約現在也寫進 backend/app/schemas.py 的 OCRResults，格式再變就會 422。
+//
+// 仍然容忍直接傳陣列的舊格式，避免資料庫裡既有的資料讀不出來。
+const normalizeOcrResults = (value: unknown): OcrResult[] => {
+  const container = value as Record<string, unknown> | null | undefined;
+  const rows: unknown[] = Array.isArray(value)
+    ? value
+    : container && typeof container === "object" && Array.isArray(container.detected_texts)
+      ? container.detected_texts as unknown[]
+      : [];
+
+  return rows.flatMap((item): OcrResult[] => {
+    if (!item || typeof item !== "object") return [];
+    const row = item as Record<string, unknown>;
+    const text = typeof row.text === "string" ? row.text.trim() : "";
+    if (!text) return [];
+
+    const imageIndex = Number(row.image_index);
+    const confidence = Number(row.confidence);
+    // 欄位名是 box 不是 bbox，格式跟 YOLO 偵測框一樣是 xyxyn（0~1 正規化）。
+    const rawBox = Array.isArray(row.box) && row.box.length === 4
+      ? row.box.map(Number)
+      : null;
+
+    return [{
+      text,
+      imageIndex: Number.isFinite(imageIndex) ? imageIndex : undefined,
+      confidence: Number.isFinite(confidence) ? confidence : undefined,
+      box: rawBox?.every(Number.isFinite)
+        ? rawBox as [number, number, number, number]
+        : undefined,
+    }];
+  });
+};
+
 const clampCoordinate = (value: number) => Math.min(1, Math.max(0, value));
 
 const isValidTargetUrl = (value: string) => {
@@ -134,6 +182,7 @@ export function URLAnalysis({ onBack }: URLAnalysisProps) {
   const representativeDetections = normalizeRepresentativeDetections(
     analysisData?.representative_image_detections
   );
+  const ocrResults = normalizeOcrResults(analysisData?.ocr_results);
 
   useEffect(() => {
     setRepresentativeImageSize(null);
@@ -688,6 +737,34 @@ export function URLAnalysis({ onBack }: URLAnalysisProps) {
                   {analysisData.nlp_details}
                 </p>
               </div>
+
+              {ocrResults.length > 0 && (
+                <div className="col-span-2 bg-[#1e3a63] p-4 rounded-lg">
+                  <span className="text-blue-300 text-xs font-bold block mb-3">
+                    OCR 辨識結果
+                  </span>
+
+                  <div className="space-y-3">
+                    {ocrResults.map((item, index) => {
+                      const confidence = item.confidence == null
+                        ? null
+                        : item.confidence <= 1
+                          ? item.confidence * 100
+                          : item.confidence;
+
+                      return (
+                        <div key={`${item.imageIndex ?? "image"}-${index}`} className="rounded-lg bg-[#142d50] p-3">
+                          <p className="whitespace-pre-wrap break-words text-sm text-gray-100">{item.text}</p>
+                          <div className="mt-1 flex flex-wrap gap-3 text-xs text-gray-400">
+                            {item.imageIndex != null && <span>圖片序號：{item.imageIndex}</span>}
+                            {confidence != null && <span>信心度：{Math.round(confidence)}%</span>}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               <div className="col-span-2 bg-[#1e3a63] p-4 rounded-lg">
                 <span className="text-blue-300 text-xs font-bold block mb-1">
