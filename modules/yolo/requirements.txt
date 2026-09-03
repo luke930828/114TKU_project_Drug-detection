@@ -11,9 +11,21 @@ ultralytics==8.4.24
 uvicorn==0.47.0
 
 # torch / torchvision: ultralytics 的必要依賴，main.py 沒有直接 import 所以 pipreqs 也漏掉。
-# GPU 版（+cu128），要配合 Dockerfile 的 --index-url https://download.pytorch.org/whl/cu128
-# 一起裝，且部署機器要有 NVIDIA GPU + nvidia-container-toolkit。
-# 沒有的話改回 torch==2.10.0 / torchvision==0.25.0（不帶 +cu128），
-# 並把 Dockerfile 的 --index-url 那段拿掉、deploy/docker-compose.yml 的 GPU deploy 區塊註解掉。
+# GPU 版（+cu128），要配合 Dockerfile 的 --extra-index-url
+# https://download.pytorch.org/whl/cu128 一起裝，且部署機器要有 NVIDIA GPU +
+# nvidia-container-toolkit。deploy/docker-compose.yml 的 yolo 已經設好
+# driver: nvidia / capabilities: [gpu]，釘 CPU 版的話 GPU 會掛進去卻用不到，
+# 推論整個掉回 CPU——這是合併 feature/v2-scoring 時要特別注意的一點。
+#
+# 沒有 GPU 的機器改回 torch==2.10.0 / torchvision==0.25.0（不帶 +cu128），
+# 並把 Dockerfile 的 --extra-index-url 那段拿掉、compose 的 deploy 區塊註解掉。
 torch==2.10.0+cu128
 torchvision==0.25.0+cu128
+
+# easyocr: OCR 引擎（繁中+英文）。main.py 是透過 ai_model/ocr.py 間接用到，這裡要手動列。
+# ⚠️ 已知衝突：easyocr 會自己拉 opencv-python-headless 進來，跟上面釘的 opencv-python 搶同一個
+# cv2 命名空間，誰後裝誰的檔案就會蓋過去——實測過 headless 版本會蓋掉我們釘的 4.13.0.92，
+# 且版本還不一樣（曾經蓋成 5.0.0），行為不保證跟我們測過的一致。
+# Dockerfile 裡因此在裝完 requirements.txt 之後，額外強制重裝一次 opencv-python==4.13.0.92，
+# 確保最後贏的一定是我們測過、YOLO + EasyOCR 都驗證能正常運作的版本。
+easyocr==1.7.2
