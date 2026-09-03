@@ -68,6 +68,32 @@ def get_frontend_report(
     }
 
 # 模組四：爬蟲專用通道 
+def _upsert_suspect(db: Session, url: str, **fields):
+    """寫入或更新 suspect_websites 的一筆蒐證資料。
+
+    為什麼不能直接 db.add
+    ────────────────────
+    suspect_websites.url 上有 UNIQUE index，而 24 小時自動爬蟲本來就會
+    一再遇到同一個網站。原本這裡是無條件 add，第二次回報就撞 1062
+    Duplicate entry，被外層的 except 接住 → 回 500、整筆回報丟掉。
+
+    症狀很難查：爬蟲那邊只看到一次 500，看不出是「這個網址已經有了」，
+    而畫面上顯示的還是好幾天前那份舊快照，看起來像爬蟲沒在跑。
+
+    重複回報時用新的快照覆蓋舊的——最新的那份才是有意義的證據。
+    created_at 刻意不動，那是「第一次發現的時間」。
+    """
+    row = db.query(database.SuspectWebsite).filter(
+        database.SuspectWebsite.url == url).first()
+    if row:
+        for key, value in fields.items():
+            setattr(row, key, value)
+        return row
+    row = database.SuspectWebsite(url=url, reported_by="爬蟲端自動上傳", **fields)
+    db.add(row)
+    return row
+
+
 @router.post("/api/crawler/report/", summary="爬蟲端專用：將原始結果寫入 suspect_websites 表")
 def receive_crawler_raw_data(
     report: WebsiteReport,
@@ -92,17 +118,13 @@ def receive_crawler_raw_data(
         black = is_blacklisted(db, report.url)
         if black:
             print(f"[人工黑名單] 網址 {report.url} 命中黑名單 ({black.title})，直接歸檔為極高風險。")
-            existing = db.query(database.SuspectWebsite).filter(
-                database.SuspectWebsite.url == report.url).first()
-            if not existing:
-                db.add(database.SuspectWebsite(
-                    url=report.url,
-                    title=f"[{report.task_type}] 人工黑名單",
-                    keywords_found=", ".join(report.keywords or [])[:500],
-                    reported_by="爬蟲端自動上傳",
-                    html_content=report.text_content or "",
-                    images_data="[]",          # 已確認的站不必再留圖佔空間
-                ))
+            _upsert_suspect(
+                db, report.url,
+                title=f"[{report.task_type}] 人工黑名單",
+                keywords_found=", ".join(report.keywords or [])[:500],
+                html_content=report.text_content or "",
+                images_data="[]",          # 已確認的站不必再留圖佔空間
+            )
             ai_row = db.query(database.AIAnalysisResult).filter(
                 database.AIAnalysisResult.url == report.url).first()
             if not ai_row:
@@ -121,15 +143,13 @@ def receive_crawler_raw_data(
         if "非毒品" in html_text or "無法正常登入" in html_text or "無法登入" in html_text:
             print(f" [攔截機制啟動] 爬蟲遇到需登入或非目標網站 ({report.url})，直接歸檔為 0 分！")
             
-            new_website = database.SuspectWebsite(
-                url=report.url,
+            _upsert_suspect(
+                db, report.url,
                 title="[系統攔截] 網站需登入或無效",
                 keywords_found="",
-                reported_by="爬蟲端自動上傳",
-                html_content=html_text,    
-                images_data="[]" 
+                html_content=html_text,
+                images_data="[]",
             )
-            db.add(new_website)
             
             existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
             if not existing_record:
@@ -166,15 +186,13 @@ def receive_crawler_raw_data(
         images_json_string = json.dumps(extracted_images, ensure_ascii=False) if extracted_images else "[]"
         keywords_str = ", ".join(report.keywords) if report.keywords else ""
 
-        new_website = database.SuspectWebsite(
-            url=report.url,
+        _upsert_suspect(
+            db, report.url,
             title=f"[{report.task_type}] 爬蟲自動通報",
             keywords_found=keywords_str,
-            reported_by="爬蟲端自動上傳",
-            html_content=report.text_content if report.text_content else "",    
-            images_data=images_json_string 
+            html_content=report.text_content if report.text_content else "",
+            images_data=images_json_string,
         )
-        db.add(new_website)
         db.commit()
         print(f"原始網頁快照寫入成功！成功從包裹中萃取出 {len(extracted_images)} 張圖片。")
         

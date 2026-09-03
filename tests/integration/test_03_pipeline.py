@@ -100,3 +100,45 @@ def test_nlp_result_written_exactly_once(internal, admin, db, unique_url):
         c.execute("SELECT COUNT(*) n FROM ai_analysis_results WHERE url=%s", (unique_url,))
         n = c.fetchone()["n"]
     assert n == 1, f"同一個網址產生了 {n} 筆 AI 分析結果"
+
+
+def test_repeated_crawler_report_does_not_fail(internal, db, unique_url):
+    """
+    同一個網址重複回報不能 500。
+
+    suspect_websites.url 上有 UNIQUE index，而 24 小時自動爬蟲本來就會
+    一再遇到同一個網站。原本這裡是無條件 db.add，第二次回報就撞 1062
+    Duplicate entry，被 except 接住 → 回 500、整筆回報丟掉。
+
+    症狀難查：爬蟲只看到一次 500，看不出是「這個網址已經有了」，
+    畫面上顯示的還是舊快照，看起來像爬蟲沒在跑。
+    """
+    for i in range(1, 4):
+        r = crawler_report(internal, unique_url,
+                           text_content=f"第 {i} 次抓到的內容",
+                           keywords=[f"第{i}次"])
+        assert r.status_code == 200, f"第 {i} 次回報失敗：{r.status_code} {r.text[:200]}"
+
+    with db.cursor() as c:
+        c.execute("SELECT COUNT(*) n FROM suspect_websites WHERE url=%s", (unique_url,))
+        assert c.fetchone()["n"] == 1, "同一個網址產生了多筆蒐證資料"
+
+
+def test_repeated_report_refreshes_snapshot(internal, db, unique_url):
+    """重複回報要用新的快照覆蓋舊的——最新那份才是有意義的證據。
+
+    created_at 則刻意不動，那是「第一次發現的時間」。
+    """
+    crawler_report(internal, unique_url, text_content="第一次的內容")
+    with db.cursor() as c:
+        c.execute("SELECT created_at FROM suspect_websites WHERE url=%s", (unique_url,))
+        first_seen = c.fetchone()["created_at"]
+
+    crawler_report(internal, unique_url, text_content="後來重抓的內容")
+    with db.cursor() as c:
+        c.execute("SELECT html_content, created_at FROM suspect_websites WHERE url=%s",
+                  (unique_url,))
+        row = c.fetchone()
+
+    assert row["html_content"] == "後來重抓的內容", "快照沒有更新"
+    assert row["created_at"] == first_seen, "created_at 應該保持第一次發現的時間"
