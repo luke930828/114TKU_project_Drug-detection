@@ -189,23 +189,34 @@ def like_pattern(keyword: str) -> str:
     return f"%{text}%"
 
 
-# OCR 文字要「另外」送給 NLP，不能接在網頁文字後面
-# ────────────────────────────────────────────────
-# NLP 的 tokenizer 是 truncation=True, max_length=256（modules/nlp/app/main.py），
-# 網頁文字通常早就超過 256 個 token 了，OCR 附在後面會被整段截掉，
-# 等於什麼都沒做——而且不會有任何錯誤訊息，看起來像「OCR 沒幫上忙」。
+# OCR 文字要「合併」網頁文字後再判一次
+# ──────────────────────────────────
+# 第一版是把 OCR 文字「單獨」送去 NLP、分數比較高才覆蓋。那是錯的，而且錯得
+# 很難看：模型拿到的是一袋沒有上下文的碎片，2026-09-03 實測結果——
 #
-# 所以獨立呼叫一次 /predict，拿到「圖片文字的毒品機率」，再跟網頁文字的分數合併。
-OCR_MIN_CONFIDENCE = 0.5     # EasyOCR 低於這個值的多半是雜訊（實測 0.36 是 'SHIPPIHGORLDWIIDE'）
+#   微波爐商品頁      → 100 分，關鍵字 'IRE', 'STAPT', 'GEHUINE'
+#   電動腳踏車商品頁  → 100 分，關鍵字 'meedsy', 'Offers'
+#
+# 而且「比較高才覆蓋」的規則把這些假警報永久鎖住，還順手把原本網頁文字算出來
+# 的關鍵字整組蓋掉——承辦人員看到的變成一堆從包裝上讀到的碎字，原本真正的
+# 判斷依據不見了。
+#
+# 改成合併：圖片裡的字跟網頁上的字本來就是同一頁的內容，一起判才有上下文。
+# 出來也只有一組分數、一組關鍵字，不會有「兩套答案」的問題。
+OCR_MIN_CONFIDENCE = 0.5     # EasyOCR 低於這個值的多半是雜訊（實測 0.36 那段是 'SHIPPIHGORLDWIIDE'）
 OCR_MIN_CHARS = 2            # 一兩個字元的碎片沒有語意
 OCR_MIN_TOTAL_CHARS = 10     # 全部串起來還不到 10 個字就別浪費一次推論
+# 合併後用 512（XLM-R 的上限），不是預設的 256。
+# OCR 文字會佔掉一部分額度，還用 256 的話等於「用更少的網頁內容」重判一次，
+# 分數會莫名其妙地掉。
+MERGED_MAX_LENGTH = 512
 
 
 def ocr_texts_to_sentence(ocr_results) -> str:
     """把 OCR 的結果整理成一段可以餵給 NLP 的文字。
 
-    只留信心夠高、長度夠的片段。順序照 EasyOCR 給的（大致是由上到下、
-    由左到右），比照原樣串起來比重新排序更接近人看到的版面。
+    只留信心夠高、長度夠的片段。順序照 EasyOCR 給的（大致由上到下、由左到右），
+    比重新排序更接近人看到的版面。
     """
     if not ocr_results:
         return ""
@@ -221,22 +232,24 @@ def ocr_texts_to_sentence(ocr_results) -> str:
     return " ".join(kept)
 
 
-def analyze_ocr_text_with_nlp(url: str, ocr_results):
-    """把圖片裡的文字送去 NLP 判一次，分數比原本高才更新。
-
-    為什麼是「比較高才更新」
-    ────────────────────
-    OCR 文字是「額外」的證據，不是「更好」的證據。圖片上的字通常零碎
-    （'SATIVA'、'netwt'、'403'），單獨判分數常常偏低。如果無條件覆蓋，
-    一個網頁文字判 80 分的站，會因為圖片文字只判 20 分而被拉下來——
-    證據變多反而結論變弱，那是錯的。
-
-    只在「圖片文字判得更高」時更新，代表這一頁的毒品跡證主要藏在圖片裡，
-    純文字爬蟲看不到——那正是加 OCR 想抓的情況。
-    """
-    sentence = ocr_texts_to_sentence(ocr_results)
-    if len(sentence) < OCR_MIN_TOTAL_CHARS:
+def rescore_with_ocr_text(url: str, ocr_results):
+    """把「圖片裡的文字 + 網頁文字」合併後再送 NLP 判一次。"""
+    ocr_sentence = ocr_texts_to_sentence(ocr_results)
+    if len(ocr_sentence) < OCR_MIN_TOTAL_CHARS:
         return
+
+    import database
+    db = database.SessionLocal()
+    try:
+        suspect = db.query(database.SuspectWebsite).filter(
+            database.SuspectWebsite.url == url).first()
+        page_text = (suspect.html_content or "") if suspect else ""
+    finally:
+        db.close()
+
+    # OCR 放前面。就算 512 還是被截，先進去的是圖片文字——那是這次重判「多出來」
+    # 的東西；網頁文字第一次就已經判過了，被截掉的部分不算損失。
+    combined = f"{ocr_sentence}\n{page_text}".strip()
 
     NLP_PREDICT_URL = os.environ["NLP_PREDICT_URL"]
     BACKEND_NLP_REPORT_URL = os.getenv(
@@ -244,51 +257,35 @@ def analyze_ocr_text_with_nlp(url: str, ocr_results):
     INTERNAL_HEADERS = {"X-Internal-Token": os.environ["INTERNAL_API_TOKEN"]}
 
     try:
-        # report=False：不要讓 NLP 自己回寫，否則圖片文字的分數會直接蓋掉
-        # 網頁文字的分數，合併規則就沒機會生效了。
+        # report=False：讓後端自己回寫，才有機會標註哪些關鍵字是從圖片讀到的。
         resp = requests.post(
             NLP_PREDICT_URL,
-            json={"url": url, "text": sentence[:4000], "report": False},
-            timeout=15,
+            json={"url": url, "text": combined[:20000],
+                  "report": False, "max_length": MERGED_MAX_LENGTH},
+            timeout=20,
         )
         if resp.status_code != 200:
-            print(f"[OCR→NLP] {url} 回應 {resp.status_code}，略過")
+            print(f"[OCR+文字→NLP] {url} 回應 {resp.status_code}，略過")
             return
         result = resp.json()
     except Exception as e:
-        print(f"[OCR→NLP] {url} 呼叫 NLP 失敗：{e}")
+        print(f"[OCR+文字→NLP] {url} 呼叫 NLP 失敗：{e}")
         return
 
-    ocr_score = int(float(result.get("score", 0)) * 100)
+    merged_score = int(float(result.get("score", 0)) * 100)
 
-    # 拿現在的分數來比。這裡直接開 session 讀，不繞 HTTP——
-    # 只是讀一個欄位，沒必要再多一次自己打自己的請求。
-    import database
-    db = database.SessionLocal()
-    try:
-        row = db.query(database.AIAnalysisResult).filter(
-            database.AIAnalysisResult.url == url).first()
-        current = (row.nlp_score or 0) if row else 0
-    finally:
-        db.close()
+    # 只有「真的出現在圖片文字裡」的關鍵字才標註來源。
+    # 全部都標的話會誤導——合併之後大部分關鍵字其實來自網頁本文。
+    keywords = []
+    for k in (result.get("keywords") or [])[:100]:
+        keywords.append(f"[圖片文字] {k}" if k and k in ocr_sentence else k)
 
-    if ocr_score <= current:
-        print(f"[OCR→NLP] {url} 圖片文字 {ocr_score} 分，沒有超過現有的 {current} 分，不更新")
-        return
-
-    print(f"[OCR→NLP] {url} 圖片文字 {ocr_score} 分 > 現有 {current} 分，更新")
+    print(f"[OCR+文字→NLP] {url} 合併重判 {merged_score} 分")
     try:
         requests.post(
             BACKEND_NLP_REPORT_URL,
-            json={
-                "url": url,
-                "risk_score": ocr_score,
-                # 標明來源。之後看報表時要分得出「這個關鍵字是從圖片上讀到的」，
-                # 不然承辦人員在網頁原始碼裡怎麼找都找不到那個字。
-                "nlp_keywords": [f"[圖片文字] {k}" for k in (result.get("keywords") or [])][:100],
-            },
-            headers=INTERNAL_HEADERS,
-            timeout=10,
+            json={"url": url, "risk_score": merged_score, "nlp_keywords": keywords},
+            headers=INTERNAL_HEADERS, timeout=10,
         )
     except Exception as e:
-        print(f"[OCR→NLP] {url} 回寫失敗：{e}")
+        print(f"[OCR+文字→NLP] {url} 回寫失敗：{e}")

@@ -57,6 +57,10 @@ class PredictRequest(BaseModel):
     # 而圖片文字通常比較零碎、分數偏低，等於愈補愈糟。
     # 這種情況由呼叫端設 report=False，自己決定要怎麼合併。
     report: bool = True
+    # 截斷長度。預設 256 維持原本的行為不變。
+    # 後端把「圖片文字 + 網頁文字」合併後再送一次時會指定 512（XLM-R 的上限），
+    # 不然 OCR 佔掉的額度會把網頁文字擠出視窗，等於用更少的網頁內容重判一次。
+    max_length: int = 256
 
 
 class PredictResponse(BaseModel):
@@ -144,10 +148,15 @@ def _is_meaningful(word: str) -> bool:
     return any(ch.isalpha() for ch in word)
 
 
-def extract_keywords(text: str, top_k: int = 5) -> List[str]:
-    """用 CLS token 的 Attention 找出模型最依賴的詞。"""
+def extract_keywords(text: str, top_k: int = 5, max_length: int = 256) -> List[str]:
+    """用 CLS token 的 Attention 找出模型最依賴的詞。
+
+    max_length 要跟算分那一次一樣。不一樣的話，標出來的關鍵字會來自
+    「模型根本沒看到的那段文字」——分數是 A 段算的，理由卻是 B 段給的。
+    """
     encoding = tokenizer(
-        text, return_tensors="pt", truncation=True, padding=True, max_length=256
+        text, return_tensors="pt", truncation=True, padding=True,
+        max_length=max_length,
     )
     input_ids = encoding["input_ids"][0].tolist()
     inputs = {k: v.to(device) for k, v in encoding.items()}
@@ -218,8 +227,11 @@ async def predict(req: PredictRequest):
         return PredictResponse(label="SAFE", score=0.0, keywords=[])
 
     # 1. 預測
+    # 上下限夾住：低於 64 幾乎判不出東西，高於 512 超過 XLM-R 的位置編碼上限。
+    max_length = max(64, min(req.max_length, 512))
     encoding = tokenizer(
-        text, return_tensors="pt", truncation=True, padding=True, max_length=256
+        text, return_tensors="pt", truncation=True, padding=True,
+        max_length=max_length,
     )
     inputs = {k: v.to(device) for k, v in encoding.items()}
 
@@ -233,7 +245,7 @@ async def predict(req: PredictRequest):
     drug_score = round(float(probs[1]), 4) if pred_idx == 1 else 0.0
 
     # 2. 提取關鍵字（機率 > 0.3 才值得標）
-    keywords = extract_keywords(text) if drug_score > 0.3 else []
+    keywords = extract_keywords(text, max_length=max_length) if drug_score > 0.3 else []
 
     # 3. 非同步推送給後端主系統（不阻塞回應）
     #    report=False 時不推——呼叫端要自己合併，見 PredictRequest 的說明。

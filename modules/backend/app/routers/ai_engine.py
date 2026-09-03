@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 import database
 from schemas import YOLOAnalysisReport, NLPAnalysisReport
 from dependencies import get_db, verify_internal_token
-from utils import analyze_ocr_text_with_nlp, calculate_multimodal_risk_100_scale
+from utils import rescore_with_ocr_text, calculate_multimodal_risk_100_scale
 
 router = APIRouter(tags=["AI 引擎分析結果接收"])
 
@@ -28,16 +28,16 @@ def receive_ai_analysis_result(
     # 這裡轉成 dict 一次，下面三個寫入點共用。
     ocr_payload = report.ocr_results.model_dump() if report.ocr_results else None
 
-    # 圖片裡的文字另外送去 NLP 判一次。
+    # 圖片裡的文字跟網頁文字合併，再送 NLP 判一次。
     #
-    # 為什麼要另外送、而不是接在網頁文字後面一起判：NLP 的 tokenizer 是
-    # truncation=True, max_length=256，網頁文字通常早就超過了，OCR 接在後面
-    # 會被整段截掉——不會報錯，只是靜靜地沒作用。詳見 utils.py 的說明。
+    # 不能只送 OCR：模型拿到一袋沒有上下文的碎片會亂判（實測微波爐商品頁被判
+    # 100 分，關鍵字是 'IRE'、'STAPT'）。也不能就這樣接在後面用預設的 256 截斷
+    # ——OCR 會被切掉。合併之後改用 512，詳見 utils.py 的說明。
     #
     # 排在背景做：這支端點是 YOLO 在等回應的，多一次 NLP 推論會讓它多等好幾秒，
     # 而 YOLO 那邊的 timeout 只有 5 秒。下面三條分支都會走到，所以放在分支之前。
     if ocr_payload:
-        background_tasks.add_task(analyze_ocr_text_with_nlp, report.url, ocr_payload)
+        background_tasks.add_task(rescore_with_ocr_text, report.url, ocr_payload)
     existing_record = db.query(database.AIAnalysisResult).filter(database.AIAnalysisResult.url == report.url).first()
     suspect = db.query(database.SuspectWebsite).filter(database.SuspectWebsite.url == report.url).first()
     source_title = suspect.title if suspect else "未知來源"
