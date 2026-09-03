@@ -181,9 +181,19 @@ export function Report({ onBack }: Props) {
         </div>
 
         {/* 說明 */}
+        {/*
+          原本這裡寫「包含AI偵測案件統計、毒品類別分布、趨勢分析圖表、
+          關鍵績效指標(KPI)及執法建議」——那四項後端都沒有做。
+          export.py 產出的是單一工作表「AI分析總表」，四個欄位而已。
+          說明文字跟實際下載的檔案對不起來，使用者會以為檔案壞了。
+        */}
         <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-6 text-sm text-blue-700">
-          包含AI偵測案件統計、毒品類別分布、趨勢分析圖表、
-          關鍵績效指標(KPI)及執法建議。
+          <p className="font-semibold mb-1">匯出內容：AI 分析總表（單一工作表）</p>
+          <p>
+            每一列是一筆 AI 分析結果，欄位為
+            <span className="font-medium">案件編號、網址、風險分數、風險等級</span>。
+            時間範圍以分析建立時間篩選；該區間沒有資料時不會產生檔案。
+          </p>
         </div>
 
         {/* 時間範圍 */}
