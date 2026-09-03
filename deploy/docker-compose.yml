@@ -186,6 +186,10 @@ services:
       BACKEND_BASE_URL: http://backend:8000
       MODEL_PATH: /models/best.pt
       INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+      # EasyOCR 跑在 GPU 上。這台是 RTX 5060 Ti / 16 GB，YOLO 只用 513 MiB，
+      # 空間很夠。顯存小的機器設 0 會退回 CPU——但 CPU 模式 8 秒一張，
+      # 追不上爬蟲的產出，那時要一起調整 OCR 的取樣數量。
+      OCR_USE_GPU: ${OCR_USE_GPU:-1}
     volumes:
       # 權重放宿主機，不進 image 也不進 git
       - ${MODEL_DIR:-../models}:/models:ro

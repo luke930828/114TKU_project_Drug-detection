@@ -47,14 +47,19 @@ except Exception as e:
 # 1b. 載入 OCR 引擎（EasyOCR，繁中+英文）。跟 YOLO 模型一樣：失敗就設成 None，不讓服務直接掛掉，
 # /health 會照實回報有沒有載成功，OCR 掛了不影響 YOLO 那邊的計分邏輯繼續運作（解耦設計）。
 #
-# 🌟 刻意用 CPU（gpu=False）不跟 YOLO 搶 GPU：這張卡只有 4GB 顯存，實測過 YOLO + EasyOCR 同時用 GPU，
-# EasyOCR 的文字偵測模型會在推論時噴 "RuntimeError: bad allocation"（顯存不夠的錯誤，
-# 跟訓練時遇到的 ptxas/CUDA allocation 問題是同一類）。OCR 是背景批次工作，不像即時串流那樣在乎速度，
-# CPU 跑一張圖大約 2 秒，換來穩定不會跟 YOLO 搶顯存，這個取捨划算。
+# 預設用 GPU。原本是刻意用 CPU，理由寫「這張卡只有 4GB 顯存，會跟 YOLO 搶」——
+# 那是開發機的狀況。部署機器是 RTX 5060 Ti / 16 GB，YOLO 跑著時只用 513 MiB。
+#
+# 而 CPU 模式實測 8 秒一張，爬蟲一分鐘產出約 90 張，差 12 倍：請求在 FastAPI 的
+# 執行緒池裡積壓，每一個都抱著一張 base64 圖片，記憶體以 0.5 GB/分往上爬，
+# 四分鐘就撞到容器上限被砍——手上沒做完的批次全部消失（2026-09-03 實際發生）。
+#
+# 顯存小的機器把 OCR_USE_GPU 設成 0，就退回原本的 CPU 行為。
 ocr_reader = None
 try:
-    ocr_reader = load_ocr_reader(gpu=False)
-    print("🎉 [成功] EasyOCR（繁中+英文，CPU 模式）已順利載入！")
+    use_gpu = os.getenv("OCR_USE_GPU", "1") not in ("0", "false", "False", "")
+    ocr_reader = load_ocr_reader(gpu=use_gpu)
+    print(f"🎉 [成功] EasyOCR（繁中+英文，{'GPU' if use_gpu else 'CPU'} 模式）已順利載入！")
 except Exception as e:
     print(f"🚨 [錯誤] OCR 引擎載入失敗，本次啟動將不含文字擷取功能！錯誤: {e}")
 
