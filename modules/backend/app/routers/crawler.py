@@ -426,10 +426,10 @@ def get_automated_24h_results(
             # API 本身都在 0.3 秒內，慢的是傳輸和瀏覽器解碼幾十張 base64。
             # 改成只回一個布林值，圖由 /api/crawler/result/{id}/image/ 按需取。
             "has_representative_image": bool(ai_record.representative_image_base64),
-            # OCR 文字則直接放進清單：前端明細面板是從清單資料渲染的，
-            # 而且純文字量級跟 base64 圖片差好幾個數量級（實測一批 20 張圖
-            # 大約幾 KB），不需要比照圖片另外開一個按需取的端點。
-            "ocr_results": ai_record.ocr_results,
+            # ocr_results 不回傳。前端不顯示 OCR——圖片裡的文字是拿去餵 NLP、
+            # 影響風險分數本身（utils.py 的 analyze_ocr_text_with_nlp），
+            # 不是多一個給人看的區塊。回傳它只是讓每一頁的 payload 白白變大。
+            # 要追查原始 OCR 結果的話，資料庫的 ai_analysis_results.ocr_results 還在。
         })
 
     return {

@@ -187,3 +187,108 @@ def like_pattern(keyword: str) -> str:
     for src, dst in LIKE_SPECIAL:
         text = text.replace(src, dst)
     return f"%{text}%"
+
+
+# OCR 文字要「另外」送給 NLP，不能接在網頁文字後面
+# ────────────────────────────────────────────────
+# NLP 的 tokenizer 是 truncation=True, max_length=256（modules/nlp/app/main.py），
+# 網頁文字通常早就超過 256 個 token 了，OCR 附在後面會被整段截掉，
+# 等於什麼都沒做——而且不會有任何錯誤訊息，看起來像「OCR 沒幫上忙」。
+#
+# 所以獨立呼叫一次 /predict，拿到「圖片文字的毒品機率」，再跟網頁文字的分數合併。
+OCR_MIN_CONFIDENCE = 0.5     # EasyOCR 低於這個值的多半是雜訊（實測 0.36 是 'SHIPPIHGORLDWIIDE'）
+OCR_MIN_CHARS = 2            # 一兩個字元的碎片沒有語意
+OCR_MIN_TOTAL_CHARS = 10     # 全部串起來還不到 10 個字就別浪費一次推論
+
+
+def ocr_texts_to_sentence(ocr_results) -> str:
+    """把 OCR 的結果整理成一段可以餵給 NLP 的文字。
+
+    只留信心夠高、長度夠的片段。順序照 EasyOCR 給的（大致是由上到下、
+    由左到右），比照原樣串起來比重新排序更接近人看到的版面。
+    """
+    if not ocr_results:
+        return ""
+    texts = (ocr_results or {}).get("detected_texts") or []
+    kept = []
+    for item in texts:
+        text = (item.get("text") or "").strip()
+        if len(text) < OCR_MIN_CHARS:
+            continue
+        if (item.get("confidence") or 0) < OCR_MIN_CONFIDENCE:
+            continue
+        kept.append(text)
+    return " ".join(kept)
+
+
+def analyze_ocr_text_with_nlp(url: str, ocr_results):
+    """把圖片裡的文字送去 NLP 判一次，分數比原本高才更新。
+
+    為什麼是「比較高才更新」
+    ────────────────────
+    OCR 文字是「額外」的證據，不是「更好」的證據。圖片上的字通常零碎
+    （'SATIVA'、'netwt'、'403'），單獨判分數常常偏低。如果無條件覆蓋，
+    一個網頁文字判 80 分的站，會因為圖片文字只判 20 分而被拉下來——
+    證據變多反而結論變弱，那是錯的。
+
+    只在「圖片文字判得更高」時更新，代表這一頁的毒品跡證主要藏在圖片裡，
+    純文字爬蟲看不到——那正是加 OCR 想抓的情況。
+    """
+    sentence = ocr_texts_to_sentence(ocr_results)
+    if len(sentence) < OCR_MIN_TOTAL_CHARS:
+        return
+
+    NLP_PREDICT_URL = os.environ["NLP_PREDICT_URL"]
+    BACKEND_NLP_REPORT_URL = os.getenv(
+        "BACKEND_NLP_REPORT_URL", "http://127.0.0.1:8000/api/nlp/report/")
+    INTERNAL_HEADERS = {"X-Internal-Token": os.environ["INTERNAL_API_TOKEN"]}
+
+    try:
+        # report=False：不要讓 NLP 自己回寫，否則圖片文字的分數會直接蓋掉
+        # 網頁文字的分數，合併規則就沒機會生效了。
+        resp = requests.post(
+            NLP_PREDICT_URL,
+            json={"url": url, "text": sentence[:4000], "report": False},
+            timeout=15,
+        )
+        if resp.status_code != 200:
+            print(f"[OCR→NLP] {url} 回應 {resp.status_code}，略過")
+            return
+        result = resp.json()
+    except Exception as e:
+        print(f"[OCR→NLP] {url} 呼叫 NLP 失敗：{e}")
+        return
+
+    ocr_score = int(float(result.get("score", 0)) * 100)
+
+    # 拿現在的分數來比。這裡直接開 session 讀，不繞 HTTP——
+    # 只是讀一個欄位，沒必要再多一次自己打自己的請求。
+    import database
+    db = database.SessionLocal()
+    try:
+        row = db.query(database.AIAnalysisResult).filter(
+            database.AIAnalysisResult.url == url).first()
+        current = (row.nlp_score or 0) if row else 0
+    finally:
+        db.close()
+
+    if ocr_score <= current:
+        print(f"[OCR→NLP] {url} 圖片文字 {ocr_score} 分，沒有超過現有的 {current} 分，不更新")
+        return
+
+    print(f"[OCR→NLP] {url} 圖片文字 {ocr_score} 分 > 現有 {current} 分，更新")
+    try:
+        requests.post(
+            BACKEND_NLP_REPORT_URL,
+            json={
+                "url": url,
+                "risk_score": ocr_score,
+                # 標明來源。之後看報表時要分得出「這個關鍵字是從圖片上讀到的」，
+                # 不然承辦人員在網頁原始碼裡怎麼找都找不到那個字。
+                "nlp_keywords": [f"[圖片文字] {k}" for k in (result.get("keywords") or [])][:100],
+            },
+            headers=INTERNAL_HEADERS,
+            timeout=10,
+        )
+    except Exception as e:
+        print(f"[OCR→NLP] {url} 回寫失敗：{e}")

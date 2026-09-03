@@ -1,22 +1,25 @@
 """
-OCR 的介面契約：YOLO 送出來的形狀，後端存得住、前端讀得到。
+OCR 的介面契約：YOLO 送出來的形狀，後端存得住、而且真的送去 NLP。
 
 為什麼要有這一支
 ────────────────
-OCR 功能是兩個人分頭做的：一個在 modules/yolo 做文字擷取，一個在
-backend + frontend 做欄位與顯示。兩邊都寫完、都能跑、都 code review 過，
-合起來卻是壞的——
+OCR 功能是兩個人分頭做的：一個在 modules/yolo 做文字擷取，一個在後端做欄位。
+兩邊都寫完、都能跑，合起來卻是壞的——
 
   YOLO 送：  {"engine": "easyocr", "detected_texts": [{"text", "box", ...}]}
-  前端讀：   if (!Array.isArray(value)) return [];   // 物件進來 → 直接回空陣列
+  另一邊讀： if (!Array.isArray(value)) ...   // 物件進來 → 當成空的
 
-所以 OCR 區塊從來沒有顯示過，而且失敗方式是「安靜地不顯示」，看起來就像
-OCR 沒抓到東西，不會有任何錯誤訊息。單獨測任一邊都是綠的，只有把兩邊接起來
-才看得出問題——這正是整合測試存在的理由。
+失敗方式是「安靜地沒東西」，不會有任何錯誤訊息。單獨測任一邊都是綠的，
+只有把兩邊接起來才看得出問題——這正是整合測試存在的理由。
 
-這支測試釘住的是「形狀」本身，不是分數或內容。哪天有人改了其中一邊的欄位名，
-這裡會紅，而不是等到展示的時候才發現畫面上空空如也。
+OCR 不顯示在前端
+────────────────
+圖片裡的文字是拿去餵 NLP、影響風險分數本身（utils.py 的
+analyze_ocr_text_with_nlp），不是多一個給人看的區塊。所以這裡驗的是
+「有沒有存進資料庫」與「有沒有影響分數」，不是「清單 API 有沒有回傳」。
 """
+import json
+
 import pytest
 from helpers import crawler_report, wait_for
 
@@ -48,20 +51,16 @@ def _yolo_report(url, ocr):
     }
 
 
-def _row_from_24h_list(admin, url):
-    """從前端 AIDetection 實際會打的那支端點撈回來。
-
-    刻意不查資料庫：這裡要驗的是「前端拿得到什麼」，不是「資料庫存了什麼」。
-    """
-    r = admin.get("/api/crawler/automated_24h_list/?limit=200")
-    if r.status_code != 200:
+def _stored_ocr(db, url):
+    """直接查資料庫。清單 API 刻意不回傳 ocr_results（前端用不到），
+    所以要驗「有沒有存下來」只能從這裡看。"""
+    with db.cursor() as c:
+        c.execute("SELECT ocr_results FROM ai_analysis_results WHERE url=%s", (url,))
+        row = c.fetchone()
+    if not row or not row["ocr_results"]:
         return None
-    for row in r.json().get("data", []):
-        # 這支端點的網址欄位叫 domain_name（不是 url，也不是 websiteUrl）。
-        # 前端 AIDetection 的 normalizeResult 讀的就是這個。
-        if row.get("domain_name") == url:
-            return row
-    return None
+    raw = row["ocr_results"]
+    return json.loads(raw) if isinstance(raw, (str, bytes)) else raw
 
 
 def test_yolo_ocr_payload_accepted(internal, unique_url):
@@ -71,31 +70,37 @@ def test_yolo_ocr_payload_accepted(internal, unique_url):
     assert r.status_code == 200, r.text[:300]
 
 
-def test_ocr_survives_round_trip(internal, admin, unique_url):
+def test_ocr_is_stored_intact(internal, db, unique_url):
     """存進去再讀出來，結構與內容都不能走樣。"""
     crawler_report(internal, unique_url)
     internal.post("/api/ai_result/report/",
                   json=_yolo_report(unique_url, YOLO_OCR_PAYLOAD))
 
-    row = wait_for(lambda: _row_from_24h_list(admin, unique_url),
-                   what=f"{unique_url} 出現在 24h 清單")
+    ocr = wait_for(lambda: _stored_ocr(db, unique_url),
+                   what=f"{unique_url} 的 ocr_results 落庫")
 
-    ocr = row.get("ocr_results")
-    assert ocr is not None, (
-        "清單裡沒有 ocr_results——前端讀不到，OCR 區塊就不會出現。"
-        f"實際欄位：{sorted(row.keys())}")
-    assert isinstance(ocr, dict), f"應該是物件，實際是 {type(ocr).__name__}"
     assert ocr.get("engine") == "easyocr"
-
     texts = ocr.get("detected_texts")
     assert isinstance(texts, list) and len(texts) == 2, f"實際：{texts}"
     assert any("藍色小藥丸" in t["text"] for t in texts), "中文走樣了"
-    # image_index 是「這段文字來自第幾張圖」，沒有的話前端只看得到一堆
-    # 文字、不知道從哪張來。
+    # image_index 是「這段文字來自第幾張圖」，追查證據時要用。
     assert sorted(t.get("image_index") for t in texts) == [0, 3]
-    # 欄位名是 box 不是 bbox，格式跟 YOLO 偵測框一致，前端才能共用畫框邏輯。
+    # 欄位名是 box 不是 bbox，格式跟 YOLO 偵測框一致。
     assert all(t.get("box_format") == "xyxyn" for t in texts)
     assert all(len(t.get("box")) == 4 for t in texts)
+
+
+def test_ocr_is_not_exposed_in_list_api(internal, admin, db, unique_url):
+    """清單 API 不該回傳 ocr_results——前端不顯示，回傳只是讓 payload 變大。"""
+    crawler_report(internal, unique_url)
+    internal.post("/api/ai_result/report/",
+                  json=_yolo_report(unique_url, YOLO_OCR_PAYLOAD))
+    wait_for(lambda: _stored_ocr(db, unique_url), what="ocr_results 落庫")
+
+    r = admin.get("/api/crawler/automated_24h_list/?limit=200")
+    assert r.status_code == 200
+    for row in r.json().get("data", []):
+        assert "ocr_results" not in row, "清單不該夾帶 OCR 原始資料"
 
 
 def test_ocr_results_as_bare_list_is_rejected(internal, unique_url):

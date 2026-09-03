@@ -51,6 +51,12 @@ app.add_middleware(
 class PredictRequest(BaseModel):
     url: str            # 被掃描的網址（送給後端用）
     text: str           # 要偵測的文字內容
+    # 這支端點預設會自己把結果回寫到後端的 /api/nlp/report/。
+    # 但「同一個網址要跑第二次」的時候不能這樣——後端拿 OCR 文字再判一次時，
+    # 如果 NLP 自己就把結果寫回去，圖片文字的分數會直接蓋掉網頁文字的分數，
+    # 而圖片文字通常比較零碎、分數偏低，等於愈補愈糟。
+    # 這種情況由呼叫端設 report=False，自己決定要怎麼合併。
+    report: bool = True
 
 
 class PredictResponse(BaseModel):
@@ -230,7 +236,9 @@ async def predict(req: PredictRequest):
     keywords = extract_keywords(text) if drug_score > 0.3 else []
 
     # 3. 非同步推送給後端主系統（不阻塞回應）
-    await push_to_backend(req.url, drug_score, keywords)
+    #    report=False 時不推——呼叫端要自己合併，見 PredictRequest 的說明。
+    if req.report:
+        await push_to_backend(req.url, drug_score, keywords)
 
     return PredictResponse(label=label, score=drug_score, keywords=keywords)
 

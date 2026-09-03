@@ -52,10 +52,26 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # ——寫兩份遲早會不一致，而不一致的下場是「build 時抓了 A、執行時要 B」，
 # 又變回執行時下載。只複製 ocr.py 這一個檔案，避免整個 app/ 的改動
 # 讓這 295 MB 的一層失效。
+# ⚠️ 一定要重試。EasyOCR 的 download_and_unzip 用 urlretrieve 直接下載，
+#    沒有任何重試或續傳；模型放在 jaided.ai，226 MB 抓到一半斷線就整個失敗：
+#        ContentTooShortError: got only 135249920 out of 209821039 bytes
+#    2026-09-03 第一次 build 就是這樣掛掉的。
+#    已經抓成功的那個模型不會被重抓——EasyOCR 會先比對既有檔案的 MD5，
+#    對得上就跳過，所以重試只會補抓失敗的那一個。
 COPY app/ai_model/ocr.py /tmp/warm/ocr.py
-RUN python -c "import sys; sys.path.insert(0, '/tmp/warm'); \
-      from ocr import load_ocr_reader; load_ocr_reader(gpu=False)" \
-    && rm -rf /tmp/warm
+RUN for i in 1 2 3 4 5; do \
+        if python -c "import sys; sys.path.insert(0, '/tmp/warm'); \
+             from ocr import load_ocr_reader; load_ocr_reader(gpu=False)"; then \
+            ok=1; break; \
+        fi; \
+        echo "[warm-ocr] 第 $i 次下載失敗，15 秒後重試"; sleep 15; \
+    done; \
+    if [ -z "$ok" ]; then \
+        echo "[warm-ocr] 連續五次都失敗，中止 build——寧可現在就知道，"; \
+        echo "           也不要出一個「執行時才發現 OCR 載不起來」的 image。"; \
+        exit 1; \
+    fi; \
+    rm -rf /tmp/warm
 
 # app/ 底下的東西（main.py、ai_model/、models/）直接複製進 /app，
 # 對應 main.py 用 __file__ 定位模型路徑的邏輯，最後會落在 /app/models/best.pt

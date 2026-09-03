@@ -27,7 +27,15 @@ COPY app/ /app/
 
 EXPOSE 8001
 
-HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=3 \
+# timeout 給 15s 不是 5s：這個容器在跑 Chromium 抓網頁，滿載時 CPU 被吃光，
+# /health 本身雖然只回一行字，curl 卻排不到 CPU，5 秒常常回不來。
+# 2026-09-03 實際看到的情形是 log 裡每次 /health 都 200 OK，
+# healthcheck 卻一直 "exceeded timeout (5s)"，容器被標成 unhealthy——
+# 服務其實好好的，被誤判的是健康檢查自己。
+#
+# retries 也從 3 拉到 5：偶爾一次慢不代表死了，連續五次（約 75 秒）
+# 都回不來才算數。
+HEALTHCHECK --interval=15s --timeout=15s --start-period=20s --retries=5 \
     CMD curl -f http://localhost:8001/health || exit 1
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
