@@ -19,8 +19,31 @@ set -e
 
 CERT_DIR="${SSL_CERT_DIR:-/etc/nginx/certs}"
 CONF=/etc/nginx/conf.d/default.conf
+# 原始設定檔的備份。放在 conf.d 外面——nginx 是 include conf.d/*.conf，
+# 副檔名不是 .conf 雖然不會被載入，但擺在那個目錄裡遲早有人以為它有效。
+PRISTINE=/etc/nginx/default.conf.pristine
 FULLCHAIN="$CERT_DIR/fullchain.pem"
 PRIVKEY="$CERT_DIR/privkey.pem"
+
+# ⚠️ 這支腳本必須是冪等的。
+#
+# nginx 官方 image 的 entrypoint 每次「啟動」都會跑一遍 docker-entrypoint.d/，
+# 不是只有「建立容器」時跑。容器重新建立時 default.conf 是 image 裡那份乾淨的，
+# 但只是 restart（Docker Desktop 重開、WSL 重開、crash 後 restart: unless-stopped
+# 自動拉起）的話，寫入層還在——腳本會對著「已經改過的檔案」再改一次。
+#
+# 第一版就是這樣：restart 之後多出第二個 443 server 區塊，nginx 直接
+#     [emerg] "ssl_ciphers" directive is duplicate
+# 拒絕啟動 → 又被 restart → 又疊一層，越修越壞，站台整個掛掉。
+# 2026-09-03 實際發生，RestartCount 累到 11。
+#
+# 解法：第一次執行時把原始檔備份起來，之後每次都從那份重新產生，
+# 不管跑幾次結果都一樣。
+if [ ! -f "$PRISTINE" ]; then
+    cp "$CONF" "$PRISTINE"
+else
+    cp "$PRISTINE" "$CONF"
+fi
 
 if [ ! -f "$FULLCHAIN" ] || [ ! -f "$PRIVKEY" ]; then
     echo "[ssl] 找不到 $FULLCHAIN，維持純 HTTP。"
