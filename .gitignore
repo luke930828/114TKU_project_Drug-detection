@@ -88,3 +88,4 @@ modules/crawler/app/testHTML/
 # TLS 憑證與私鑰，絕對不能進 git
 deploy/certs/
 deploy/acme-challenge/
+deploy/lego/

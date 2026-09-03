@@ -1,48 +1,66 @@
 #!/usr/bin/env bash
-# 續期憑證。沒到期就什麼都不做，所以可以每天跑。
+# 續期憑證。還沒到續期時間就什麼都不做，所以可以頻繁跑。
 #
-#     bash scripts/renew-cert.sh
+#     ACME_EMAIL=you@example.com bash scripts/renew-cert.sh
 #
-# 建議排程（每天早上 6 點）：
+# 排程（IP 憑證只有 6.7 天，每 6 小時檢查一次）：
 #     crontab -e
-#     0 6 * * * cd /home/tku/114TKU_project_Drug-detection && bash scripts/renew-cert.sh >> /tmp/cert-renew.log 2>&1
+#     0 */6 * * * cd /home/tku/114TKU_project_Drug-detection && \
+#       ACME_EMAIL=you@example.com bash scripts/renew-cert.sh >> /tmp/cert-renew.log 2>&1
 #
-# ⚠️ IP 憑證只有 6 天效期，機器關機超過 6 天就會過期。
-#    口試前一天記得先開機跑一次，不要當天才發現瀏覽器跳警告。
+# ⚠️ 機器關機超過 6.7 天，IP 憑證就過期了。口試前一天先開機跑一次，
+#    不要當天才發現瀏覽器跳警告。
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 CERT_DIR="$PWD/deploy/certs"
 ACME_DIR="$PWD/deploy/acme-challenge"
-LE_DIR="$PWD/deploy/letsencrypt"
+LEGO_DIR="$PWD/deploy/lego"
 
-if [ ! -d "$LE_DIR/live" ]; then
+if [ -z "${ACME_EMAIL:-}" ]; then
+    echo "❌ 請設定 ACME_EMAIL（要跟簽發時同一個，否則會註冊新帳號）" >&2
+    exit 1
+fi
+
+# 從既有的憑證讀出目標名稱，不用再傳一次參數——傳錯就會簽到別的東西。
+TARGET=$(ls "$LEGO_DIR/certificates/"*.crt 2>/dev/null | head -1 | xargs -r basename | sed 's/\.crt$//' || true)
+if [ -z "$TARGET" ]; then
     echo "還沒有簽發過憑證，先跑 scripts/issue-cert.sh" >&2
     exit 1
+fi
+echo "目標：$TARGET"
+
+if printf '%s' "$TARGET" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'; then
+    PROFILE=(--profile shortlived)
+    # 6.7 天的憑證，剩不到 3 天就換。Let's Encrypt 建議在剩下 1/3 效期時續。
+    DAYS=3
+else
+    PROFILE=()
+    DAYS=30
 fi
 
 BEFORE=""
 [ -f "$CERT_DIR/fullchain.pem" ] && \
     BEFORE=$(openssl x509 -in "$CERT_DIR/fullchain.pem" -noout -enddate 2>/dev/null || true)
 
+# lego renew 自己判斷要不要換：沒到 --days 門檻就直接結束，不會浪費額度。
 docker run --rm \
-    -v "$LE_DIR:/etc/letsencrypt" \
-    -v "$ACME_DIR:/var/www/certbot" \
-    certbot/certbot renew \
-    --webroot -w /var/www/certbot \
-    --non-interactive
+    -v "$LEGO_DIR:/data" -v "$ACME_DIR:/webroot" \
+    goacme/lego run \
+    --server https://acme-v02.api.letsencrypt.org/directory \
+    --path /data --email "$ACME_EMAIL" \
+    --http --http.webroot /webroot \
+    -d "$TARGET" --accept-tos "${PROFILE[@]}" \
+    2>&1 | tail -6 || {
+        echo "⚠️ 續期失敗，沿用現有憑證。檢查 port 80 是否仍對外開放。" >&2
+        exit 1
+    }
 
-# 不管有沒有實際續到都複製一次——certbot 判斷「還不用續」時會直接跳過，
-# 這時複製的是舊檔，沒有副作用；真的續了才會有新內容。
-UPDATED=0
-for LIVE in "$LE_DIR"/live/*/; do
-    [ -f "$LIVE/fullchain.pem" ] || continue
-    cp -L "$LIVE/fullchain.pem" "$CERT_DIR/fullchain.pem"
-    cp -L "$LIVE/privkey.pem"   "$CERT_DIR/privkey.pem"
-    chmod 600 "$CERT_DIR/privkey.pem"
-    UPDATED=1
-done
-[ "$UPDATED" = "1" ] || { echo "找不到任何 live 憑證" >&2; exit 1; }
+docker run --rm -v "$LEGO_DIR:/data" -v "$CERT_DIR:/out" alpine sh -c "
+    cp /data/certificates/$TARGET.crt /out/fullchain.pem &&
+    cp /data/certificates/$TARGET.key /out/privkey.pem &&
+    chown $(id -u):$(id -g) /out/fullchain.pem /out/privkey.pem &&
+    chmod 644 /out/fullchain.pem && chmod 600 /out/privkey.pem"
 
 AFTER=$(openssl x509 -in "$CERT_DIR/fullchain.pem" -noout -enddate 2>/dev/null || true)
 echo "續期前：${BEFORE:-（無）}"
@@ -50,7 +68,7 @@ echo "續期後：$AFTER"
 
 if [ "$BEFORE" != "$AFTER" ]; then
     echo "憑證有更新，重新載入 nginx。"
-    # reload 而不是 restart：不中斷連線，nginx 會用新憑證服務新連線。
+    # reload 不是 restart：不中斷既有連線，新連線就會用到新憑證。
     docker compose -f deploy/docker-compose.yml exec -T frontend nginx -s reload \
         && echo "✅ nginx 已重新載入" \
         || echo "⚠️ reload 失敗，請手動重啟 frontend"
