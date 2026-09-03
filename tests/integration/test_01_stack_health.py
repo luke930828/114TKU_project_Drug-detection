@@ -1,5 +1,9 @@
 """服務都活著，而且彼此連得到。這組壞了，後面全部不用看。"""
 import pytest
+import urllib3
+
+# 自簽憑證的警告會把輸出洗掉，測試環境本來就不驗憑證
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import requests
 
 pytestmark = pytest.mark.integration
@@ -58,18 +62,31 @@ def test_no_conflicting_real_engines_running():
     )
 
 
+# 前端可能跑在兩種模式：沒有憑證時是純 HTTP，放了憑證之後 80/8080 會 301
+# 轉到 HTTPS。兩種都是正常部署，測試不能只認其中一種——第一次放上自簽憑證
+# 測試就是這樣紅的，而那時程式其實完全正常。
+def _follow(response, session, url):
+    """HTTPS 模式下會先吃到 301，跟著轉址走（自簽憑證要略過驗證）。"""
+    if response.status_code in (301, 302, 307, 308):
+        return session.get(response.headers["Location"], verify=False, timeout=30)
+    return response
+
+
 def test_frontend_serves_spa(web):
-    r = web.get("/", auth=False)
-    assert r.status_code == 200
+    r = web.get("/", auth=False, allow_redirects=False)
+    r = _follow(r, web.s, "/")
+    assert r.status_code == 200, f"前端沒有回應（HTTP {r.status_code}）"
     assert "<div id=\"root\"" in r.text or "<html" in r.text.lower()
 
 
 def test_nginx_proxies_api_to_backend(web):
     """前端的 /api/ 要真的轉到後端——這是整個前後端串接的基礎。"""
-    r = web.get("/api/../health", auth=False)
-    # nginx 只轉 /api/ 前綴，用一個確實存在的 API 路徑驗證
-    r = web.post("/api/login/", auth=False,
+    r = web.post("/api/login/", auth=False, allow_redirects=False,
                  json={"account": "definitely_not_exist", "password": "x"})
+    if r.status_code in (301, 302, 307, 308):
+        # 301 之後 POST 會被改成 GET，所以直接對轉址後的位址重送一次 POST
+        r = web.s.post(r.headers["Location"], verify=False, timeout=30,
+                       json={"account": "definitely_not_exist", "password": "x"})
     assert r.status_code == 401, "nginx 沒有把 /api/ 轉給後端"
 
 

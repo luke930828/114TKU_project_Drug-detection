@@ -3,6 +3,10 @@ from pathlib import Path
 
 import pytest
 import requests
+import urllib3
+
+# 測試環境用自簽憑證，不驗證是刻意的
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 from conftest import BACKEND, WEB, known_vuln
 
 pytestmark = pytest.mark.security
@@ -66,8 +70,13 @@ def test_errors_do_not_leak_internals(internal, unique_url):
     "x-frame-options",
 ])
 def test_security_headers_present(header):
-    r = requests.get(f"{WEB}/", timeout=30)
-    assert header in {k.lower() for k in r.headers}, f"缺少安全標頭 {header}"
+    # 放了憑證之後 8080 會 301 轉到 HTTPS，而轉址回應上沒有安全標頭——
+    # 要驗的是「使用者最後拿到的那個回應」。不跟著轉址的話，
+    # 這三項會在 HTTPS 一啟用就集體退回待修，而程式其實完全正常。
+    r = requests.get(f"{WEB}/", timeout=30, allow_redirects=True, verify=False)
+    assert header in {k.lower() for k in r.headers}, (
+        f"缺少安全標頭 {header}（最終位址 {r.url}）"
+    )
 
 
 @known_vuln("SEC-22")
@@ -77,10 +86,14 @@ def test_internal_endpoints_not_exposed_through_nginx():
     （綁所有介面），nginx 的 /api/ 未經過濾轉給 backend。
     任何連得到 8080 的人都能打到那三個無驗證端點。
     """
-    r = requests.post(f"{WEB}/api/nlp/report/",
-                      json={"url": "https://via-nginx.invalid/x",
-                            "risk_score": 1, "nlp_keywords": []},
-                      timeout=30)
+    body = {"url": "https://via-nginx.invalid/x",
+            "risk_score": 1, "nlp_keywords": []}
+    r = requests.post(f"{WEB}/api/nlp/report/", json=body, timeout=30,
+                      allow_redirects=False, verify=False)
+    if r.status_code in (301, 302, 307, 308):
+        # 301 之後 POST 會被降級成 GET，所以對轉址後的位址重送一次 POST。
+        # 不重送的話這個測試會在 HTTPS 模式下拿到 301 就誤判成「有擋住」。
+        r = requests.post(r.headers["Location"], json=body, timeout=30, verify=False)
     assert r.status_code in (401, 403, 404), (
         f"透過前端的 8080 可以直接寫入內部回報端點（HTTP {r.status_code}）"
     )
