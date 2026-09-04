@@ -38,4 +38,15 @@ $COMPOSE exec -T backend python -u /tmp/redispatch_nlp.py  --pace 1.5
 
 * 不要用 `nohup ... &` 掛在 shell 上，shell 收掉程序就跟著死（實測停在 60/510）。
   用 `docker compose exec` 前景跑，或丟進 tmux / screen。
-* 跑之前先確認引擎是活的，不然只是把資料再掉一次。
+* 跑之前先確認引擎是活的（`make verify`），不然只是把資料再掉一次。
+* **補跑期間不要重建服務。** 尤其是這行：
+
+      docker compose up -d --force-recreate yolo      # ⚠️ 會連 backend 一起重建
+
+  compose 會連同相依服務一起處理，而 yolo 是 depends_on: backend——腳本正是
+  跑在 backend 容器裡，exec 連線會當場斷掉。要只動一個服務就加 `--no-deps`：
+
+      docker compose up -d --force-recreate --no-deps yolo
+
+  腳本本身已經有重試，短暫中斷撐得過去，但容器被「重建」是換了一個新容器，
+  裡面的行程一定會死，重試救不回來。

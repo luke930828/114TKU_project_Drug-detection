@@ -56,22 +56,44 @@ if args.dry_run:
         print(f"   {len(imgs):2d} 張  {url[:75]}")
     sys.exit(0)
 
+def post_with_retry(url, payload, attempts=4):
+    """連線失敗就退避重試。
+
+    補跑動輒跑幾十分鐘，期間服務被重啟（有人 docker compose up、容器被
+    OOM 砍掉、Docker Desktop 重開）是常態。沒有重試的話，一次短暫的中斷就
+    讓整批停在半路——2026-09-04 實測連續兩次都是這樣，一次停在 60/395。
+
+    只重試連線層的錯誤：連不上、DNS 解析不到、逾時。HTTP 回應碼直接回傳，
+    那是對方收到了但不接受，重送結果一樣。
+    """
+    delay = 3
+    for i in range(attempts):
+        try:
+            return requests.post(url, json=payload, timeout=15)
+        except (requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout) as e:
+            if i == attempts - 1:
+                print(f"   連線失敗 {attempts} 次，放棄這一張：{e.__class__.__name__}")
+                return None
+            print(f"   [重試 {i + 1}/{attempts - 1}] 連不上，{delay}s 後再試"
+                  f"（服務可能正在重啟）", flush=True)
+            time.sleep(delay)
+            delay *= 2
+    return None
+
+
 ok = fail = 0
 for n, (url, images) in enumerate(targets, 1):
     # task_id 要用新的批次代號，不然會跟舊批次的殘留狀態混在一起
     batch = f"bf{int(time.time())%100000:05d}{n:04d}"
     sent = 0
     for idx, b64 in enumerate(images):
-        try:
-            r = requests.post(YOLO_API_URL, timeout=10, json={
-                "task_id": f"{batch}_{idx}", "url": url,
-                "image_base64": b64, "total_images": len(images), "priority": 0,
-            })
-            if r.status_code == 200:
-                sent += 1
-        except Exception as e:
-            print(f"   派發失敗 {url[:50]}：{e}")
-            break
+        r = post_with_retry(YOLO_API_URL, {
+            "task_id": f"{batch}_{idx}", "url": url,
+            "image_base64": b64, "total_images": len(images), "priority": 0,
+        })
+        if r is not None and r.status_code == 200:
+            sent += 1
     if sent == len(images):
         ok += 1
     else:
