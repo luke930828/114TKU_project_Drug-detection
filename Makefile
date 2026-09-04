@@ -103,6 +103,16 @@ verify: ## 檢查服務是不是「起來了但少東西」（掛載、模型、
 	  || echo "   ❌ /etc/nginx/certs/ 是空的 —— 只會跑 HTTP，跑 make recreate"' 2>/dev/null \
 	  || echo "   ⚠️  frontend 沒在跑"
 	@echo ""
+	@# GPU 掉過的話，WSL2 的 VM 常常會跟著整個當掉——表現出來是「Docker 突然
+	@# 連不上、六個容器一起消失」。事後很難查，因為那時 dmesg 已經跟著重來了。
+	@# dxgkrnl 是 WSL 的 GPU 直通驅動，正常情況下一次開機只會註冊一次；
+	@# 出現第二次代表 GPU 裝置中途掉了又重接。
+	@echo "→ GPU 有沒有中途掉過（WSL 的 GPU 直通）"
+	@n=$$(dmesg 2>/dev/null | grep -c "registering driver dxgkrnl" || echo 0); \
+	  if [ "$$n" = "1" ]; then echo "   ✅ 正常（註冊 1 次）"; \
+	  elif [ "$$n" = "0" ]; then echo "   ⚠️  讀不到 dmesg（權限或非 WSL 環境）"; \
+	  else echo "   ❌ GPU 中途重置過 $$n 次 —— 重負載時的 GPU 掉線，VM 可能跟著當掉"; fi
+	@echo ""
 	@echo "→ HTTPS 實際回應"
 	@code=$$(curl -sk -m 10 -o /dev/null -w '%{http_code}' https://127.0.0.1/ 2>/dev/null); \
 	  [ "$$code" = "200" ] && echo "   ✅ HTTPS $$code" || echo "   ❌ HTTPS $$code（憑證掛載或 nginx 設定有問題）"
