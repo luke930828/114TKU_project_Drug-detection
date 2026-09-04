@@ -79,4 +79,20 @@ COPY app/ .
 
 EXPOSE 5000
 
+# 這個服務原本完全沒有健康檢查，所以 docker ps 永遠只顯示 "Up"，
+# 看不出模型到底載起來了沒有。2026-09-04 就這樣跑了一段時間：容器 Up、
+# 端點回 200，但 model 是 None，每張圖都失敗，那些網址默默停在「影像分析中...」。
+#
+# start-period 給 180 秒：模型載入含 YOLO 權重與 EasyOCR，冷啟動要幾十秒，
+# 太短的話啟動過程本身就會被判成不健康。
+#
+# 用 python 不用 curl：這個 image 裡沒有 curl 也沒有 wget，而要裝 curl 就得動
+# 上面那層 apt——那層在 torch 之前，一改就要重抓 4.5 GB 的 CUDA 函式庫。
+# python 本來就在，urlopen 遇到 503 會丟例外、行程回非零，效果一樣。
+#
+# 這一行放在 Dockerfile 最後面（COPY app/ 之後），所以改它不會動到前面
+# 任何昂貴的層。
+HEALTHCHECK --interval=30s --timeout=10s --start-period=180s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=8)" || exit 1
+
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]

@@ -18,7 +18,7 @@ if hasattr(sys.stderr, "reconfigure"):
 import cv2
 import numpy as np
 import requests
-from fastapi import FastAPI, BackgroundTasks, HTTPException
+from fastapi import FastAPI, BackgroundTasks, HTTPException, Response
 from pydantic import BaseModel
 from typing import Any
 from ultralytics import YOLO
@@ -380,8 +380,28 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
 
 # 7. 健康檢查：讓 docker-compose 之類的編排工具知道這個模組是不是真的活了（模型有沒有載完）
 @app.get("/health")
-def health():
-    return {"status": "ok", "model_loaded": model is not None, "ocr_loaded": ocr_reader is not None}
+def health(response: Response):
+    """模型沒載入就回 503。
+
+    以前不管載入成功與否都回 200，結果是 2026-09-04 這種情況：容器起來了、
+    /health 回 200、docker ps 看起來一切正常，但 model 是 None，每一張圖進來
+    都是 'NoneType' object is not callable，而接收端點照樣回「YOLO 已經接單」。
+
+    外面完全看不出來——爬蟲以為送出去了、後端在等一個永遠不會來的回報，
+    那些網址就默默停在「影像分析中...」。這次是因為 bind mount 掛成空目錄
+    （WSL 整合斷線期間建立的容器），/models/ 裡什麼都沒有。
+
+    模型是這個服務存在的理由，載不起來就不該被算成健康。OCR 則是加值功能，
+    它掛掉不影響 YOLO 計分，所以只照實回報、不影響健康狀態。
+    """
+    ok = model is not None
+    if not ok:
+        response.status_code = 503
+    return {
+        "status": "ok" if ok else "degraded",
+        "model_loaded": ok,
+        "ocr_loaded": ocr_reader is not None,
+    }
 
 
 # 8. 接收口
