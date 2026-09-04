@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, RefreshCw } from "lucide-react";
 import { authFetch } from "./auth";
+import { ExternalLink } from "./ExternalLink";
 
 const REFRESH_INTERVAL_MS = 30_000;
 const CRAWLER_LIMIT = 50;
@@ -394,7 +395,7 @@ export function AIDetection({ onBack, onDetectionsLoaded }: Props) {
                   <div className="min-w-0">
                     <p className="text-sm text-gray-400">{item.time}</p>
                     {item.websiteUrl && (
-                      <p className="font-bold text-blue-600 break-all mt-1">{item.websiteUrl}</p>
+                      <p className="font-bold text-blue-600 break-all mt-1"><ExternalLink url={item.websiteUrl} /></p>
                     )}
                   </div>
                   <div className="mt-4 flex items-center gap-3">
@@ -446,7 +447,12 @@ export function AIDetection({ onBack, onDetectionsLoaded }: Props) {
                 <button type="button" onClick={() => setSelected(null)}>✕</button>
               </div>
               <div className="p-6">
-                {selected.websiteUrl && <p className="mb-3 break-all"><strong>網站：</strong>{selected.websiteUrl}</p>}
+                {selected.websiteUrl && (
+                  <p className="mb-3 break-all">
+                    <strong>網站：</strong>
+                    <ExternalLink url={selected.websiteUrl} className="text-blue-600" />
+                  </p>
+                )}
                 <p className="text-lg mb-4">風險分數：<span className="font-bold">{selected.score}%</span></p>
                 <h3 className="font-semibold mb-2">NLP 關鍵字</h3>
                 <div className="mb-4 flex flex-wrap gap-2">

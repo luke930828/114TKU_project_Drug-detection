@@ -10,6 +10,7 @@ import {
   authFetch,
   clearAuthToken,
   getAuthToken,
+  isAdmin,
 } from "./auth";
 
 export default function App() {
@@ -22,6 +23,8 @@ export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     Boolean(getAuthToken())
   );
+  // 登入／登出時才會變，所以跟著 isAuthenticated 重算就夠了。
+  const userIsAdmin = isAuthenticated && isAdmin();
 
   const handleLogout = async () => {
     const shouldLogout = window.confirm("確定要登出系統嗎？");
@@ -241,21 +244,33 @@ export default function App() {
           <p style={descStyle}>查詢與管理已標記的可疑網站資料庫</p>
         </div>
 
-        <div
-          onClick={() => setPage("users")}
-          style={{ ...cardStyle, gridColumn: "1 / -1" }}
-          onMouseEnter={(event) => {
-            event.currentTarget.style.transform = "translateY(-4px)";
-            event.currentTarget.style.boxShadow = "0 12px 28px rgba(0,0,0,0.2)";
-          }}
-          onMouseLeave={(event) => {
-            event.currentTarget.style.transform = "translateY(0)";
-            event.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.15)";
-          }}
-        >
-          <div style={titleStyle}>人員與權限管理</div>
-          <p style={descStyle}>新增人員、調整權限及管理帳號狀態</p>
-        </div>
+        {/*
+          人員管理只有系統管理員看得到。
+
+          之前這張卡是顯示給所有人的，但後端的 /api/users/ 掛的是 verify_admin，
+          一般人員點進去只會拿到 403、停在錯誤畫面。看得到卻永遠進不去，
+          比一開始就不顯示更讓人困惑——會以為是系統壞了。
+
+          ⚠️ 這是使用者體驗，不是安全機制。localStorage 裡的角色使用者自己就能改，
+             改了也只是讓自己多看到一張卡，點下去照樣被後端擋掉。
+        */}
+        {userIsAdmin && (
+          <div
+            onClick={() => setPage("users")}
+            style={{ ...cardStyle, gridColumn: "1 / -1" }}
+            onMouseEnter={(event) => {
+              event.currentTarget.style.transform = "translateY(-4px)";
+              event.currentTarget.style.boxShadow = "0 12px 28px rgba(0,0,0,0.2)";
+            }}
+            onMouseLeave={(event) => {
+              event.currentTarget.style.transform = "translateY(0)";
+              event.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.15)";
+            }}
+          >
+            <div style={titleStyle}>人員與權限管理</div>
+            <p style={descStyle}>新增人員、調整權限及管理帳號狀態</p>
+          </div>
+        )}
       </div>
 
       <p

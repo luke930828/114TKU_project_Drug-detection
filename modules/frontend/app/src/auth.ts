@@ -5,6 +5,8 @@
 export const API_BASE_URL = "";
 export const TOKEN_STORAGE_KEY = "my_jwt_token";
 export const AUTH_UNAUTHORIZED_EVENT = "auth:unauthorized";
+export const ROLE_STORAGE_KEY = "my_role";
+export const ACCOUNT_STORAGE_KEY = "my_account";
 
 export const getAuthToken = () => localStorage.getItem(TOKEN_STORAGE_KEY);
 
@@ -14,6 +16,24 @@ export const saveAuthToken = (token: string) => {
 
 export const clearAuthToken = () => {
   localStorage.removeItem(TOKEN_STORAGE_KEY);
+  localStorage.removeItem(ROLE_STORAGE_KEY);
+  localStorage.removeItem(ACCOUNT_STORAGE_KEY);
+};
+
+// 登入時後端會回傳自己的角色，存起來給畫面決定要不要顯示管理員專屬的功能。
+//
+// ⚠️ 這只用來決定「畫面上要不要出現」。真正的權限由後端的 verify_admin 把關——
+//    這裡的值使用者自己就能改（localStorage 誰都動得到），改了也只是讓自己看到
+//    一個按鈕，按下去照樣 403。不要把任何安全判斷建立在這上面。
+export const ADMIN_ROLE = "系統管理員";
+
+export const getUserRole = () => localStorage.getItem(ROLE_STORAGE_KEY) ?? "";
+export const getUserAccount = () => localStorage.getItem(ACCOUNT_STORAGE_KEY) ?? "";
+export const isAdmin = () => getUserRole() === ADMIN_ROLE;
+
+export const saveIdentity = (account: string, role: string) => {
+  if (account) localStorage.setItem(ACCOUNT_STORAGE_KEY, account);
+  if (role) localStorage.setItem(ROLE_STORAGE_KEY, role);
 };
 
 export const getErrorMessage = async (response: Response) => {

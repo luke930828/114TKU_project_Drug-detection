@@ -4,6 +4,7 @@ import {
   API_BASE_URL,
   getErrorMessage,
   saveAuthToken,
+  saveIdentity,
 } from "./auth";
 import { hasMaliciousInput, MALICIOUS_INPUT_MESSAGE } from "./inputSecurity";
 
@@ -39,10 +40,14 @@ export default function Login({ onLogin }: Props) {
         throw new Error(await getErrorMessage(response));
       }
 
-      const data = (await response.json()) as { access_token?: string };
+      const data = (await response.json()) as {
+        access_token?: string; account?: string; role?: string;
+      };
       if (!data.access_token) throw new Error("後端未回傳 access_token");
 
       saveAuthToken(data.access_token);
+      // 角色只用來決定畫面上要顯示哪些功能，真正的權限由後端把關。
+      saveIdentity(data.account ?? "", data.role ?? "");
       onLogin();
     } catch (requestError) {
       const message = requestError instanceof Error

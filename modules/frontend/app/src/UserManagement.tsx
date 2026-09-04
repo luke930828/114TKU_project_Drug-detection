@@ -80,6 +80,7 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
   const [logsTotalCount, setLogsTotalCount] = useState(0);
   const [logsLoading, setLogsLoading] = useState(true);
   const [logsError, setLogsError] = useState<string | null>(null);
+  const [forbidden, setForbidden] = useState(false);
 
   const handleResponseError = useCallback(async (response: Response) => {
     if (response.status === 401) {
@@ -88,6 +89,12 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
     }
 
     if (response.status === 403) {
+      // 正常情況下一般人員根本看不到入口（App.tsx 依角色隱藏）。會走到這裡
+      // 代表 localStorage 的角色跟後端不一致——例如管理員在使用期間被降權，
+      // 或是有人自己去改了 localStorage。
+      //
+      // 這種情況要給明確的說明，不要丟一段紅色的錯誤訊息讓人以為系統壞了。
+      setForbidden(true);
       throw new Error(await getErrorMessage(response));
     }
 
@@ -268,7 +275,21 @@ export default function UserManagement({ onBack, onUnauthorized }: Props) {
           <p className="md:col-span-5 text-xs text-gray-500">{PASSWORD_REQUIREMENTS}</p>
         </form>
 
-        {error && <div className="mb-5 bg-red-50 border border-red-200 text-red-700 rounded-lg p-3">{error}</div>}
+        {forbidden ? (
+          <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-6">
+            <p className="font-semibold text-amber-900">需要系統管理員權限</p>
+            <p className="mt-2 text-sm text-amber-800">
+              人員與權限管理只開放給系統管理員。你目前的帳號是一般人員，
+              沒有辦法檢視或修改其他人的帳號。
+            </p>
+            <p className="mt-2 text-sm text-amber-800">
+              如果你認為這是錯的，可能是權限剛被調整過——請重新登入一次；
+              還是進不來的話，請管理員確認你的角色設定。
+            </p>
+          </div>
+        ) : (
+          error && <div className="mb-5 bg-red-50 border border-red-200 text-red-700 rounded-lg p-3">{error}</div>
+        )}
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

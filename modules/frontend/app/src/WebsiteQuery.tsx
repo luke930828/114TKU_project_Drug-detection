@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, Check, ShieldAlert, ShieldCheck } from "lucide-react";
 import { authFetch, getErrorMessage } from "./auth";
 import { hasMaliciousInput, MALICIOUS_INPUT_MESSAGE } from "./inputSecurity";
+import { ExternalLink } from "./ExternalLink";
 
 export interface PendingWebsite {
   /** ai_analysis_results.id——覆核時要用它呼叫後端 */
@@ -506,7 +507,7 @@ export default function WebsiteQuery({
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
                           <ShieldAlert className="text-red-500 shrink-0" size={18} />
-                          <span className="break-all font-medium">{entry.url}</span>
+                          <ExternalLink url={entry.url} className="break-all font-medium" />
                         </div>
                         <p className="text-sm text-gray-500 mt-1">
                           {entry.title || "未命名"}　原因：{entry.reason}　
@@ -540,7 +541,7 @@ export default function WebsiteQuery({
                   <div key={item.url} className="flex items-center justify-between gap-3 border p-4 rounded-xl">
                     <div className="flex items-center gap-3 min-w-0">
                       <ShieldAlert className="text-red-500 shrink-0" />
-                      <span className="break-all">{item.url}</span>
+                      <ExternalLink url={item.url} className="break-all" />
                     </div>
                     <button
                       type="button"
@@ -632,7 +633,7 @@ export default function WebsiteQuery({
                       <ShieldCheck className="mt-0.5 shrink-0 text-green-500" />
                       <div className="min-w-0">
                         <p className="font-medium text-gray-800">{entry.title}</p>
-                        <p className="mt-1 break-all text-blue-600">{entry.url}</p>
+                        <p className="mt-1 break-all"><ExternalLink url={entry.url} className="text-blue-600" /></p>
                         <p className="mt-1 text-sm text-gray-500">
                           原因：{entry.reason}　由 {entry.addedBy} 於 {entry.createdAt} 加入
                         </p>
@@ -684,7 +685,7 @@ export default function WebsiteQuery({
                         <span className="text-red-600 font-bold">風險分數 {site.score}</span>
                         <span className="text-sm text-gray-500">{site.riskLevel}</span>
                       </div>
-                      <p className="font-medium text-gray-800 break-all">{site.url}</p>
+                      <p className="font-medium text-gray-800 break-all"><ExternalLink url={site.url} /></p>
                       <p className="text-xs text-gray-400 mt-2">辨識時間：{site.detectedAt}</p>
                     </div>
                     <div className="flex gap-2 shrink-0">
