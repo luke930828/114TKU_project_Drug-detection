@@ -62,6 +62,40 @@ ps: ## 看每個服務的健康狀態
 stop: ## 停止（資料保留）
 	$(COMPOSE) --profile full down
 
+recreate: ## Docker Desktop 或 WSL 重開過就跑這個（重建容器，讓掛載重新解析）
+	@echo "重新建立所有容器（不是 restart）。"
+	@echo "restart 會沿用舊的掛載解析結果——容器會「起來但少東西」。"
+	@echo ""
+	$(COMPOSE) --env-file $(ENV_FILE) --profile full up -d --force-recreate
+	@echo ""
+	@$(MAKE) --no-print-directory verify
+
+verify: ## 檢查服務是不是「起來了但少東西」（掛載、模型、憑證）
+	@echo "→ 容器狀態"
+	@$(COMPOSE) ps --format '   {{.Service}}\t{{.Status}}' 2>/dev/null || true
+	@echo ""
+	@echo "→ YOLO 的模型權重（掛載沒進來的話這裡會是空的）"
+	@$(COMPOSE) exec -T yolo sh -c 'ls /models/best.pt >/dev/null 2>&1 \
+	  && echo "   ✅ /models/best.pt 在" \
+	  || echo "   ❌ /models/ 是空的 —— 掛載沒進來，跑 make recreate"' 2>/dev/null \
+	  || echo "   ⚠️  yolo 沒在跑"
+	@echo ""
+	@echo "→ YOLO 的模型有沒有真的載入"
+	@$(COMPOSE) exec -T backend sh -c 'curl -fsS -m 15 http://yolo:5000/health' 2>/dev/null \
+	  | grep -q '"model_loaded":true' \
+	  && echo "   ✅ model_loaded=true" \
+	  || echo "   ❌ 模型沒載入 —— 每張圖都會失敗，但端點照樣回 200"
+	@echo ""
+	@echo "→ 前端的憑證（掛載沒進來的話 HTTPS 會整個消失）"
+	@$(COMPOSE) exec -T frontend sh -c 'ls /etc/nginx/certs/fullchain.pem >/dev/null 2>&1 \
+	  && echo "   ✅ 憑證在" \
+	  || echo "   ❌ /etc/nginx/certs/ 是空的 —— 只會跑 HTTP，跑 make recreate"' 2>/dev/null \
+	  || echo "   ⚠️  frontend 沒在跑"
+	@echo ""
+	@echo "→ HTTPS 實際回應"
+	@code=$$(curl -sk -m 10 -o /dev/null -w '%{http_code}' https://127.0.0.1/ 2>/dev/null); \
+	  [ "$$code" = "200" ] && echo "   ✅ HTTPS $$code" || echo "   ❌ HTTPS $$code（憑證掛載或 nginx 設定有問題）"
+
 rebuild: ## 只重建某個模組：make rebuild M=backend
 	@test -n "$(M)" || (echo "用法：make rebuild M=backend" && exit 1)
 	$(COMPOSE) --env-file $(ENV_FILE) build --no-cache $(M)

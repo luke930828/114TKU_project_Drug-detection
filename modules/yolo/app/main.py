@@ -380,8 +380,14 @@ def background_yolo_and_report(url: str, image_base64: Any, task_id: str, total_
 
 # 7. 健康檢查：讓 docker-compose 之類的編排工具知道這個模組是不是真的活了（模型有沒有載完）
 @app.get("/health")
-def health(response: Response):
+async def health(response: Response):
     """模型沒載入就回 503。
+
+    ⚠️ 一定要 async。同步的 def 會被 FastAPI 丟進執行緒池，而那個池子
+    （預設 40 條）正是 background_yolo_and_report 在用的——推論忙的時候
+    /health 會排在幾十個推論後面，8 秒都回不來，健康檢查因此把一個
+    「只是忙」的服務判成「壞掉」。async 直接在事件迴圈上跑，這裡只是讀兩個
+    變數，不會阻塞任何東西。
 
     以前不管載入成功與否都回 200，結果是 2026-09-04 這種情況：容器起來了、
     /health 回 200、docker ps 看起來一切正常，但 model 是 None，每一張圖進來
