@@ -223,7 +223,11 @@ def report_false_positive(
     result_id: int,
     reason: str = Query("", max_length=255, description="誤判原因"),
     db: Session = Depends(get_db),
-    current_admin: database.User = Depends(verify_admin),
+    # 覆核是承辦人員的日常工作，開放給一般人員。這支的效果等同於
+    # POST /api/whitelist/（把網域加進白名單），那支已經開放，
+    # 只開一邊會變成「手動加得了、按按鈕加不了」的怪狀態。
+    # 用按鈕還比手動輸入網址不容易出錯。
+    current_admin: database.User = Depends(get_current_user),
 ):
     """
     AI 判定的黑名單只提供這一個動作，不提供「單純刪除」。
@@ -273,7 +277,8 @@ def report_false_positive(
 @router.post("/api/crawler/result/{result_id}/confirm/",
              summary="人工覆核：確認這筆是毒品網站")
 def confirm_result(result_id: int, db: Session = Depends(get_db),
-                   current_admin: database.User = Depends(verify_admin)):
+                   # 同上：覆核開放給一般人員，效果等同於 POST /api/blacklist/。
+                   current_admin: database.User = Depends(get_current_user)):
     """
     把「高風險 (優先人工覆核)」改成「極高風險」，代表已經有人看過並確認。
 
