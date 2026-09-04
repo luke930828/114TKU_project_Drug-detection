@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, Check, ShieldAlert, ShieldCheck } from "lucide-react";
-import { authFetch, getErrorMessage } from "./auth";
+import { authFetch, isAdmin, getErrorMessage } from "./auth";
 import { hasMaliciousInput, MALICIOUS_INPUT_MESSAGE } from "./inputSecurity";
 import { ExternalLink } from "./ExternalLink";
 
@@ -84,6 +84,9 @@ export default function WebsiteQuery({
   onBack,
   onReviewed,
 }: Props) {
+  // 名單的「新增」開放給一般人員，「刪除」只有管理員。
+  // 這只決定畫面上要不要出現按鈕；真正的權限由後端的 verify_admin 把關。
+  const userIsAdmin = isAdmin();
   const [tab, setTab] = useState<"black" | "white" | "pending">("pending");
   const [input, setInput] = useState("");
   const [whiteUrl, setWhiteUrl] = useState("");
@@ -514,13 +517,20 @@ export default function WebsiteQuery({
                           由 {entry.addedBy} 於 {entry.createdAt} 加入
                         </p>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => void removeManualBlacklist(entry)}
-                        className="border border-red-300 text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 shrink-0"
-                      >
-                        移除
-                      </button>
+                      {/*
+                        新增開放給一般人員，刪除只有管理員看得到。
+                        刪黑名單等於把一個已確認的毒品網站取消標記，那是破壞性的方向。
+                        後端一樣有擋（verify_admin），這裡只是不要顯示一個按了會失敗的按鈕。
+                      */}
+                      {userIsAdmin && (
+                        <button
+                          type="button"
+                          onClick={() => void removeManualBlacklist(entry)}
+                          className="border border-red-300 text-red-600 px-4 py-2 rounded-lg hover:bg-red-50 shrink-0"
+                        >
+                          移除
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -639,13 +649,15 @@ export default function WebsiteQuery({
                         </p>
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => deleteWhitelistEntry(entry)}
-                      className="shrink-0 text-gray-500 hover:text-red-500"
-                    >
-                      刪除
-                    </button>
+                    {userIsAdmin && (
+                      <button
+                        type="button"
+                        onClick={() => deleteWhitelistEntry(entry)}
+                        className="shrink-0 text-gray-500 hover:text-red-500"
+                      >
+                        刪除
+                      </button>
+                    )}
                   </div>
                           ))}
                         </div>

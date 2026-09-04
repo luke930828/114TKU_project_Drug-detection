@@ -17,16 +17,29 @@ from typing import Optional
 
 import database
 from schemas import BlacklistCreate
-from dependencies import get_db, verify_admin, log_audit_action
+from dependencies import get_db, get_current_user, verify_admin, log_audit_action
 from utils import like_pattern, registrable_domain
 
 router = APIRouter(tags=["黑名單維護"])
 
 
-@router.get("/api/blacklist/", summary="查看人工黑名單 (限管理員)")
+# 權限設計：新增開放給一般人員，刪除保留給管理員
+# ────────────────────────────────────────────
+# 名單維護是承辦人員的日常工作——看到誤判要能立刻排除、拿到情資要能立刻標記。
+# 每次都要找管理員的話，實務上的結果是「大家乾脆不維護」。
+#
+# 但刪除留給管理員，因為那是破壞性的方向：
+#   刪白名單 → 一個已經人工確認過的正常網站，重新被當成可疑目標
+#   刪黑名單 → 一個已經確認的毒品網站，被取消標記
+# 新增最壞的情況是多一筆錯的資料，刪除最壞的情況是失去既有的判斷。
+#
+# 兩種操作都會寫進 audit_logs，追得到是誰做的。
+
+
+@router.get("/api/blacklist/", summary="查看人工黑名單")
 def list_blacklist(
     db: Session = Depends(get_db),
-    current_admin: database.User = Depends(verify_admin),
+    current_user: database.User = Depends(get_current_user),
     q: Optional[str] = Query(None, max_length=200,
                              description="關鍵字搜尋：網址、標題或原因"),
 ):
@@ -41,10 +54,10 @@ def list_blacklist(
     return query.order_by(database.BlacklistWebsite.created_at.desc()).all()
 
 
-@router.post("/api/blacklist/", summary="管理員：新增黑名單")
+@router.post("/api/blacklist/", summary="新增黑名單（一般人員可用）")
 def add_blacklist(
     data: BlacklistCreate,
-    admin: database.User = Depends(verify_admin),
+    admin: database.User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     domain = registrable_domain(data.url)
