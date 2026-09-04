@@ -68,6 +68,17 @@ recreate: ## Docker Desktop 或 WSL 重開過就跑這個（重建容器，讓�
 	@echo ""
 	$(COMPOSE) --env-file $(ENV_FILE) --profile full up -d --force-recreate
 	@echo ""
+	@# 要等服務真的就緒再檢查。YOLO 載入權重加 EasyOCR 要幾十秒，
+	@# 容器剛 Started 就去問 model_loaded 一定是 false——那是啟動中，不是壞掉，
+	@# 但檢查結果會顯示成紅色的 ❌，看的人會以為 recreate 沒有用。
+	@echo "→ 等服務就緒（YOLO 載入模型要幾十秒）"
+	@for i in $$(seq 1 30); do \
+	   unhealthy=$$($(COMPOSE) ps --format '{{.Service}} {{.Status}}' 2>/dev/null \
+	     | grep -c "health: starting" || true); \
+	   [ "$$unhealthy" = "0" ] && break; \
+	   printf "."; sleep 10; \
+	 done; echo ""
+	@echo ""
 	@$(MAKE) --no-print-directory verify
 
 verify: ## 檢查服務是不是「起來了但少東西」（掛載、模型、憑證）
